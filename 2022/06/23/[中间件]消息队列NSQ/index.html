@@ -1,0 +1,341 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+<meta name="viewport"
+      content="width=device-width, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+<meta http-equiv="X-UA-Compatible" content="ie=edge">
+
+    <meta name="author" content="Xinyu">
+
+
+
+
+
+<title>消息队列(1)---NSQ | Hexo</title>
+
+
+
+    <link rel="icon" href="/favicon.ico">
+
+
+
+
+    <!-- stylesheets list from _config.yml -->
+    
+    <link rel="stylesheet" href="/css/style.css">
+    
+
+
+
+    <!-- scripts list from _config.yml -->
+    
+    <script src="/js/script.js"></script>
+    
+    <script src="/js/tocbot.min.js"></script>
+    
+
+
+
+    
+    
+        
+    
+
+
+<meta name="generator" content="Hexo 6.2.0"></head>
+
+<body>
+    <script>
+        // this function is used to check current theme before page loaded.
+        (() => {
+            const currentTheme = window.localStorage && window.localStorage.getItem('theme') || '';
+            const isDark = currentTheme === 'dark';
+            const pagebody = document.getElementsByTagName('body')[0]
+            if (isDark) {
+                pagebody.classList.add('dark-theme');
+                // mobile
+                document.getElementById("mobile-toggle-theme").innerText = "· Dark"
+            } else {
+                pagebody.classList.remove('dark-theme');
+                // mobile
+                document.getElementById("mobile-toggle-theme").innerText = "· Light"
+            }
+        })();
+    </script>
+
+    <div class="wrapper">
+        <header>
+    <nav class="navbar">
+        <div class="container">
+            <div class="navbar-header header-logo"><a href="/">Xinyu&#39;s Blog</a></div>
+            <div class="menu navbar-right">
+                
+                    <a class="menu-item" href="/archives">Posts</a>
+                
+                    <a class="menu-item" href="/category">Categories</a>
+                
+                    <a class="menu-item" href="/tag">Tags</a>
+                
+                <input id="switch_default" type="checkbox" class="switch_default">
+                <label for="switch_default" class="toggleBtn"></label>
+            </div>
+        </div>
+    </nav>
+
+    
+    <nav class="navbar-mobile" id="nav-mobile">
+        <div class="container">
+            <div class="navbar-header">
+                <div>
+                    <a href="/">Xinyu&#39;s Blog</a><a id="mobile-toggle-theme">·&nbsp;Light</a>
+                </div>
+                <div class="menu-toggle" onclick="mobileBtn()">&#9776; Menu</div>
+            </div>
+            <div class="menu" id="mobile-menu">
+                
+                    <a class="menu-item" href="/archives">Posts</a>
+                
+                    <a class="menu-item" href="/category">Categories</a>
+                
+                    <a class="menu-item" href="/tag">Tags</a>
+                
+            </div>
+        </div>
+    </nav>
+
+</header>
+<script>
+    var mobileBtn = function f() {
+        var toggleMenu = document.getElementsByClassName("menu-toggle")[0];
+        var mobileMenu = document.getElementById("mobile-menu");
+        if(toggleMenu.classList.contains("active")){
+           toggleMenu.classList.remove("active")
+            mobileMenu.classList.remove("active")
+        }else{
+            toggleMenu.classList.add("active")
+            mobileMenu.classList.add("active")
+        }
+    }
+</script>
+            <div class="main">
+                <div class="container">
+    
+    
+        <div class="post-toc">
+    <div class="tocbot-list">
+    </div>
+    <div class="tocbot-list-menu">
+        <a class="tocbot-toc-expand" onclick="expand_toc()">Expand all</a>
+        <a onclick="go_top()">Back to top</a>
+        <a onclick="go_bottom()">Go to bottom</a>
+    </div>
+</div>
+
+<script>
+    var tocbot_timer;
+    var DEPTH_MAX = 6; // 为 6 时展开所有
+    var tocbot_default_config = {
+        tocSelector: '.tocbot-list',
+        contentSelector: '.post-content',
+        headingSelector: 'h1, h2, h3, h4, h5',
+        orderedList: false,
+        scrollSmooth: true,
+        onClick: extend_click,
+    };
+
+    function extend_click() {
+        clearTimeout(tocbot_timer);
+        tocbot_timer = setTimeout(function() {
+            tocbot.refresh(obj_merge(tocbot_default_config, {
+                hasInnerContainers: true
+            }));
+        }, 420); // 这个值是由 tocbot 源码里定义的 scrollSmoothDuration 得来的
+    }
+
+    document.ready(function() {
+        tocbot.init(obj_merge(tocbot_default_config, {
+            collapseDepth: 1
+        }));
+    });
+
+    function expand_toc() {
+        var b = document.querySelector('.tocbot-toc-expand');
+        var expanded = b.getAttribute('data-expanded');
+        expanded ? b.removeAttribute('data-expanded') : b.setAttribute('data-expanded', true);
+        tocbot.refresh(obj_merge(tocbot_default_config, {
+            collapseDepth: expanded ? 1 : DEPTH_MAX
+        }));
+        b.innerText = expanded ? 'Expand all' : 'Collapse all';
+    }
+
+    function go_top() {
+        window.scrollTo(0, 0);
+    }
+
+    function go_bottom() {
+        window.scrollTo(0, document.body.scrollHeight);
+    }
+
+    function obj_merge(target, source) {
+        for (var item in source) {
+            if (source.hasOwnProperty(item)) {
+                target[item] = source[item];
+            }
+        }
+        return target;
+    }
+</script>
+    
+
+    
+    <article class="post-wrap">
+        <header class="post-header">
+            <h1 class="post-title">消息队列(1)---NSQ</h1>
+            
+                <div class="post-meta">
+                    
+                        Author: <a itemprop="author" rel="author" href="/">Xinyu</a>
+                    
+
+                    
+                        <span class="post-time">
+                        Date: <a href="#">June 23, 2022&nbsp;&nbsp;17:37:55</a>
+                        </span>
+                    
+                    
+                        <span class="post-category">
+                    Category:
+                            
+                                <a href="/categories/%E4%B8%AD%E9%97%B4%E4%BB%B6/">中间件</a>
+                            
+                        </span>
+                    
+                </div>
+            
+        </header>
+
+        <div class="post-content">
+            <h1 id="为什么要有消息队列"><a href="#为什么要有消息队列" class="headerlink" title="为什么要有消息队列"></a>为什么要有消息队列</h1><p><img src="https://raw.githubusercontent.com/brucecai-2001/Image/master/20220623175432.png"></p>
+<p>你们可以看到这才加了三个功能，我可以斩钉截铁的告诉你真正的下单流程涉及的系统绝对在10个以上（主流电商），越大的越多。这个链路这样下去，时间非常长，用户发现我买个东西要花几十秒。<br><br></p>
+<h1 id="异步"><a href="#异步" class="headerlink" title="异步"></a>异步</h1><p>那链路长了就慢了，但是我们发现上面的流程其实可以同时做的呀，你支付成功后，我去校验优惠券的同时我可以去增减积分啊，还可以同时发个短信啊。那正常的流程我们是没办法实现的呀，怎么办，异步。你对比一下是不是发现，这样子最多只用100毫秒用户知道下单成功了，至于短信你迟几秒发给他他根本不在意是吧。<br><img src="https://raw.githubusercontent.com/brucecai-2001/Image/master/20220623180716.png"><br><br></p>
+<h1 id="解偶"><a href="#解偶" class="headerlink" title="解偶"></a>解偶</h1><p>为什么不能用线程去做，一个订单流程，你扣积分，扣优惠券，发短信，扣库存。。。等等这么多业务要调用这么多的接口，每次加一个你要调用一个接口然后还要重新发布系统，写一次两次还好，写多了就很麻烦. <br><br><br>使用消息队列的场景下, 你下单了，你就把你支付成功的消息告诉别的系统，他们收到了去处理就好了，你只用走完自己的流程，把自己的消息发出去，那后面要接入什么系统简单，直接订阅你发送的支付成功消息，你支付成功了我监听就好了。<br><br><br><img src="https://raw.githubusercontent.com/brucecai-2001/Image/master/20220623181144.png"><br><br><br><br></p>
+<h1 id="信息流"><a href="#信息流" class="headerlink" title="信息流"></a>信息流</h1><p>任何一个消息队列的信息流都可以抽象为</p>
+<blockquote>
+<p>生产者 &gt;&gt; MQ &gt;&gt; 消费者</p>
+</blockquote>
+<br>
+
+<h1 id="NSQ的信息流"><a href="#NSQ的信息流" class="headerlink" title="NSQ的信息流"></a>NSQ的信息流</h1><p><img src="https://raw.githubusercontent.com/brucecai-2001/Image/master/20220623184526.png"><br>nsqd 是接受、排队、传递消息的守护进程，消息队列中的核心。</p>
+<br>
+
+<h3 id="1-生产者-gt-gt-nsqd"><a href="#1-生产者-gt-gt-nsqd" class="headerlink" title="1. 生产者 &gt;&gt; nsqd"></a><strong>1. 生产者 &gt;&gt; nsqd</strong></h3><br>
+生产者包装消息，将消息传递到 nsqd 中指定的 topic 。在 NSQ 中这一个步骤相当简单，通过 HTTP 接口就能完成：<br><br>
+发送消息必须指定 topic ，而 topic 的作用其实就是对消息进行逻辑上的分区。
+接口 /pub 用来发送单条消息，其中的 defer 参数用来指定 NSQ 在接收到消息后延时多久再投递给消费者，例如订单规定时间内未支付则进行回收等场景就可以用到延时队列。接口 /mpub 用来一次发送多条消息。
+相关配置 -max-msg-size : 单条消息的大小上限，默认 1048576 byte 即 1 M。
+
+<br>
+
+<h3 id="2-nsqd-topic-gt-gt-channel"><a href="#2-nsqd-topic-gt-gt-channel" class="headerlink" title="2.nsqd: topic &gt;&gt; channel"></a><strong>2.nsqd: topic &gt;&gt; channel</strong></h3><br>
+topic 只是用来将消息进行逻辑划分，channel 才是真正存放消息的地方，而 nsqd 在接受到消息后，会将消息复制给所有与这个 topic 相连的 channel 并存放。
+
+<p><img src="https://raw.githubusercontent.com/brucecai-2001/Image/master/20220623185347.png"></p>
+<br>
+
+<h3 id="3-nsqd-gt-gt-consumer"><a href="#3-nsqd-gt-gt-consumer" class="headerlink" title="3.nsqd &gt;&gt; consumer"></a><strong>3.nsqd &gt;&gt; consumer</strong></h3><br>
+如上图所示，topic 的消息会被广播到所有与之相连的 channel ，但是同一个 channel 只会以负载均衡的方式把消息投递到与之相连的其中一个 consumer 消费者。<br>
+<br>
+相关配置 max-in-flight : 一个 consumer 一次最多处理的消息数量，默认为一条。<br>
+<br>
+<br>
+
+<h1 id="NSQ的消息处理"><a href="#NSQ的消息处理" class="headerlink" title="NSQ的消息处理"></a>NSQ的消息处理</h1><p><img src="https://raw.githubusercontent.com/brucecai-2001/Image/master/20220623185943.png"><br>如上图所示，consumer 需要先连接到 nsqd，并且订阅指定的 topic 和 channel ，在一切准备就绪之后发送 RDY 状态表示可以接受消息，并指明一次可以处理的最大消息数量 max-in-flight 为 2 ，随后 nsqd 向 consumer 投递消息，consumer 消费者在接受到消息后进行业务处理，并且需要向 nsqd 响应 FIN（消息处理成功）或者 REQ（ re-queue 重新排队），投递完成但未响应的这段时间内的消息状态为 in-flight 。</p>
+<h3 id="1-REQ"><a href="#1-REQ" class="headerlink" title="1. REQ"></a><strong>1. REQ</strong></h3><p>对于 REQ 响应，nsq 会将其重新加入到队列中等待下一次再投递（ re-queue ），客户端可以指定 requeue 的 delay 延时，即重新排队并延时一段时间之后再重新投递消息，延时的时间不得超过配置项 -max-req-timeout 。</p>
+<h3 id="2-Timeout"><a href="#2-Timeout" class="headerlink" title="2. Timeout"></a><strong>2. Timeout</strong></h3><p>每一条消息都必须在一定时间内向 nsq 做出响应，否则 nsq 会认为这条消息超时，然后 requeue 处理。</p>
+<p>配置项 -msg-timeout ：单条消息的超时时间，默认一分钟，即消息投递后一分钟内未收到响应，则 nsq 会将这条消息 requeue 处理。</p>
+<p>配置值 -max-msg-timeout ：nsqd 全局设置的最大超时时间，默认 15 分钟。</p>
+<p>超时的判定时长将取决于以上两个配置的最小值。</p>
+<h3 id="3-Touch"><a href="#3-Touch" class="headerlink" title="3. Touch"></a><strong>3. Touch</strong></h3><p>有时候 consumer 需要更长的时间来对消息进行处理，而不想被 nsq 判定超时然后 requeue ，这时候就可以主动向 nsq 响应 Touch ，表示消息是正常处理的，但是需要更长时间，nsq 接受到 Touch 响应后就会刷新这条消息的超时时间。需要注意的是，我们并不能一直 Touch 到永远，其仍受制于配置项  -max-msg-timeout ，超出最大时长了 Touch 也没用，nsq 仍然会判定为超时并 requeue 。</p>
+<h3 id="4-Backoff"><a href="#4-Backoff" class="headerlink" title="4. Backoff"></a><strong>4. Backoff</strong></h3><p>有时候 consumer 处理消息面临很大的压力，随时有崩溃的风险，这种情况下可以主动向 nsq 发送 RDY 0 实现 backoff ，换句话说就是消费端暂停接受等多消息，以减轻自身压力避免崩溃，等到有更多处理能力时再取消暂停状态慢慢接收更多消息。当然进入 backoff 然后慢慢恢复是一个需要动态调节的过程。</p>
+<br>
+
+<h1 id="nsqlookupd"><a href="#nsqlookupd" class="headerlink" title="nsqlookupd"></a>nsqlookupd</h1><p>nsqlookupd 提供服务发现的功能，用来寻址特定主题的 nsqd。如果客户端直接 nsqd ，那么就会出现某些 topic 的 nsqd 在某个地址，另一些 topic 的 nsqd 在另外的地址，试想当我们的 nsqd 集群数量变得越来庞大，topic 的种类也越来越多时，这种直连的方法是有多么的混乱，而 nsqlookupd 就是为了解决这个问题。</p>
+<p>所有的 nsqd 都注册到 nsqlookupd 上，然后客户端只需要连接 nsqlookupd 就可以轻松寻址到所有主题。但是，要注意的是 nsqlookupd 只负责寻址，不对消息做任何处理，我们可以认为客户端向 nsqlookupd 寻址完成后，仍然是与 nsqd 直连再进行消息处理。</p>
+<p>为了避免 nsqlookupd 的单点故障，部署多个即可。通常一个数据中心部署三个 nsqlookupd 就可以应对成百上千的 nsqd 集群。</p>
+<br>
+
+<h1 id="NSQ的一些特性"><a href="#NSQ的一些特性" class="headerlink" title="NSQ的一些特性"></a>NSQ的一些特性</h1><ol>
+<li>消息是无序的</li>
+<li>消息可能会被传递多次</li>
+<li>没有复杂的路由</li>
+<li>没有自动化的 replication 副本</li>
+</ol>
+
+        </div>
+
+        
+            <section class="post-copyright">
+                
+                    <p class="copyright-item">
+                        <span>Author:</span>
+                        <span>Xinyu</span>
+                    </p>
+                
+                
+                    <p class="copyright-item">
+                        <span>Permalink:</span>
+                        <span><a href="http://example.com/2022/06/23/[%E4%B8%AD%E9%97%B4%E4%BB%B6]%E6%B6%88%E6%81%AF%E9%98%9F%E5%88%97NSQ/">http://example.com/2022/06/23/[%E4%B8%AD%E9%97%B4%E4%BB%B6]%E6%B6%88%E6%81%AF%E9%98%9F%E5%88%97NSQ/</a></span>
+                    </p>
+                
+                
+                    <p class="copyright-item">
+                        <span>License:</span>
+                        <span>Copyright (c) 2019 <a target="_blank" rel="noopener" href="http://creativecommons.org/licenses/by-nc/4.0/">CC-BY-NC-4.0</a> LICENSE</span>
+                    </p>
+                
+                
+                     <p class="copyright-item">
+                         <span>Slogan:</span>
+                         <span>Coffee or Tea</span>
+                     </p>
+                
+
+            </section>
+        
+        <section class="post-tags">
+            <div>
+                <span>Tag(s):</span>
+                <span class="tag">
+                    
+                </span>
+            </div>
+            <div>
+                <a href="javascript:window.history.back();">back</a>
+                <span>· </span>
+                <a href="/">home</a>
+            </div>
+        </section>
+        <section class="post-nav">
+            
+            
+            <a class="next" rel="next" href="/2022/06/22/FirstBlog/">FirstBlog</a>
+            
+        </section>
+
+
+    </article>
+</div>
+
+            </div>
+            <footer id="footer" class="footer">
+    <div class="copyright">
+        <span>© Xinyu | Powered by <a href="https://hexo.io" target="_blank">Hexo</a> & <a href="https://github.com/Siricee/hexo-theme-Chic" target="_blank">Chic</a></span>
+    </div>
+</footer>
+
+    </div>
+</body>
+
+</html>
