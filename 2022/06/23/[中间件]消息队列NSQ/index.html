@@ -220,7 +220,8 @@
             <h1 id="为什么要有消息队列"><a href="#为什么要有消息队列" class="headerlink" title="为什么要有消息队列"></a>为什么要有消息队列</h1><p><img src="https://raw.githubusercontent.com/brucecai-2001/Image/master/20220623175432.png"></p>
 <p>你们可以看到这才加了三个功能，我可以斩钉截铁的告诉你真正的下单流程涉及的系统绝对在10个以上（主流电商），越大的越多。这个链路这样下去，时间非常长，用户发现我买个东西要花几十秒。<br><br></p>
 <h1 id="异步"><a href="#异步" class="headerlink" title="异步"></a>异步</h1><p>那链路长了就慢了，但是我们发现上面的流程其实可以同时做的呀，你支付成功后，我去校验优惠券的同时我可以去增减积分啊，还可以同时发个短信啊。那正常的流程我们是没办法实现的呀，怎么办，异步。你对比一下是不是发现，这样子最多只用100毫秒用户知道下单成功了，至于短信你迟几秒发给他他根本不在意是吧。<br><img src="https://raw.githubusercontent.com/brucecai-2001/Image/master/20220623180716.png"><br><br></p>
-<h1 id="解偶"><a href="#解偶" class="headerlink" title="解偶"></a>解偶</h1><p>为什么不能用线程去做，一个订单流程，你扣积分，扣优惠券，发短信，扣库存。。。等等这么多业务要调用这么多的接口，每次加一个你要调用一个接口然后还要重新发布系统，写一次两次还好，写多了就很麻烦. <br><br><br>使用消息队列的场景下, 你下单了，你就把你支付成功的消息告诉别的系统，他们收到了去处理就好了，你只用走完自己的流程，把自己的消息发出去，那后面要接入什么系统简单，直接订阅你发送的支付成功消息，你支付成功了我监听就好了。<br><br><br><img src="https://raw.githubusercontent.com/brucecai-2001/Image/master/20220623181144.png"><br><br><br><br></p>
+<h1 id="解偶"><a href="#解偶" class="headerlink" title="解偶"></a>解偶</h1><p>为什么不能用线程去做，一个订单流程，你扣积分，扣优惠券，发短信，扣库存。。。等等这么多业务要调用这么多的接口，每次加一个你要调用一个接口然后还要重新发布系统，写一次两次还好，写多了就很麻烦. <br><br><br>使用消息队列的场景下, 你下单了，你就把你支付成功的消息告诉别的系统，他们收到了去处理就好了，你只用走完自己的流程，把自己的消息发出去，那后面要接入什么系统简单，直接订阅你发送的支付成功消息，你支付成功了我监听就好了。<br><br><br><img src="https://raw.githubusercontent.com/brucecai-2001/Image/master/20220623181144.png"></p>
+<p>Ref: 🔗   <a target="_blank" rel="noopener" href="https://mp.weixin.qq.com/s?__biz=MzI4Njg5MDA5NA==&mid=2247485080&idx=1&sn=f223feb9256727bde4387d918519766b&chksm=ebd74799dca0ce8fa46223a33042a79fc16ae6ac246cb8f07e63a4a2bdce33d8c6dc74e8bd20&token=1439272449&lang=zh_CN#rd">消息队列</a><br><br><br><br></p>
 <h1 id="信息流"><a href="#信息流" class="headerlink" title="信息流"></a>信息流</h1><p>任何一个消息队列的信息流都可以抽象为</p>
 <blockquote>
 <p>生产者 &gt;&gt; MQ &gt;&gt; 消费者</p>
