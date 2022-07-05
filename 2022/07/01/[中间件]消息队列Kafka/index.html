@@ -266,6 +266,8 @@
 <br>
 <br>
 
+<h1 id="Offset"><a href="#Offset" class="headerlink" title="Offset"></a>Offset</h1><p>在kafka的消费者中，有一个非常关键的机制，那就是offset机制。它使得Kafka在消费的过程中即使挂了或者引发再均衡问题重新分配Partation，当下次重新恢复消费时仍然可以知道从哪里开始消费。它好比看一本书中的书签标记，每次通过书签标记(offset)就能快速找到该从哪里开始看(消费)。</p>
+<p>Kafka对于offset的处理有两种提交方式：<br><br><br><br>(1) 自动提交偏移量:<br><br>Kafka中偏移量的自动提交是由参数enable_auto_commit和auto_commit_interval_ms控制的，当enable_auto_commit&#x3D;True时，Kafka在消费的过程中会以频率为auto_commit_interval_ms向Kafka自带的topic(__consumer_offsets)进行偏移量提交。对于自动提交偏移量，如果auto_commit_interval_ms的值设置的过大，当消费者在自动提交偏移量之前异常退出，将导致kafka未提交偏移量，进而出现重复消费的问题，所以建议auto_commit_interval_ms的值越小越好。<br><br><br></p>
 <h1 id="kafka的数据不丢失机制"><a href="#kafka的数据不丢失机制" class="headerlink" title="kafka的数据不丢失机制"></a>kafka的数据不丢失机制</h1><h3 id="生产者生产数据不丢失"><a href="#生产者生产数据不丢失" class="headerlink" title="生产者生产数据不丢失"></a><em><strong>生产者生产数据不丢失</strong></em></h3><p>同步方式:<br><br>发送一批数据给kafka后，等待kafka返回结果</p>
 <ol>
 <li>生产者等待10s，如果broker没有给出ack响应，就认为失败。</li>
@@ -280,14 +282,21 @@
 <p>ACK机制: <br><br>生产者数据发送出去，需要服务端返回一个确认码，即ack响应码；ack的响应有三个状态值0,1，-1</p>
 <p>0：生产者只负责发送数据，不关心数据是否丢失，丢失的数据，需要再次发送</p>
 <p>1：partition的leader收到数据，不管follow是否同步完数据，响应的状态码为1</p>
-<p>-1：所有的从节点都收到数据，响应的状态码为-1</p>
-<h3 id="消费者消费数据不丢失"><a href="#消费者消费数据不丢失" class="headerlink" title="消费者消费数据不丢失"></a><em><strong>消费者消费数据不丢失</strong></em></h3><p>在消费者消费数据的时候，只要每个消费者记录好offset值即可，就能保证数据不丢失。也就是需要我们自己维护偏移量(offset)，可保存在 Redis 中。</p>
+<p>-1：follow需要同步完数据</p>
+<h3 id="消费者消费数据不丢失"><a href="#消费者消费数据不丢失" class="headerlink" title="消费者消费数据不丢失"></a><em><strong>消费者消费数据不丢失</strong></em></h3><p>在消费者消费数据的时候，只要每个消费者记录好offset值即可，就能保证数据不丢失。也就是需要我们自己维护偏移量(offset)，可保存在 Redis 中。<br><br>关闭闭自动提交 offset，每次在真正消费完消息之后之后再自己手动提交 offset</p>
+<h1 id="Kafka消息不丢失"><a href="#Kafka消息不丢失" class="headerlink" title="Kafka消息不丢失"></a>Kafka消息不丢失</h1><p>就是 Kafka 某个 broker 宕机，然后重新选举 partition 的 leader。大家想想，要是此时其他的 follower 刚好还有些数据没有同步，结果此时 leader 挂了，然后选举某个 follower 成 leader 之后，不就少了一些数据？这就丢了一些数据啊。</p>
+<ol>
+<li>给 topic 设置 replication.factor 参数：这个值必须大于 1，要求每个 partition 必须有至少 2 个副本。<br></li>
+<li>在 Kafka 服务端设置 min.insync.replicas 参数：这个值必须大于 1，这个是要求一个 leader 至少感知到有至少一个 follower 还跟自己保持联系，没掉队，这样才能确保 leader 挂了还有一个 follower 吧。<br></li>
+<li>在 producer 端设置 acks&#x3D;all：这个是要求每条数据，必须是写入所有 replica 之后，才能认为是写成功了。<br></li>
+<li>在 producer 端设置 retries&#x3D;MAX（很大很大很大的一个值，无限次重试的意思）：这个是要求一旦写入失败，就无限重试，卡在这里了。<br></li>
+</ol>
 <br>
 <br>
 
-<h1 id="Mac使用kafka"><a href="#Mac使用kafka" class="headerlink" title="Mac使用kafka"></a>Mac使用kafka</h1><p>安装kafka:<br><br><strong>brew install kafka</strong><br><br><br><br><br></p>
-<p>启动zookeeper:<br><br><strong>zookeeper-server-start &#x2F;usr&#x2F;local&#x2F;etc&#x2F;kafka&#x2F;zookeeper.properties</strong><br><br><br><br><br></p>
-<p>启动kafka:<br><br><strong>kafka-server-start &#x2F;usr&#x2F;local&#x2F;etc&#x2F;kafka&#x2F;server.properties</strong><br><br><br><br><br></p>
+<h1 id="Mac使用kafka"><a href="#Mac使用kafka" class="headerlink" title="Mac使用kafka"></a>Mac使用kafka</h1><p>安装kafka:<br><br><strong>brew install kafka</strong><br></p>
+<p>启动zookeeper:<br><br><strong>zookeeper-server-start &#x2F;usr&#x2F;local&#x2F;etc&#x2F;kafka&#x2F;zookeeper.properties</strong><br></p>
+<p>启动kafka:<br><br><strong>kafka-server-start &#x2F;usr&#x2F;local&#x2F;etc&#x2F;kafka&#x2F;server.properties</strong><br></p>
 <p>消费数据:<br><br><strong>kafka-console-consumer –bootstrap-server 127.0.0.1:9092 –topic test1 –from-beginning</strong><br></p>
 
         </div>
