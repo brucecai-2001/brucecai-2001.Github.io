@@ -13,7 +13,7 @@
 
 
 
-<title>计算机网络(5)---数据链路层 | Hexo</title>
+<title>操作系统(1)---套接字 | Hexo</title>
 
 
 
@@ -192,7 +192,7 @@
     
     <article class="post-wrap">
         <header class="post-header">
-            <h1 class="post-title">计算机网络(5)---数据链路层</h1>
+            <h1 class="post-title">操作系统(1)---套接字</h1>
             
                 <div class="post-meta">
                     
@@ -201,14 +201,14 @@
 
                     
                         <span class="post-time">
-                        Date: <a href="#">July 5, 2022&nbsp;&nbsp;23:11:06</a>
+                        Date: <a href="#">July 7, 2022&nbsp;&nbsp;2:03:16</a>
                         </span>
                     
                     
                         <span class="post-category">
                     Category:
                             
-                                <a href="/categories/%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%BD%91%E7%BB%9C/">计算机网络</a>
+                                <a href="/categories/%E6%93%8D%E4%BD%9C%E7%B3%BB%E7%BB%9F/">操作系统</a>
                             
                         </span>
                     
@@ -217,26 +217,39 @@
         </header>
 
         <div class="post-content">
-            <h1 id="数据链路层上的三个基本问题"><a href="#数据链路层上的三个基本问题" class="headerlink" title="数据链路层上的三个基本问题"></a>数据链路层上的三个基本问题</h1><p>1.封装成帧：把上层的ip分组加首尾成帧；<br>2.透明传输：针对用户是透明的；首尾是界定帧，转义字符去除数据部分和首尾相同引起歧义；<br>3.差错检测：奇偶校验、CRC循环冗余检验；纠错（海明码</p>
+            <h1 id="套接字的IO模型"><a href="#套接字的IO模型" class="headerlink" title="套接字的IO模型"></a>套接字的IO模型</h1><p>对于一个套接字上的输入操作，第一步通常涉及等待数据从网络中到达。当所等待数据到达时，它被复制到内核中的某个缓冲区。第二步就是把数据从内核缓冲区复制到应用进程缓冲区。</p>
+<p>Unix 有五种 I&#x2F;O 模型：</p>
+<p>阻塞式 I&#x2F;O<br><br>非阻塞式 I&#x2F;O<br><br>I&#x2F;O 复用（select 和 poll）<br><br>信号驱动式 I&#x2F;O（SIGIO）<br><br>异步 I&#x2F;O（AIO）<br></p>
 <br>
 <br>
 
-<h1 id="MAC-地址和-IP-地址分别有什么作用"><a href="#MAC-地址和-IP-地址分别有什么作用" class="headerlink" title="MAC 地址和 IP 地址分别有什么作用"></a>MAC 地址和 IP 地址分别有什么作用</h1><ol>
-<li>MAC 地址是数据链路层和物理层使用的地址，是写在网卡上的物理地址。MAC 地址用来定义网络设备的位置。</li>
-<li>IP 地址是网络层和以上各层使用的地址，是一种逻辑地址。IP 地址用来区别网络上的计算机。</li>
-</ol>
+<h1 id="阻塞式-I-x2F-O"><a href="#阻塞式-I-x2F-O" class="headerlink" title="阻塞式 I&#x2F;O"></a>阻塞式 I&#x2F;O</h1><p>应用进程被阻塞，直到数据从内核缓冲区复制到应用进程缓冲区中才返回。应该注意到，在阻塞的过程中，其它应用进程还可以执行，因此阻塞不意味着整个操作系统都被阻塞。<br><img src="https://raw.githubusercontent.com/brucecai-2001/Image/master/20220707020627.png"></p>
 <br>
 <br>
 
-<h1 id="为什么有了-MAC-地址还需要-IP-地址"><a href="#为什么有了-MAC-地址还需要-IP-地址" class="headerlink" title="为什么有了 MAC 地址还需要 IP 地址"></a>为什么有了 MAC 地址还需要 IP 地址</h1><p>如果我们只使用 MAC 地址进行寻址的话，我们需要路由器记住每个 MAC 地址属于哪一个子网，不然每一次路由器收到数据包时都要满世界寻找目的 MAC 地址。而我们知道 MAC 地址的长度为 48 位，也就是说最多总共有 2 的 48 次方个 MAC 地址，这就意味着每个路由器需要 256 T 的内存，这显然是不现实的。IP 地址是和地域相关的，在一个子网中的设备，我们给其分配的 IP 地址前缀都是一样的，这样路由器就能根据 IP 地址的前缀知道这个设备属于哪个子网，剩下的寻址就交给子网内部实现，从而大大减少了路由器所需要的内存。</p>
+<h1 id="非阻塞式-I-x2F-O"><a href="#非阻塞式-I-x2F-O" class="headerlink" title="非阻塞式 I&#x2F;O"></a>非阻塞式 I&#x2F;O</h1><p>应用进程执行系统调用之后，内核返回一个错误码。应用进程可以继续执行，但是需要不断的执行系统调用来获知 I&#x2F;O 是否完成，这种方式称为轮询（polling）。由于 CPU 要处理更多的系统调用，因此这种模型的 CPU 利用率比较低。<br><img src="https://raw.githubusercontent.com/brucecai-2001/Image/master/20220707020806.png"></p>
 <br>
 <br>
 
-<h1 id="为什么有了-IP-地址还需要-MAC-地址"><a href="#为什么有了-IP-地址还需要-MAC-地址" class="headerlink" title="为什么有了 IP 地址还需要 MAC 地址"></a>为什么有了 IP 地址还需要 MAC 地址</h1><p>只有当设备连入网络时，才能根据他进入了哪个子网来为其分配 IP 地址，在设备还没有 IP 地址的时候或者在分配 IP 地址的过程中，我们需要 MAC 地址来区分不同的设备。</p>
+<h1 id="I-x2F-O-复用"><a href="#I-x2F-O-复用" class="headerlink" title="I&#x2F;O 复用"></a>I&#x2F;O 复用</h1><p>使用 select 或者 poll 等待数据，并且可以等待多个套接字中的任何一个变为可读。这一过程会被阻塞，当某一个套接字可读时返回，之后再使用 recvfrom 把数据从内核复制到进程中。它可以让单个进程具有处理多个 I&#x2F;O 事件的能力。又被称为 Event Driven I&#x2F;O，即事件驱动 I&#x2F;O。如果一个 Web 服务器没有 I&#x2F;O 复用，那么每一个 Socket 连接都需要创建一个线程去处理。如果同时有几万个连接，那么就需要创建相同数量的线程。相比于多进程和多线程技术，I&#x2F;O 复用不需要进程线程创建和切换的开销，系统开销更小。<br><img src="https://raw.githubusercontent.com/brucecai-2001/Image/master/20220707021307.png"></p>
 <br>
 <br>
 
-<h1 id="私网地址和公网地址之间进行转换：同一个局域网内的两个私网地址，经过转换之后外面看到的一样吗"><a href="#私网地址和公网地址之间进行转换：同一个局域网内的两个私网地址，经过转换之后外面看到的一样吗" class="headerlink" title="私网地址和公网地址之间进行转换：同一个局域网内的两个私网地址，经过转换之后外面看到的一样吗"></a>私网地址和公网地址之间进行转换：同一个局域网内的两个私网地址，经过转换之后外面看到的一样吗</h1><p>当采用静态或者动态转换时，由于一个私网 IP 地址对应一个公网地址，因此经过转换之后的公网 IP 地址是不同的；而采用端口复用方式的话，在一个子网中的所有地址都采用一个公网地址，但是使用的端口是不同的。</p>
+<h1 id="信号驱动-I-x2F-O"><a href="#信号驱动-I-x2F-O" class="headerlink" title="信号驱动 I&#x2F;O"></a>信号驱动 I&#x2F;O</h1><p>应用进程使用 sigaction 系统调用，内核立即返回，应用进程可以继续执行，也就是说等待数据阶段应用进程是非阻塞的。内核在数据到达时向应用进程发送 SIGIO 信号，应用进程收到之后在信号处理程序中调用 recvfrom 将数据从内核复制到应用进程中。<br><img src="https://raw.githubusercontent.com/brucecai-2001/Image/master/20220707021656.png"></p>
+<br>
+<br>
+
+<h1 id="异步-I-x2F-O"><a href="#异步-I-x2F-O" class="headerlink" title="异步 I&#x2F;O"></a>异步 I&#x2F;O</h1><p>应用进程执行 aio_read 系统调用会立即返回，应用进程可以继续执行，不会被阻塞，内核会在所有操作完成之后向应用进程发送信号。异步 I&#x2F;O 与信号驱动 I&#x2F;O 的区别在于，异步 I&#x2F;O 的信号是通知应用进程 I&#x2F;O 完成，而信号驱动 I&#x2F;O 的信号是通知应用进程可以开始 I&#x2F;O。<br><img src="https://raw.githubusercontent.com/brucecai-2001/Image/master/20220707022017.png"></p>
+<br>
+<br>
+
+<h1 id="I-x2F-O-复用-1"><a href="#I-x2F-O-复用-1" class="headerlink" title="I&#x2F;O 复用"></a>I&#x2F;O 复用</h1><h2 id="SELECT"><a href="#SELECT" class="headerlink" title="SELECT"></a>SELECT</h2><figure class="highlight golang"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="type">int</span> <span class="keyword">select</span>(<span class="type">int</span> n, fd_set *readfds, fd_set *writefds, fd_set *exceptfds, <span class="keyword">struct</span> timeval *timeout);</span><br></pre></td></tr></table></figure>
+<br>
+
+<p>select 允许应用程序监视一组文件描述符，等待一个或者多个描述符成为就绪状态，从而完成 I&#x2F;O 操作。<br></p>
+<p>fd_set 使用数组实现，数组大小使用 FD_SETSIZE 定义，所以只能监听少于 FD_SETSIZE 数量的描述符。有三种类型的描述符类型：readset、writeset、exceptset，分别对应读、写、异常条件的描述符集合。<br></p>
+<p>timeout 为超时参数，调用 select 会一直阻塞直到有描述符的事件到达或者等待的时间超过 timeout。<br></p>
+<p>成功调用返回结果大于 0，出错返回结果为 -1，超时返回结果为 0。<br></p>
 
         </div>
 
@@ -251,7 +264,7 @@
                 
                     <p class="copyright-item">
                         <span>Permalink:</span>
-                        <span><a href="http://example.com/2022/07/05/[%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%BD%91%E7%BB%9C]%E6%95%B0%E6%8D%AE%E9%93%BE%E8%B7%AF%E5%B1%82/">http://example.com/2022/07/05/[%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%BD%91%E7%BB%9C]%E6%95%B0%E6%8D%AE%E9%93%BE%E8%B7%AF%E5%B1%82/</a></span>
+                        <span><a href="http://example.com/2022/07/07/[%E6%93%8D%E4%BD%9C%E7%B3%BB%E7%BB%9F]%E5%A5%97%E6%8E%A5%E5%AD%97/">http://example.com/2022/07/07/[%E6%93%8D%E4%BD%9C%E7%B3%BB%E7%BB%9F]%E5%A5%97%E6%8E%A5%E5%AD%97/</a></span>
                     </p>
                 
                 
@@ -284,10 +297,8 @@
         </section>
         <section class="post-nav">
             
-                <a class="prev" rel="prev" href="/2022/07/07/%5B%E6%93%8D%E4%BD%9C%E7%B3%BB%E7%BB%9F%5D%E5%A5%97%E6%8E%A5%E5%AD%97/">操作系统(1)---套接字</a>
             
-            
-            <a class="next" rel="next" href="/2022/07/05/%5B%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%BD%91%E7%BB%9C%5D%E7%BD%91%E7%BB%9C%E5%B1%82/">计算机网络(4)---网络层</a>
+            <a class="next" rel="next" href="/2022/07/05/%5B%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%BD%91%E7%BB%9C%5D%E6%95%B0%E6%8D%AE%E9%93%BE%E8%B7%AF%E5%B1%82/">计算机网络(5)---数据链路层</a>
             
         </section>
 
