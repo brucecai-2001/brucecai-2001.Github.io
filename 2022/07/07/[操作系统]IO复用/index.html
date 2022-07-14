@@ -1,0 +1,346 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+<meta name="viewport"
+      content="width=device-width, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+<meta http-equiv="X-UA-Compatible" content="ie=edge">
+
+    <meta name="author" content="Xinyu">
+
+
+
+
+
+<title>操作系统(1)---套接字 | Hexo</title>
+
+
+
+    <link rel="icon" href="/favicon.ico">
+
+
+
+
+    <!-- stylesheets list from _config.yml -->
+    
+    <link rel="stylesheet" href="/css/style.css">
+    
+
+
+
+    <!-- scripts list from _config.yml -->
+    
+    <script src="/js/script.js"></script>
+    
+    <script src="/js/tocbot.min.js"></script>
+    
+
+
+
+    
+    
+        
+    
+
+
+<meta name="generator" content="Hexo 6.2.0"></head>
+
+<body>
+    <script>
+        // this function is used to check current theme before page loaded.
+        (() => {
+            const currentTheme = window.localStorage && window.localStorage.getItem('theme') || '';
+            const isDark = currentTheme === 'dark';
+            const pagebody = document.getElementsByTagName('body')[0]
+            if (isDark) {
+                pagebody.classList.add('dark-theme');
+                // mobile
+                document.getElementById("mobile-toggle-theme").innerText = "· Dark"
+            } else {
+                pagebody.classList.remove('dark-theme');
+                // mobile
+                document.getElementById("mobile-toggle-theme").innerText = "· Light"
+            }
+        })();
+    </script>
+
+    <div class="wrapper">
+        <header>
+    <nav class="navbar">
+        <div class="container">
+            <div class="navbar-header header-logo"><a href="/">Xinyu&#39;s Blog</a></div>
+            <div class="menu navbar-right">
+                
+                    <a class="menu-item" href="/archives">Posts</a>
+                
+                    <a class="menu-item" href="/category">Categories</a>
+                
+                    <a class="menu-item" href="/tag">Tags</a>
+                
+                <input id="switch_default" type="checkbox" class="switch_default">
+                <label for="switch_default" class="toggleBtn"></label>
+            </div>
+        </div>
+    </nav>
+
+    
+    <nav class="navbar-mobile" id="nav-mobile">
+        <div class="container">
+            <div class="navbar-header">
+                <div>
+                    <a href="/">Xinyu&#39;s Blog</a><a id="mobile-toggle-theme">·&nbsp;Light</a>
+                </div>
+                <div class="menu-toggle" onclick="mobileBtn()">&#9776; Menu</div>
+            </div>
+            <div class="menu" id="mobile-menu">
+                
+                    <a class="menu-item" href="/archives">Posts</a>
+                
+                    <a class="menu-item" href="/category">Categories</a>
+                
+                    <a class="menu-item" href="/tag">Tags</a>
+                
+            </div>
+        </div>
+    </nav>
+
+</header>
+<script>
+    var mobileBtn = function f() {
+        var toggleMenu = document.getElementsByClassName("menu-toggle")[0];
+        var mobileMenu = document.getElementById("mobile-menu");
+        if(toggleMenu.classList.contains("active")){
+           toggleMenu.classList.remove("active")
+            mobileMenu.classList.remove("active")
+        }else{
+            toggleMenu.classList.add("active")
+            mobileMenu.classList.add("active")
+        }
+    }
+</script>
+            <div class="main">
+                <div class="container">
+    
+    
+        <div class="post-toc">
+    <div class="tocbot-list">
+    </div>
+    <div class="tocbot-list-menu">
+        <a class="tocbot-toc-expand" onclick="expand_toc()">Expand all</a>
+        <a onclick="go_top()">Back to top</a>
+        <a onclick="go_bottom()">Go to bottom</a>
+    </div>
+</div>
+
+<script>
+    var tocbot_timer;
+    var DEPTH_MAX = 6; // 为 6 时展开所有
+    var tocbot_default_config = {
+        tocSelector: '.tocbot-list',
+        contentSelector: '.post-content',
+        headingSelector: 'h1, h2, h3, h4, h5',
+        orderedList: false,
+        scrollSmooth: true,
+        onClick: extend_click,
+    };
+
+    function extend_click() {
+        clearTimeout(tocbot_timer);
+        tocbot_timer = setTimeout(function() {
+            tocbot.refresh(obj_merge(tocbot_default_config, {
+                hasInnerContainers: true
+            }));
+        }, 420); // 这个值是由 tocbot 源码里定义的 scrollSmoothDuration 得来的
+    }
+
+    document.ready(function() {
+        tocbot.init(obj_merge(tocbot_default_config, {
+            collapseDepth: 1
+        }));
+    });
+
+    function expand_toc() {
+        var b = document.querySelector('.tocbot-toc-expand');
+        var expanded = b.getAttribute('data-expanded');
+        expanded ? b.removeAttribute('data-expanded') : b.setAttribute('data-expanded', true);
+        tocbot.refresh(obj_merge(tocbot_default_config, {
+            collapseDepth: expanded ? 1 : DEPTH_MAX
+        }));
+        b.innerText = expanded ? 'Expand all' : 'Collapse all';
+    }
+
+    function go_top() {
+        window.scrollTo(0, 0);
+    }
+
+    function go_bottom() {
+        window.scrollTo(0, document.body.scrollHeight);
+    }
+
+    function obj_merge(target, source) {
+        for (var item in source) {
+            if (source.hasOwnProperty(item)) {
+                target[item] = source[item];
+            }
+        }
+        return target;
+    }
+</script>
+    
+
+    
+    <article class="post-wrap">
+        <header class="post-header">
+            <h1 class="post-title">操作系统(1)---套接字</h1>
+            
+                <div class="post-meta">
+                    
+                        Author: <a itemprop="author" rel="author" href="/">Xinyu</a>
+                    
+
+                    
+                        <span class="post-time">
+                        Date: <a href="#">July 7, 2022&nbsp;&nbsp;2:03:16</a>
+                        </span>
+                    
+                    
+                        <span class="post-category">
+                    Category:
+                            
+                                <a href="/categories/%E6%93%8D%E4%BD%9C%E7%B3%BB%E7%BB%9F/">操作系统</a>
+                            
+                        </span>
+                    
+                </div>
+            
+        </header>
+
+        <div class="post-content">
+            <h1 id="流"><a href="#流" class="headerlink" title="流"></a>流</h1><p>可以进行IO操作的内核对象<br><br>包括文件，管道，套接字<br><br>流的入口: fd<br></p>
+<h1 id="IO操作"><a href="#IO操作" class="headerlink" title="IO操作"></a>IO操作</h1><p>对流的操作统称I&#x2F;O操作<br></p>
+<h1 id="套接字的IO模型"><a href="#套接字的IO模型" class="headerlink" title="套接字的IO模型"></a>套接字的IO模型</h1><p>对于一个套接字上的输入操作，第一步通常涉及等待数据从网络中到达。当所等待数据到达时，它被复制到内核中的某个缓冲区。第二步就是把数据从内核缓冲区复制到应用进程缓冲区。</p>
+<p>Unix 有五种 I&#x2F;O 模型：</p>
+<p>阻塞式 I&#x2F;O<br><br>非阻塞式 I&#x2F;O<br><br>I&#x2F;O 复用（select 和 poll）<br><br>信号驱动式 I&#x2F;O（SIGIO）<br><br>异步 I&#x2F;O（AIO）<br></p>
+<br>
+<br>
+
+<h1 id="阻塞式-I-x2F-O"><a href="#阻塞式-I-x2F-O" class="headerlink" title="阻塞式 I&#x2F;O"></a>阻塞式 I&#x2F;O</h1><p>应用进程被阻塞，直到数据从内核缓冲区复制到应用进程缓冲区中才返回。应该注意到，在阻塞的过程中，其它应用进程还可以执行，因此阻塞不意味着整个操作系统都被阻塞。<br><img src="https://raw.githubusercontent.com/brucecai-2001/Image/master/20220707020627.png"></p>
+<br>
+<br>
+
+<h1 id="非阻塞式-I-x2F-O"><a href="#非阻塞式-I-x2F-O" class="headerlink" title="非阻塞式 I&#x2F;O"></a>非阻塞式 I&#x2F;O</h1><p>应用进程执行系统调用之后，内核返回一个错误码。应用进程可以继续执行，但是需要不断的执行系统调用来获知 I&#x2F;O 是否完成，这种方式称为轮询（polling）。由于 CPU 要处理更多的系统调用，因此这种模型的 CPU 利用率比较低。<br><img src="https://raw.githubusercontent.com/brucecai-2001/Image/master/20220707020806.png"></p>
+<br>
+<br>
+
+<h1 id="I-x2F-O-复用"><a href="#I-x2F-O-复用" class="headerlink" title="I&#x2F;O 复用"></a>I&#x2F;O 复用</h1><p>使用 select 或者 poll 等待数据，并且可以等待多个套接字中的任何一个变为可读。这一过程会被阻塞，当某一个套接字可读时返回，之后再使用 recvfrom 把数据从内核复制到进程中。它可以让单个进程具有处理多个 I&#x2F;O 事件的能力。又被称为 Event Driven I&#x2F;O，即事件驱动 I&#x2F;O。如果一个 Web 服务器没有 I&#x2F;O 复用，那么每一个 Socket 连接都需要创建一个线程去处理。如果同时有几万个连接，那么就需要创建相同数量的线程。相比于多进程和多线程技术，I&#x2F;O 复用不需要进程线程创建和切换的开销，系统开销更小。<br><img src="https://raw.githubusercontent.com/brucecai-2001/Image/master/20220707021307.png"></p>
+<br>
+<br>
+
+<h1 id="信号驱动-I-x2F-O"><a href="#信号驱动-I-x2F-O" class="headerlink" title="信号驱动 I&#x2F;O"></a>信号驱动 I&#x2F;O</h1><p>应用进程使用 sigaction 系统调用，内核立即返回，应用进程可以继续执行，也就是说等待数据阶段应用进程是非阻塞的。内核在数据到达时向应用进程发送 SIGIO 信号，应用进程收到之后在信号处理程序中调用 recvfrom 将数据从内核复制到应用进程中。<br><img src="https://raw.githubusercontent.com/brucecai-2001/Image/master/20220707021656.png"></p>
+<br>
+<br>
+
+<h1 id="异步-I-x2F-O"><a href="#异步-I-x2F-O" class="headerlink" title="异步 I&#x2F;O"></a>异步 I&#x2F;O</h1><p>应用进程执行 aio_read 系统调用会立即返回，应用进程可以继续执行，不会被阻塞，内核会在所有操作完成之后向应用进程发送信号。异步 I&#x2F;O 与信号驱动 I&#x2F;O 的区别在于，异步 I&#x2F;O 的信号是通知应用进程 I&#x2F;O 完成，而信号驱动 I&#x2F;O 的信号是通知应用进程可以开始 I&#x2F;O。<br><img src="https://raw.githubusercontent.com/brucecai-2001/Image/master/20220707022017.png"></p>
+<br>
+<br>
+
+<h1 id="I-x2F-O-复用-1"><a href="#I-x2F-O-复用-1" class="headerlink" title="I&#x2F;O 复用"></a>I&#x2F;O 复用</h1><h2 id="select"><a href="#select" class="headerlink" title="select"></a>select</h2><p>最多监听1024个流<br><br>没告诉你是哪一个流<br></p>
+<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">while</span> <span class="literal">true</span>&#123;</span><br><span class="line">   <span class="built_in">select</span>(stream[]) <span class="comment">//阻塞</span></span><br><span class="line"></span><br><span class="line">   <span class="comment">//接收到数据</span></span><br><span class="line">   <span class="keyword">for</span> s in stream[]&#123;</span><br><span class="line">       <span class="keyword">if</span> s has data&#123;</span><br><span class="line">           <span class="built_in">process</span>();</span><br><span class="line">       &#125;</span><br><span class="line">   &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h2 id="epoll"><a href="#epoll" class="headerlink" title="epoll"></a>epoll</h2><p>告诉到达的数量以及分别是哪些<br><br>无需遍历全部fd<br><br>处理大量请求<br><br>得到最大文件描述符个数: <strong>cat proc&#x2F;sys&#x2F;fs&#x2F;file-max</strong><br></p>
+<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">while</span> <span class="literal">true</span>&#123;</span><br><span class="line">   ready_streams[] = <span class="built_in">epoll_wait</span>(epoll_fd);</span><br><span class="line"></span><br><span class="line">   <span class="keyword">for</span> s in ready_streams[] &#123;</span><br><span class="line">       <span class="built_in">process</span>();</span><br><span class="line">   &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<br>
+<br>
+
+<h1 id="单线程Accept"><a href="#单线程Accept" class="headerlink" title="单线程Accept"></a>单线程Accept</h1><p><img src="https://raw.githubusercontent.com/brucecai-2001/Image/master/IMG_BC8338625E6D-1.jpeg"></p>
+<p>串行模型并非并发模型<br></p>
+<br>
+
+<h1 id="单线程Accept-多线程读写"><a href="#单线程Accept-多线程读写" class="headerlink" title="单线程Accept+多线程读写"></a>单线程Accept+多线程读写</h1><p><img src="https://raw.githubusercontent.com/brucecai-2001/Image/master/IMG_AF2B72ABA39E-1.jpeg"><br><br><br><br>支持并发的特性<br><br>server端实现低耦合<br><br>随着客户端的数量增多, 需要开辟的线程也需要增加, 依赖硬件<br><br>对于长链接，只要客户端结束业务后不主动关闭，就会占用连接资源<br><br>适合客户端数量小，可控<br></p>
+<br>
+
+<h1 id="单线程多路I-x2F-O复用"><a href="#单线程多路I-x2F-O复用" class="headerlink" title="单线程多路I&#x2F;O复用"></a>单线程多路I&#x2F;O复用</h1><p><img src="https://raw.githubusercontent.com/brucecai-2001/Image/master/IMG_40A5DEB81E39-1.jpeg"></p>
+<p>可以同时监听多个客户端<br><br>非忙询<br><br>同一时间无法同时处理多个请求<br></p>
+<br>
+
+<h1 id="单线程多路I-x2F-O复用-多线程工作池"><a href="#单线程多路I-x2F-O复用-多线程工作池" class="headerlink" title="单线程多路I&#x2F;O复用+多线程工作池"></a>单线程多路I&#x2F;O复用+多线程工作池</h1><p><img src="https://raw.githubusercontent.com/brucecai-2001/Image/master/IMG_31E2F0B1DAE9-1.jpeg"></p>
+<p>服务端读取协议，将业务交给处理对应协议的线程<br><br>减少客户端延迟<br><br>读写并发为1，业务流程的并发为worker pool线程数量<br><br>如果多个worker完成业务，最后返回给客户端依然需要排队<br></p>
+<br>
+
+<h1 id="单线程多路IO复用-多线程多路I-x2F-O复用-线程池"><a href="#单线程多路IO复用-多线程多路I-x2F-O复用-线程池" class="headerlink" title="单线程多路IO复用+多线程多路I&#x2F;O复用(线程池)"></a>单线程多路IO复用+多线程多路I&#x2F;O复用(线程池)</h1><p><img src="https://raw.githubusercontent.com/brucecai-2001/Image/master/IMG_63C0187FE1DA-1.jpeg"></p>
+<p>server在启动前需要开辟N个线程，用Thread Pool进行管理<br><br>Thread Pool中每个thread都开启多路I&#x2F;O复用来监听main建立成功的套接字<br></p>
+<p>同一时间进行多个读写 N(线程池大小)<br><br>server监听的套接字成倍增加, N * epoll大小， N最好和CPU核数相等<br><br>最大的读写并发量为N, 连接同一线程的客户端可能会有延迟<br></p>
+<br>
+
+<h1 id="单线程多路I-x2F-O-多线程多路I-x2F-O-多线程"><a href="#单线程多路I-x2F-O-多线程多路I-x2F-O-多线程" class="headerlink" title="单线程多路I&#x2F;O+多线程多路I&#x2F;O+多线程"></a>单线程多路I&#x2F;O+多线程多路I&#x2F;O+多线程</h1><p><img src="https://raw.githubusercontent.com/brucecai-2001/Image/master/IMG_63C0187FE1DA-1.jpeg"><br>如果当前读写线程完成，客户端没有关闭连接，则当前线程销毁，套接字被重新返回监听线程池中<br><br>硬件难以支撑<br></p>
+
+        </div>
+
+        
+            <section class="post-copyright">
+                
+                    <p class="copyright-item">
+                        <span>Author:</span>
+                        <span>Xinyu</span>
+                    </p>
+                
+                
+                    <p class="copyright-item">
+                        <span>Permalink:</span>
+                        <span><a href="http://example.com/2022/07/07/[%E6%93%8D%E4%BD%9C%E7%B3%BB%E7%BB%9F]IO%E5%A4%8D%E7%94%A8/">http://example.com/2022/07/07/[%E6%93%8D%E4%BD%9C%E7%B3%BB%E7%BB%9F]IO%E5%A4%8D%E7%94%A8/</a></span>
+                    </p>
+                
+                
+                    <p class="copyright-item">
+                        <span>License:</span>
+                        <span>Copyright (c) 2019 <a target="_blank" rel="noopener" href="http://creativecommons.org/licenses/by-nc/4.0/">CC-BY-NC-4.0</a> LICENSE</span>
+                    </p>
+                
+                
+                     <p class="copyright-item">
+                         <span>Slogan:</span>
+                         <span>Coffee or Tea</span>
+                     </p>
+                
+
+            </section>
+        
+        <section class="post-tags">
+            <div>
+                <span>Tag(s):</span>
+                <span class="tag">
+                    
+                </span>
+            </div>
+            <div>
+                <a href="javascript:window.history.back();">back</a>
+                <span>· </span>
+                <a href="/">home</a>
+            </div>
+        </section>
+        <section class="post-nav">
+            
+                <a class="prev" rel="prev" href="/2022/07/11/%5B%E5%BE%AE%E6%9C%8D%E5%8A%A1%5D%E6%A6%82%E8%BF%B0/">微服务(1)---概述</a>
+            
+            
+            <a class="next" rel="next" href="/2022/07/05/%5B%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%BD%91%E7%BB%9C%5D%E6%95%B0%E6%8D%AE%E9%93%BE%E8%B7%AF%E5%B1%82/">计算机网络(5)---数据链路层</a>
+            
+        </section>
+
+
+    </article>
+</div>
+
+            </div>
+            <footer id="footer" class="footer">
+    <div class="copyright">
+        <span>© Xinyu | Powered by <a href="https://hexo.io" target="_blank">Hexo</a> & <a href="https://github.com/Siricee/hexo-theme-Chic" target="_blank">Chic</a></span>
+    </div>
+</footer>
+
+    </div>
+</body>
+
+</html>

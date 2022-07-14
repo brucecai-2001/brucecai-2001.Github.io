@@ -13,7 +13,7 @@
 
 
 
-<title>操作系统(1)---套接字 | Hexo</title>
+<title>微服务(1)---概述 | Hexo</title>
 
 
 
@@ -192,7 +192,7 @@
     
     <article class="post-wrap">
         <header class="post-header">
-            <h1 class="post-title">操作系统(1)---套接字</h1>
+            <h1 class="post-title">微服务(1)---概述</h1>
             
                 <div class="post-meta">
                     
@@ -201,14 +201,14 @@
 
                     
                         <span class="post-time">
-                        Date: <a href="#">July 7, 2022&nbsp;&nbsp;2:03:16</a>
+                        Date: <a href="#">July 11, 2022&nbsp;&nbsp;16:58:01</a>
                         </span>
                     
                     
                         <span class="post-category">
                     Category:
                             
-                                <a href="/categories/%E6%93%8D%E4%BD%9C%E7%B3%BB%E7%BB%9F/">操作系统</a>
+                                <a href="/categories/%E5%BE%AE%E6%9C%8D%E5%8A%A1/">微服务</a>
                             
                         </span>
                     
@@ -217,39 +217,19 @@
         </header>
 
         <div class="post-content">
-            <h1 id="套接字的IO模型"><a href="#套接字的IO模型" class="headerlink" title="套接字的IO模型"></a>套接字的IO模型</h1><p>对于一个套接字上的输入操作，第一步通常涉及等待数据从网络中到达。当所等待数据到达时，它被复制到内核中的某个缓冲区。第二步就是把数据从内核缓冲区复制到应用进程缓冲区。</p>
-<p>Unix 有五种 I&#x2F;O 模型：</p>
-<p>阻塞式 I&#x2F;O<br><br>非阻塞式 I&#x2F;O<br><br>I&#x2F;O 复用（select 和 poll）<br><br>信号驱动式 I&#x2F;O（SIGIO）<br><br>异步 I&#x2F;O（AIO）<br></p>
-<br>
-<br>
-
-<h1 id="阻塞式-I-x2F-O"><a href="#阻塞式-I-x2F-O" class="headerlink" title="阻塞式 I&#x2F;O"></a>阻塞式 I&#x2F;O</h1><p>应用进程被阻塞，直到数据从内核缓冲区复制到应用进程缓冲区中才返回。应该注意到，在阻塞的过程中，其它应用进程还可以执行，因此阻塞不意味着整个操作系统都被阻塞。<br><img src="https://raw.githubusercontent.com/brucecai-2001/Image/master/20220707020627.png"></p>
-<br>
+            <blockquote>
+<p>微服务架构是一种应用架构类型，其中应用会开发为一系列服务。它提供了独立开发、部署和维护微服务架构图和服务的框架。</p>
+</blockquote>
+<h1 id="单体架构"><a href="#单体架构" class="headerlink" title="单体架构"></a>单体架构</h1><p>单体架构（Monolithic Architecture）是一种将所有功能打包在一个容器中运行的设计风格，一个实例中集成了一个系统的所有功能。通过负载均衡软件&#x2F;设备实现多实例调用。这种架构下我们多用Tomcat、JBoss或Weblogic做为服务容器，一个系统部署多个实例，负载均衡多通过随机或IP Hash等规则将终端请求路由到不同的实例。<br><br><img src="https://raw.githubusercontent.com/brucecai-2001/Image/master/20220711170329.png"></p>
 <br>
 
-<h1 id="非阻塞式-I-x2F-O"><a href="#非阻塞式-I-x2F-O" class="headerlink" title="非阻塞式 I&#x2F;O"></a>非阻塞式 I&#x2F;O</h1><p>应用进程执行系统调用之后，内核返回一个错误码。应用进程可以继续执行，但是需要不断的执行系统调用来获知 I&#x2F;O 是否完成，这种方式称为轮询（polling）。由于 CPU 要处理更多的系统调用，因此这种模型的 CPU 利用率比较低。<br><img src="https://raw.githubusercontent.com/brucecai-2001/Image/master/20220707020806.png"></p>
-<br>
-<br>
-
-<h1 id="I-x2F-O-复用"><a href="#I-x2F-O-复用" class="headerlink" title="I&#x2F;O 复用"></a>I&#x2F;O 复用</h1><p>使用 select 或者 poll 等待数据，并且可以等待多个套接字中的任何一个变为可读。这一过程会被阻塞，当某一个套接字可读时返回，之后再使用 recvfrom 把数据从内核复制到进程中。它可以让单个进程具有处理多个 I&#x2F;O 事件的能力。又被称为 Event Driven I&#x2F;O，即事件驱动 I&#x2F;O。如果一个 Web 服务器没有 I&#x2F;O 复用，那么每一个 Socket 连接都需要创建一个线程去处理。如果同时有几万个连接，那么就需要创建相同数量的线程。相比于多进程和多线程技术，I&#x2F;O 复用不需要进程线程创建和切换的开销，系统开销更小。<br><img src="https://raw.githubusercontent.com/brucecai-2001/Image/master/20220707021307.png"></p>
-<br>
+<h1 id="什么是微服务架构？"><a href="#什么是微服务架构？" class="headerlink" title="什么是微服务架构？"></a>什么是微服务架构？</h1><p>微服务架构（通常简称为微服务）是指开发应用所用的一种架构形式。通过微服务，可将大型应用分解成多个独立的组件，其中每个组件都有各自的责任领域。在处理一个用户请求时，基于微服务的应用可能会调用许多内部微服务来共同生成其响应。<br><img src="https://raw.githubusercontent.com/brucecai-2001/Image/master/IMG_74C70E98874A-1.jpeg"></p>
+<p>网关负责保持对外提供服务的一致性，根据请求的不同将其转发到不同的服务。<br><br>将公共的服务抽取出来，形成一个新的服务。<br></p>
 <br>
 
-<h1 id="信号驱动-I-x2F-O"><a href="#信号驱动-I-x2F-O" class="headerlink" title="信号驱动 I&#x2F;O"></a>信号驱动 I&#x2F;O</h1><p>应用进程使用 sigaction 系统调用，内核立即返回，应用进程可以继续执行，也就是说等待数据阶段应用进程是非阻塞的。内核在数据到达时向应用进程发送 SIGIO 信号，应用进程收到之后在信号处理程序中调用 recvfrom 将数据从内核复制到应用进程中。<br><img src="https://raw.githubusercontent.com/brucecai-2001/Image/master/20220707021656.png"></p>
-<br>
-<br>
-
-<h1 id="异步-I-x2F-O"><a href="#异步-I-x2F-O" class="headerlink" title="异步 I&#x2F;O"></a>异步 I&#x2F;O</h1><p>应用进程执行 aio_read 系统调用会立即返回，应用进程可以继续执行，不会被阻塞，内核会在所有操作完成之后向应用进程发送信号。异步 I&#x2F;O 与信号驱动 I&#x2F;O 的区别在于，异步 I&#x2F;O 的信号是通知应用进程 I&#x2F;O 完成，而信号驱动 I&#x2F;O 的信号是通知应用进程可以开始 I&#x2F;O。<br><img src="https://raw.githubusercontent.com/brucecai-2001/Image/master/20220707022017.png"></p>
-<br>
+<h1 id="服务之间的调用"><a href="#服务之间的调用" class="headerlink" title="服务之间的调用"></a>服务之间的调用</h1><p>服务被拆分后，服务和服务之间的是进程和进程的调用或者服务器和服务器之间的调用。在微服务架构中使用RPC，通过自定义协议发起TCP调用。 每个服务都可能被分布在成千上百台机器上，为了知道应该调用那台机器上的服务，需要引入服务治理。<br><br><br><br>服务治理中有一个非常重要的概念 <strong>服务发现</strong>, 里面有一个概念<strong>注册中心</strong><br><br><br><img src="https://raw.githubusercontent.com/brucecai-2001/Image/master/IMG_F9A1F4F0B9A5-1.jpeg"><br><br><br>服务启动时，会将自身的服务和IP地址注册到注册中心，其他服务调用的时候，只需要向注册中心申请地址即可。</p>
 <br>
 
-<h1 id="I-x2F-O-复用-1"><a href="#I-x2F-O-复用-1" class="headerlink" title="I&#x2F;O 复用"></a>I&#x2F;O 复用</h1><h2 id="SELECT"><a href="#SELECT" class="headerlink" title="SELECT"></a>SELECT</h2><figure class="highlight golang"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="type">int</span> <span class="keyword">select</span>(<span class="type">int</span> n, fd_set *readfds, fd_set *writefds, fd_set *exceptfds, <span class="keyword">struct</span> timeval *timeout);</span><br></pre></td></tr></table></figure>
-<br>
-
-<p>select 允许应用程序监视一组文件描述符，等待一个或者多个描述符成为就绪状态，从而完成 I&#x2F;O 操作。<br></p>
-<p>fd_set 使用数组实现，数组大小使用 FD_SETSIZE 定义，所以只能监听少于 FD_SETSIZE 数量的描述符。有三种类型的描述符类型：readset、writeset、exceptset，分别对应读、写、异常条件的描述符集合。<br></p>
-<p>timeout 为超时参数，调用 select 会一直阻塞直到有描述符的事件到达或者等待的时间超过 timeout。<br></p>
-<p>成功调用返回结果大于 0，出错返回结果为 -1，超时返回结果为 0。<br></p>
 
         </div>
 
@@ -264,7 +244,7 @@
                 
                     <p class="copyright-item">
                         <span>Permalink:</span>
-                        <span><a href="http://example.com/2022/07/07/[%E6%93%8D%E4%BD%9C%E7%B3%BB%E7%BB%9F]%E5%A5%97%E6%8E%A5%E5%AD%97/">http://example.com/2022/07/07/[%E6%93%8D%E4%BD%9C%E7%B3%BB%E7%BB%9F]%E5%A5%97%E6%8E%A5%E5%AD%97/</a></span>
+                        <span><a href="http://example.com/2022/07/11/[%E5%BE%AE%E6%9C%8D%E5%8A%A1]%E6%A6%82%E8%BF%B0/">http://example.com/2022/07/11/[%E5%BE%AE%E6%9C%8D%E5%8A%A1]%E6%A6%82%E8%BF%B0/</a></span>
                     </p>
                 
                 
@@ -297,8 +277,10 @@
         </section>
         <section class="post-nav">
             
+                <a class="prev" rel="prev" href="/2022/07/11/%5B%E5%BE%AE%E6%9C%8D%E5%8A%A1%5DgRPC/">微服务(2)---RPC和gRPC</a>
             
-            <a class="next" rel="next" href="/2022/07/05/%5B%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%BD%91%E7%BB%9C%5D%E6%95%B0%E6%8D%AE%E9%93%BE%E8%B7%AF%E5%B1%82/">计算机网络(5)---数据链路层</a>
+            
+            <a class="next" rel="next" href="/2022/07/07/%5B%E6%93%8D%E4%BD%9C%E7%B3%BB%E7%BB%9F%5DIO%E5%A4%8D%E7%94%A8/">操作系统(1)---套接字</a>
             
         </section>
 

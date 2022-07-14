@@ -13,7 +13,7 @@
 
 
 
-<title>消息队列(1)---概述 | Hexo</title>
+<title>计算机网络(6)---Cookie &amp; Session &amp; Token | Hexo</title>
 
 
 
@@ -192,7 +192,7 @@
     
     <article class="post-wrap">
         <header class="post-header">
-            <h1 class="post-title">消息队列(1)---概述</h1>
+            <h1 class="post-title">计算机网络(6)---Cookie &amp; Session &amp; Token</h1>
             
                 <div class="post-meta">
                     
@@ -201,14 +201,14 @@
 
                     
                         <span class="post-time">
-                        Date: <a href="#">June 23, 2022&nbsp;&nbsp;17:37:55</a>
+                        Date: <a href="#">July 14, 2022&nbsp;&nbsp;0:13:32</a>
                         </span>
                     
                     
                         <span class="post-category">
                     Category:
                             
-                                <a href="/categories/%E4%B8%AD%E9%97%B4%E4%BB%B6/">中间件</a>
+                                <a href="/categories/%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%BD%91%E7%BB%9C/">计算机网络</a>
                             
                         </span>
                     
@@ -217,23 +217,38 @@
         </header>
 
         <div class="post-content">
-            <h1 id="模型"><a href="#模型" class="headerlink" title="模型"></a>模型</h1><h2 id="点对点"><a href="#点对点" class="headerlink" title="点对点"></a>点对点</h2><p>消息生产者向消息队列中发送了一个消息之后，只能被一个消费者消费一次。<br><img src="https://raw.githubusercontent.com/brucecai-2001/Image/master/20220705235032.png"></p>
-<h2 id="发布-x2F-订阅"><a href="#发布-x2F-订阅" class="headerlink" title="发布&#x2F;订阅"></a>发布&#x2F;订阅</h2><p>消息生产者向频道发送一个消息之后，多个消费者可以从该频道订阅到这条消息并消费。<br><img src="https://raw.githubusercontent.com/brucecai-2001/Image/master/20220705235058.png"></p>
-<br>
-<br>
-
-<h1 id="使用场景"><a href="#使用场景" class="headerlink" title="使用场景"></a>使用场景</h1><h2 id="异步处理"><a href="#异步处理" class="headerlink" title="异步处理"></a>异步处理</h2><p>发送者将消息发送给消息队列之后，不需要同步等待消息接收者处理完毕，而是立即返回进行其它操作。消息接收者从消息队列中订阅消息之后异步处理。</p>
-<p>例如在注册流程中通常需要发送验证邮件来确保注册用户身份的合法性，可以使用消息队列使发送验证邮件的操作异步处理，用户在填写完注册信息之后就可以完成注册，而将发送验证邮件这一消息发送到消息队列中。</p>
-<p>只有在业务流程允许异步处理的情况下才能这么做，例如上面的注册流程中，如果要求用户对验证邮件进行点击之后才能完成注册的话，就不能再使用消息队列。</p>
-<h2 id="流量削锋"><a href="#流量削锋" class="headerlink" title="流量削锋"></a>流量削锋</h2><p>在高并发的场景下，如果短时间有大量的请求到达会压垮服务器。</p>
-<p>可以将请求发送到消息队列中，服务器按照其处理能力从消息队列中订阅消息进行处理。</p>
-<h2 id="应用解耦"><a href="#应用解耦" class="headerlink" title="应用解耦"></a>应用解耦</h2><p>如果模块之间不直接进行调用，模块之间耦合度就会很低，那么修改一个模块或者新增一个模块对其它模块的影响会很小，从而实现可扩展性。</p>
-<p>通过使用消息队列，一个模块只需要向消息队列中发送消息，其它模块可以选择性地从消息队列中订阅消息从而完成调用。</p>
-<br>
+            <blockquote>
+<p>由于HTTP协议是无状态的协议，所以服务端需要记录用户的状态时，就需要用某种机制来识具体的用户。本来 session 是一个抽象概念，开发者为了实现中断和继续等操作，将 user agent 和 server 之间一对一的交互，抽象为“会话”，进而衍生出“会话状态”，也就是 session 的概念。 而 cookie 是一个实际存在的东西，http 协议中定义在 header 中的字段。可以认为是 session 的一种后端无状态实现。</p>
+</blockquote>
+<h1 id="Cookie"><a href="#Cookie" class="headerlink" title="Cookie"></a>Cookie</h1><p>Cookie，有时也用其复数形式 Cookies。类型为“小型文本文件”，是某些网站为了辨别用户身份，进行 Session 跟踪而储存在用户本地终端上的数据（通常经过加密），由用户客户端计算机暂时或永久保存的信息 。<br><br><br><br><img src="https://raw.githubusercontent.com/brucecai-2001/Image/master/20220714002541.png"><br><br><br>以加入购物车为例，每次浏览器请求后 server 都会将本次商品 id 存储在 Cookie 中返回给客户端，客户端会将 Cookie 保存在本地，下一次再将上次保存在本地的 Cookie 传给 server 就行了，这样每个 Cookie 都保存着用户的商品 id，购买记录也就不会丢失了, 随着购物车内的商品越来越多，每次请求的 cookie 也越来越大，这对每个请求来说是一个很大的负担。<br></p>
+<p>如果客户端的浏览器禁用了 Cookie 怎么办？一般这种情况下，会使用一种叫做URL重写的技术来进行会话跟踪，即每次HTTP交互，URL后面都会被附加上一个诸如 sid&#x3D;xxxxx 这样的参数，服务端据此来识别用户</p>
 <br>
 
-<h1 id="消息幂等"><a href="#消息幂等" class="headerlink" title="消息幂等"></a>消息幂等</h1><p>当出现消费者对某条消息重复消费的情况时，重复消费的结果与消费一次的结果是相同的，并且多次消费并未对业务系统产生任何负面影响</p>
+<h1 id="Session"><a href="#Session" class="headerlink" title="Session"></a>Session</h1><p>由于用户的购物车信息都会保存在 Server 中，所以在 Cookie 里只要保存能识别用户身份的信息，知道是谁发起了加入购物车操作即可，这样每次请求后只要在 Cookie 里带上用户的身份信息，请求体里也只要带上本次加入购物车的商品 id，大大减少了 cookie 的体积大小，我们把这种能识别哪个请求由哪个用户发起的机制称为 Session（会话机制），生成的能识别用户身份信息的字符串称为 sessionId。<br></p>
+<p><img src="https://raw.githubusercontent.com/brucecai-2001/Image/master/20220714003336.png"><br></p>
+<ol>
+<li><p>首先用户登录，server 会为用户生成一个 session，为其分配唯一的 sessionId，这个 sessionId 是与某个用户绑定的，也就是说根据此 sessionid（假设为 abc） 可以查询到它到底是哪个用户，然后将此 sessionid 通过 cookie 传给浏览器</p>
+</li>
+<li><p>之后浏览器的每次添加购物车请求中只要在 cookie 里带上 sessionId&#x3D;abc 这一个键值对即可，server 根据 sessionId 找到它对应的用户后，把传过来的商品 id 保存到 server 中对应用户的购物车即可</p>
+</li>
+</ol>
+<br>
 
+<h1 id="Session的痛点"><a href="#Session的痛点" class="headerlink" title="Session的痛点"></a>Session的痛点</h1><p>客户端请求后，由负载均衡器（如 Nginx）来决定到底打到哪台机器假设登录请求打到了 A 机器，A 机器生成了 session 并在 cookie 里添加 sessionId 返回给了浏览器，那么问题来了：下次添加购物车时如果请求打到了 B 或者 C，由于 session 是在 A 机器生成的，此时的 B,C 是找不到 session 的，那么就会发生无法添加购物车的错误</p>
+<ol>
+<li><strong>Session复制</strong>: A 生成 session 后复制到 B, C，这样每台机器都有一份 session，无论添加购物车的请求打到哪台机器，由于 session 都能找到，故不会有问题。<br></li>
+<li><strong>Session粘连</strong>: 这种方式是让每个客户端请求只打到固定的一台机器上，比如浏览器登录请求打到 A 机器后，后续所有的添加购物车请求也都打到 A 机器上, 只要它的 ip 不变，根据 ip hash 算出来的值会打到固定的机器上.<br></li>
+<li><strong>Session 共享</strong>: 这种方式也是目前各大公司普遍采用的方案，将 session 保存在 redis，memcached 等中间件中，请求到来时，各个机器去这些中间件取一下 session 即可。<br></li>
+</ol>
+<br>
+
+<h1 id="Token"><a href="#Token" class="headerlink" title="Token"></a>Token</h1><p>通过上文分析我们知道通过在服务端共享 session 的方式可以完成用户的身份定位，但是不难发现也有一个小小的瑕疵：搞个校验机制我还得搭个 redis 集群？大厂确实 redis 用得比较普遍，但对于小厂来说可能它的业务量还未达到用 redis 的程度，所以有没有其他不用 server 存储 session 的用户身份校验机制呢，这就是我们今天要介绍的主角：token。<br></p>
+<p><img src="https://raw.githubusercontent.com/brucecai-2001/Image/master/20220714004942.png"><br></p>
+<p>首先请求方输入自己的用户名，密码，然后 server 据此生成 token，客户端拿到 token 后会保存到本地，之后向 server 请求时在请求头带上此 token 即可。server 会有一套校验机制，校验这个 token 是否合法。token 本身可以带 uid 信息，解密后就可以获取是哪个用户。</p>
+<h2 id="JWT-Token"><a href="#JWT-Token" class="headerlink" title="JWT Token"></a>JWT Token</h2><p>token 主要由三部分组成 1. header：指定了签名算法 2. payload：可以指定用户 id，过期时间等非敏感数据 3. Signature: 签名，server 根据 header 知道它该用哪种签名算法，再用密钥根据此签名算法对 head + payload 生成签名，这样一个 token 就生成了。</p>
+<p><img src="https://raw.githubusercontent.com/brucecai-2001/Image/master/20220714005203.png"><br></p>
+<p>当 server 收到浏览器传过来的 token 时，它会首先取出 token 中的 header + payload，根据密钥生成签名，然后再与 token 中的签名比对，如果成功则说明签名是合法的，即 token 是合法的。而且你会发现 payload 中存有我们的 userId，所以拿到 token 后直接在 payload 中就可获取 userid，避免了像 session 那样要从 redis 去取的开销</p>
+<h1 id="Session-vs-Cookie"><a href="#Session-vs-Cookie" class="headerlink" title="Session vs Cookie"></a>Session vs Cookie</h1>
         </div>
 
         
@@ -247,7 +262,7 @@
                 
                     <p class="copyright-item">
                         <span>Permalink:</span>
-                        <span><a href="http://example.com/2022/06/23/[%E4%B8%AD%E9%97%B4%E4%BB%B6]%E6%B6%88%E6%81%AF%E9%98%9F%E5%88%97%E6%A6%82%E8%BF%B0/">http://example.com/2022/06/23/[%E4%B8%AD%E9%97%B4%E4%BB%B6]%E6%B6%88%E6%81%AF%E9%98%9F%E5%88%97%E6%A6%82%E8%BF%B0/</a></span>
+                        <span><a href="http://example.com/2022/07/14/[%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%BD%91%E7%BB%9C]Cookie&Session/">http://example.com/2022/07/14/[%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%BD%91%E7%BB%9C]Cookie&Session/</a></span>
                     </p>
                 
                 
@@ -280,10 +295,10 @@
         </section>
         <section class="post-nav">
             
-                <a class="prev" rel="prev" href="/2022/06/23/%5B%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%BD%91%E7%BB%9C%5D%E5%8D%8F%E8%AE%AE%E5%B1%82%E6%AC%A1/">计算机网络(1)---协议层</a>
+                <a class="prev" rel="prev" href="/2022/07/14/%5BGolang%5D%E8%AE%BE%E8%AE%A1%E8%A7%84%E8%8C%83/">Golang---设计规范</a>
             
             
-            <a class="next" rel="next" href="/2022/06/22/hello-world/">Hello World</a>
+            <a class="next" rel="next" href="/2022/07/13/%5B%E9%A1%B9%E7%9B%AE%5DIAM/">IAM</a>
             
         </section>
 

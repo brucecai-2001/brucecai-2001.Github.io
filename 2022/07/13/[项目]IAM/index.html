@@ -13,7 +13,7 @@
 
 
 
-<title>计算机网络(5)---数据链路层 | Hexo</title>
+<title>IAM | Hexo</title>
 
 
 
@@ -192,7 +192,7 @@
     
     <article class="post-wrap">
         <header class="post-header">
-            <h1 class="post-title">计算机网络(5)---数据链路层</h1>
+            <h1 class="post-title">IAM</h1>
             
                 <div class="post-meta">
                     
@@ -201,14 +201,14 @@
 
                     
                         <span class="post-time">
-                        Date: <a href="#">July 5, 2022&nbsp;&nbsp;23:11:06</a>
+                        Date: <a href="#">July 13, 2022&nbsp;&nbsp;17:56:23</a>
                         </span>
                     
                     
                         <span class="post-category">
                     Category:
                             
-                                <a href="/categories/%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%BD%91%E7%BB%9C/">计算机网络</a>
+                                <a href="/categories/%E9%A1%B9%E7%9B%AE/">项目</a>
                             
                         </span>
                     
@@ -217,26 +217,55 @@
         </header>
 
         <div class="post-content">
-            <h1 id="数据链路层上的三个基本问题"><a href="#数据链路层上的三个基本问题" class="headerlink" title="数据链路层上的三个基本问题"></a>数据链路层上的三个基本问题</h1><p>1.封装成帧：把上层的ip分组加首尾成帧；<br>2.透明传输：针对用户是透明的；首尾是界定帧，转义字符去除数据部分和首尾相同引起歧义；<br>3.差错检测：奇偶校验、CRC循环冗余检验；纠错（海明码</p>
-<br>
+            <h1 id="背景"><a href="#背景" class="headerlink" title="背景"></a>背景</h1><p>如何保证 Go 应用的安全? :</p>
+<p><em><strong>服务自身的安全</strong></em>：为了保证服务的安全，需要禁止非法用户访问服务。这可以通过服务器层面和软件层面来解决。服务器层面可以通过物理隔离、网络隔离、防火墙等技术从底层保证服务的安全性，软件层面可以通过 HTTPS、用户认证等手段来加强服务的安全性。服务器层面一般由运维团队来保障，软件层面则需要开发者来保障。</p>
+<p><em><strong>服务资源的安全</strong></em>：服务内有很多资源，为了避免非法访问，开发者要避免 UserA 访问到 UserB 的资源，也即需要对资源进行授权。通常，我们可以通过资源授权系统来对资源进行授权。</p>
+<p>为了保障 Go 应用的安全，我们需要<strong>对访问进行认证，对资源进行授权</strong></p>
 <br>
 
-<h1 id="MAC-地址和-IP-地址分别有什么作用"><a href="#MAC-地址和-IP-地址分别有什么作用" class="headerlink" title="MAC 地址和 IP 地址分别有什么作用"></a>MAC 地址和 IP 地址分别有什么作用</h1><ol>
-<li>MAC 地址是数据链路层和物理层使用的地址，是写在网卡上的物理地址。MAC 地址用来定义网络设备的位置。</li>
-<li>IP 地址是网络层和以上各层使用的地址，是一种逻辑地址。IP 地址用来区别网络上的计算机。</li>
+<h1 id="IAM系统是什么"><a href="#IAM系统是什么" class="headerlink" title="IAM系统是什么"></a>IAM系统是什么</h1><p>IAM（Identity and Access Management，身份识别与访问管理）系统是用 Go 语言编写的一个 Web 服务，用于给第三方用户提供访问控制服务。IAM 系统可以帮用户解决的问题是：在特定的条件下，谁能够 &#x2F; 不能够对哪些资源做哪些操作（Who is able to do what on something given some context），也即完成资源授权功能。</p>
+<p><img src="https://raw.githubusercontent.com/brucecai-2001/Image/master/20220713180203.png"></p>
+<ol>
+<li>用户需要提供昵称、密码、邮箱、电话等信息注册并登录到 IAM 系统，这里是以用户名和密码作为唯一的身份标识来访问 IAM 系统，并且完成认证。</li>
+<li>因为访问 IAM 的资源授权接口是通过密钥（secretID&#x2F;secretKey）的方式进行认证的，所以用户需要在 IAM 中创建属于自己的密钥资源。</li>
+<li>因为 IAM 通过授权策略完成授权，所以用户需要在 IAM 中创建授权策略。</li>
+<li>请求 IAM 提供的授权接口，IAM 会根据用户的请求内容和授权策略来决定一个授权请求是否被允许。</li>
 </ol>
 <br>
+
+<h1 id="IAM架构"><a href="#IAM架构" class="headerlink" title="IAM架构"></a>IAM架构</h1><p><img src="https://raw.githubusercontent.com/brucecai-2001/Image/master/20220713212818.png"></p>
 <br>
 
-<h1 id="为什么有了-MAC-地址还需要-IP-地址"><a href="#为什么有了-MAC-地址还需要-IP-地址" class="headerlink" title="为什么有了 MAC 地址还需要 IP 地址"></a>为什么有了 MAC 地址还需要 IP 地址</h1><p>如果我们只使用 MAC 地址进行寻址的话，我们需要路由器记住每个 MAC 地址属于哪一个子网，不然每一次路由器收到数据包时都要满世界寻找目的 MAC 地址。而我们知道 MAC 地址的长度为 48 位，也就是说最多总共有 2 的 48 次方个 MAC 地址，这就意味着每个路由器需要 256 T 的内存，这显然是不现实的。IP 地址是和地域相关的，在一个子网中的设备，我们给其分配的 IP 地址前缀都是一样的，这样路由器就能根据 IP 地址的前缀知道这个设备属于哪个子网，剩下的寻址就交给子网内部实现，从而大大减少了路由器所需要的内存。</p>
-<br>
-<br>
-
-<h1 id="为什么有了-IP-地址还需要-MAC-地址"><a href="#为什么有了-IP-地址还需要-MAC-地址" class="headerlink" title="为什么有了 IP 地址还需要 MAC 地址"></a>为什么有了 IP 地址还需要 MAC 地址</h1><p>只有当设备连入网络时，才能根据他进入了哪个子网来为其分配 IP 地址，在设备还没有 IP 地址的时候或者在分配 IP 地址的过程中，我们需要 MAC 地址来区分不同的设备。</p>
-<br>
+<p><img src="https://raw.githubusercontent.com/brucecai-2001/Image/master/20220713213023.png"></p>
 <br>
 
-<h1 id="私网地址和公网地址之间进行转换：同一个局域网内的两个私网地址，经过转换之后外面看到的一样吗"><a href="#私网地址和公网地址之间进行转换：同一个局域网内的两个私网地址，经过转换之后外面看到的一样吗" class="headerlink" title="私网地址和公网地址之间进行转换：同一个局域网内的两个私网地址，经过转换之后外面看到的一样吗"></a>私网地址和公网地址之间进行转换：同一个局域网内的两个私网地址，经过转换之后外面看到的一样吗</h1><p>当采用静态或者动态转换时，由于一个私网 IP 地址对应一个公网地址，因此经过转换之后的公网 IP 地址是不同的；而采用端口复用方式的话，在一个子网中的所有地址都采用一个公网地址，但是使用的端口是不同的。</p>
+<h1 id="IAM使用步骤"><a href="#IAM使用步骤" class="headerlink" title="IAM使用步骤"></a>IAM使用步骤</h1><h2 id="第-1-步，创建平台资源。"><a href="#第-1-步，创建平台资源。" class="headerlink" title="第 1 步，创建平台资源。"></a>第 1 步，创建平台资源。</h2><br>
+用户通过 iam-webconsole（RESTful API）或 iamctl（sdk marmotedu-sdk-go）客户端请求 iam-apiserver 提供的 RESTful API 接口完成用户、密钥、授权策略的增删改查，iam-apiserver 会将这些资源数据持久化存储在 MySQL 数据库中。而且，为了确保通信安全，客户端访问服务端都是通过 HTTPS 协议来访问的。<br>
+
+<br>
+
+<h2 id="第-2-步，请求-API-完成资源授权。"><a href="#第-2-步，请求-API-完成资源授权。" class="headerlink" title="第 2 步，请求 API 完成资源授权。"></a>第 2 步，请求 API 完成资源授权。</h2><br>
+用户可以通过请求 iam-authz-server 提供的 /v1/authz 接口进行资源授权，请求 /v1/authz 接口需要通过密钥认证，认证通过后 /v1/authz 接口会查询授权策略，从而决定资源请求是否被允许。<br>
+<br>
+为了提高 /v1/authz 接口的性能，iam-authz-server 将密钥和策略信息缓存在内存中，以便实现快速查询。那密钥和策略信息是如何实现缓存的呢？<br>
+<br>
+首先，iam-authz-server 通过调用 iam-apiserver 提供的 gRPC 接口，将密钥和授权策略信息缓存到内存中。同时，为了使内存中的缓存信息和 iam-apiserver 中的信息保持一致，当 iam-apiserver 中有密钥或策略被更新时，iam-apiserver 会往特定的 Redis Channel（iam-authz-server 也会订阅该 Channel）中发送 PolicyChanged 和 SecretChanged 消息。这样一来，当 iam-authz-server 监听到有新消息时就会获取并解析消息，根据消息内容判断是否需要重新调用 gRPC 接来获取密钥和授权策略信息，再更新到内存中。<br>
+
+<br>
+
+<h2 id="第-3-步，授权日志数据分析。"><a href="#第-3-步，授权日志数据分析。" class="headerlink" title="第 3 步，授权日志数据分析。"></a>第 3 步，授权日志数据分析。</h2><br>
+iam-authz-server 会将授权日志上报到 Redis 高速缓存中，然后 iam-pump 组件会异步消费这些授权日志，再把清理后的数据保存在 MongoDB 中，供运营系统 iam-operating-system 查询。<br>
+
+<br>
+
+<h2 id="第-4-步，运营平台授权数据展示。"><a href="#第-4-步，运营平台授权数据展示。" class="headerlink" title="第 4 步，运营平台授权数据展示。"></a>第 4 步，运营平台授权数据展示。</h2><br>
+iam-operating-system 是 IAM 的运营系统，它可以通过查询 MongoDB 获取并展示运营数据，比如某个用户的授权 / 失败次数、授权失败时的授权信息等。此外，我们也可以通过 iam-operating-system 调用 iam-apiserver 服务来做些运营管理工作。比如，以上帝视角查看某个用户的授权策略供排障使用，或者调整用户可创建密钥的最大个数，再或者通过白名单的方式，让某个用户不受密钥个数限制的影响等等。<br>
+
+<br>
+
+<h1 id="IAM软件架构"><a href="#IAM软件架构" class="headerlink" title="IAM软件架构"></a>IAM软件架构</h1><p><strong>前后端分离架构</strong>, 前端负责页面的展示以及数据的加载和渲染，后端只负责返回前端需要的数据。<br><br><br><br><img src="https://raw.githubusercontent.com/brucecai-2001/Image/master/20220713215338.png"><br><br><br></p>
+<p><strong>MVC</strong>, MVC 的全名是 Model View Controller，它是一种架构模式，分为 Model、View、Controller 三层，每一层的功能如下：View（视图）：提供给用户的操作界面，用来处理数据的显示。Controller（控制器）：根据用户从 View 层输入的指令，选取 Model 层中的数据，然后对其进行相应的操作，产生最终结果。Model（模型）：应用程序中用于处理数据逻辑的部分。<br></p>
+<p><img src="https://raw.githubusercontent.com/brucecai-2001/Image/master/20220713215602.png"></p>
 
         </div>
 
@@ -251,7 +280,7 @@
                 
                     <p class="copyright-item">
                         <span>Permalink:</span>
-                        <span><a href="http://example.com/2022/07/05/[%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%BD%91%E7%BB%9C]%E6%95%B0%E6%8D%AE%E9%93%BE%E8%B7%AF%E5%B1%82/">http://example.com/2022/07/05/[%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%BD%91%E7%BB%9C]%E6%95%B0%E6%8D%AE%E9%93%BE%E8%B7%AF%E5%B1%82/</a></span>
+                        <span><a href="http://example.com/2022/07/13/[%E9%A1%B9%E7%9B%AE]IAM/">http://example.com/2022/07/13/[%E9%A1%B9%E7%9B%AE]IAM/</a></span>
                     </p>
                 
                 
@@ -284,10 +313,10 @@
         </section>
         <section class="post-nav">
             
-                <a class="prev" rel="prev" href="/2022/07/07/%5B%E6%93%8D%E4%BD%9C%E7%B3%BB%E7%BB%9F%5DIO%E5%A4%8D%E7%94%A8/">操作系统(1)---套接字</a>
+                <a class="prev" rel="prev" href="/2022/07/14/%5B%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%BD%91%E7%BB%9C%5DCookie&Session/">计算机网络(6)---Cookie & Session & Token</a>
             
             
-            <a class="next" rel="next" href="/2022/07/05/%5B%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%BD%91%E7%BB%9C%5D%E7%BD%91%E7%BB%9C%E5%B1%82/">计算机网络(4)---网络层</a>
+            <a class="next" rel="next" href="/2022/07/13/%5B%E6%95%B0%E6%8D%AE%E5%BA%93%5Dmysql%E8%AF%AD%E6%B3%95/">数据库(1)---mysql语法</a>
             
         </section>
 

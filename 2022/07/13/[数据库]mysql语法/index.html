@@ -1,0 +1,403 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+<meta name="viewport"
+      content="width=device-width, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+<meta http-equiv="X-UA-Compatible" content="ie=edge">
+
+    <meta name="author" content="Xinyu">
+
+
+
+
+
+<title>数据库(1)---mysql语法 | Hexo</title>
+
+
+
+    <link rel="icon" href="/favicon.ico">
+
+
+
+
+    <!-- stylesheets list from _config.yml -->
+    
+    <link rel="stylesheet" href="/css/style.css">
+    
+
+
+
+    <!-- scripts list from _config.yml -->
+    
+    <script src="/js/script.js"></script>
+    
+    <script src="/js/tocbot.min.js"></script>
+    
+
+
+
+    
+    
+        
+    
+
+
+<meta name="generator" content="Hexo 6.2.0"></head>
+
+<body>
+    <script>
+        // this function is used to check current theme before page loaded.
+        (() => {
+            const currentTheme = window.localStorage && window.localStorage.getItem('theme') || '';
+            const isDark = currentTheme === 'dark';
+            const pagebody = document.getElementsByTagName('body')[0]
+            if (isDark) {
+                pagebody.classList.add('dark-theme');
+                // mobile
+                document.getElementById("mobile-toggle-theme").innerText = "· Dark"
+            } else {
+                pagebody.classList.remove('dark-theme');
+                // mobile
+                document.getElementById("mobile-toggle-theme").innerText = "· Light"
+            }
+        })();
+    </script>
+
+    <div class="wrapper">
+        <header>
+    <nav class="navbar">
+        <div class="container">
+            <div class="navbar-header header-logo"><a href="/">Xinyu&#39;s Blog</a></div>
+            <div class="menu navbar-right">
+                
+                    <a class="menu-item" href="/archives">Posts</a>
+                
+                    <a class="menu-item" href="/category">Categories</a>
+                
+                    <a class="menu-item" href="/tag">Tags</a>
+                
+                <input id="switch_default" type="checkbox" class="switch_default">
+                <label for="switch_default" class="toggleBtn"></label>
+            </div>
+        </div>
+    </nav>
+
+    
+    <nav class="navbar-mobile" id="nav-mobile">
+        <div class="container">
+            <div class="navbar-header">
+                <div>
+                    <a href="/">Xinyu&#39;s Blog</a><a id="mobile-toggle-theme">·&nbsp;Light</a>
+                </div>
+                <div class="menu-toggle" onclick="mobileBtn()">&#9776; Menu</div>
+            </div>
+            <div class="menu" id="mobile-menu">
+                
+                    <a class="menu-item" href="/archives">Posts</a>
+                
+                    <a class="menu-item" href="/category">Categories</a>
+                
+                    <a class="menu-item" href="/tag">Tags</a>
+                
+            </div>
+        </div>
+    </nav>
+
+</header>
+<script>
+    var mobileBtn = function f() {
+        var toggleMenu = document.getElementsByClassName("menu-toggle")[0];
+        var mobileMenu = document.getElementById("mobile-menu");
+        if(toggleMenu.classList.contains("active")){
+           toggleMenu.classList.remove("active")
+            mobileMenu.classList.remove("active")
+        }else{
+            toggleMenu.classList.add("active")
+            mobileMenu.classList.add("active")
+        }
+    }
+</script>
+            <div class="main">
+                <div class="container">
+    
+    
+        <div class="post-toc">
+    <div class="tocbot-list">
+    </div>
+    <div class="tocbot-list-menu">
+        <a class="tocbot-toc-expand" onclick="expand_toc()">Expand all</a>
+        <a onclick="go_top()">Back to top</a>
+        <a onclick="go_bottom()">Go to bottom</a>
+    </div>
+</div>
+
+<script>
+    var tocbot_timer;
+    var DEPTH_MAX = 6; // 为 6 时展开所有
+    var tocbot_default_config = {
+        tocSelector: '.tocbot-list',
+        contentSelector: '.post-content',
+        headingSelector: 'h1, h2, h3, h4, h5',
+        orderedList: false,
+        scrollSmooth: true,
+        onClick: extend_click,
+    };
+
+    function extend_click() {
+        clearTimeout(tocbot_timer);
+        tocbot_timer = setTimeout(function() {
+            tocbot.refresh(obj_merge(tocbot_default_config, {
+                hasInnerContainers: true
+            }));
+        }, 420); // 这个值是由 tocbot 源码里定义的 scrollSmoothDuration 得来的
+    }
+
+    document.ready(function() {
+        tocbot.init(obj_merge(tocbot_default_config, {
+            collapseDepth: 1
+        }));
+    });
+
+    function expand_toc() {
+        var b = document.querySelector('.tocbot-toc-expand');
+        var expanded = b.getAttribute('data-expanded');
+        expanded ? b.removeAttribute('data-expanded') : b.setAttribute('data-expanded', true);
+        tocbot.refresh(obj_merge(tocbot_default_config, {
+            collapseDepth: expanded ? 1 : DEPTH_MAX
+        }));
+        b.innerText = expanded ? 'Expand all' : 'Collapse all';
+    }
+
+    function go_top() {
+        window.scrollTo(0, 0);
+    }
+
+    function go_bottom() {
+        window.scrollTo(0, document.body.scrollHeight);
+    }
+
+    function obj_merge(target, source) {
+        for (var item in source) {
+            if (source.hasOwnProperty(item)) {
+                target[item] = source[item];
+            }
+        }
+        return target;
+    }
+</script>
+    
+
+    
+    <article class="post-wrap">
+        <header class="post-header">
+            <h1 class="post-title">数据库(1)---mysql语法</h1>
+            
+                <div class="post-meta">
+                    
+                        Author: <a itemprop="author" rel="author" href="/">Xinyu</a>
+                    
+
+                    
+                        <span class="post-time">
+                        Date: <a href="#">July 13, 2022&nbsp;&nbsp;0:40:17</a>
+                        </span>
+                    
+                    
+                        <span class="post-category">
+                    Category:
+                            
+                                <a href="/categories/%E6%95%B0%E6%8D%AE%E5%BA%93/">数据库</a>
+                            
+                        </span>
+                    
+                </div>
+            
+        </header>
+
+        <div class="post-content">
+            <h1 id="数据库创建和使用"><a href="#数据库创建和使用" class="headerlink" title="数据库创建和使用"></a>数据库创建和使用</h1><figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">CREATE</span> DATABASE xxx;</span><br><span class="line">USE xxx;</span><br></pre></td></tr></table></figure>
+
+<br>
+
+<h1 id="创建表"><a href="#创建表" class="headerlink" title="创建表"></a>创建表</h1><figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">CREATE</span> <span class="keyword">TABLE</span> mytable (</span><br><span class="line">  # <span class="type">int</span> 类型，不为空，自增</span><br><span class="line">  id <span class="type">INT</span> <span class="keyword">NOT</span> <span class="keyword">NULL</span> AUTO_INCREMENT,</span><br><span class="line">  # <span class="type">int</span> 类型，不可为空，默认值为 <span class="number">1</span>，不为空</span><br><span class="line">  col1 <span class="type">INT</span> <span class="keyword">NOT</span> <span class="keyword">NULL</span> <span class="keyword">DEFAULT</span> <span class="number">1</span>,</span><br><span class="line">  # 变长字符串类型，最长为 <span class="number">45</span> 个字符，可以为空</span><br><span class="line">  col2 <span class="type">VARCHAR</span>(<span class="number">45</span>) <span class="keyword">NULL</span>,</span><br><span class="line">  # 日期类型，可为空</span><br><span class="line">  col3 <span class="type">DATE</span> <span class="keyword">NULL</span>,</span><br><span class="line">  # 设置主键为 id</span><br><span class="line">  <span class="keyword">PRIMARY</span> KEY (`id`));</span><br></pre></td></tr></table></figure>
+
+  <br>
+
+<h1 id="修改表-添加列"><a href="#修改表-添加列" class="headerlink" title="修改表-添加列"></a>修改表-添加列</h1><figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">ALTER</span> <span class="keyword">TABLE</span> mytable</span><br><span class="line"><span class="keyword">ADD</span> col <span class="type">CHAR</span>(<span class="number">20</span>);</span><br></pre></td></tr></table></figure>
+<br>
+
+<h1 id="修改表-删除列"><a href="#修改表-删除列" class="headerlink" title="修改表-删除列"></a>修改表-删除列</h1><figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">ALTER</span> <span class="keyword">TABLE</span> mytable</span><br><span class="line"><span class="keyword">DROP</span> <span class="keyword">COLUMN</span> col;</span><br></pre></td></tr></table></figure>
+<br>
+
+<h1 id="修改表-删除表"><a href="#修改表-删除表" class="headerlink" title="修改表-删除表"></a>修改表-删除表</h1><figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">DROP</span> <span class="keyword">TABLE</span> mytable;</span><br></pre></td></tr></table></figure>
+
+<br>
+
+<h1 id="普通插入"><a href="#普通插入" class="headerlink" title="普通插入"></a>普通插入</h1><figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">INSERT</span> <span class="keyword">INTO</span> mytable(col1, col2)</span><br><span class="line"><span class="keyword">VALUES</span>(val1, val2);</span><br></pre></td></tr></table></figure>
+
+<br>
+
+<h1 id="插入检索出来的数据"><a href="#插入检索出来的数据" class="headerlink" title="插入检索出来的数据"></a>插入检索出来的数据</h1><figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">INSERT</span> <span class="keyword">INTO</span> mytable1(col1, col2)</span><br><span class="line"><span class="keyword">SELECT</span> col1, col2</span><br><span class="line"><span class="keyword">FROM</span> mytable2;</span><br></pre></td></tr></table></figure>
+
+<br>
+
+<h1 id="将一个表的内容插入到一个新表"><a href="#将一个表的内容插入到一个新表" class="headerlink" title="将一个表的内容插入到一个新表"></a>将一个表的内容插入到一个新表</h1><figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">CREATE</span> <span class="keyword">TABLE</span> newtable <span class="keyword">AS</span></span><br><span class="line"><span class="keyword">SELECT</span> <span class="operator">*</span> <span class="keyword">FROM</span> mytable;</span><br></pre></td></tr></table></figure>
+
+<br>
+
+<h1 id="更新表"><a href="#更新表" class="headerlink" title="更新表"></a>更新表</h1><figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">UPDATE</span> mytable</span><br><span class="line"><span class="keyword">SET</span> col <span class="operator">=</span> val</span><br><span class="line"><span class="keyword">WHERE</span> id <span class="operator">=</span> <span class="number">1</span>;</span><br></pre></td></tr></table></figure>
+
+<br>
+
+<h1 id="删除行"><a href="#删除行" class="headerlink" title="删除行"></a>删除行</h1><figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">DELETE</span> <span class="keyword">FROM</span> mytable</span><br><span class="line"><span class="keyword">WHERE</span> id <span class="operator">=</span> <span class="number">1</span>;</span><br></pre></td></tr></table></figure>
+
+<br>
+
+<h1 id="清空表"><a href="#清空表" class="headerlink" title="清空表"></a>清空表</h1><figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">TRUNCATE</span> <span class="keyword">TABLE</span> mytable;</span><br></pre></td></tr></table></figure>
+
+<br>
+
+<h1 id="查询-DISTINCT"><a href="#查询-DISTINCT" class="headerlink" title="查询-DISTINCT"></a>查询-DISTINCT</h1><p>相同值只会出现一次<br></p>
+<figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">SELECT</span> <span class="keyword">DISTINCT</span> col1, col2</span><br><span class="line"><span class="keyword">FROM</span> mytable;</span><br></pre></td></tr></table></figure>
+
+<br>
+
+<h1 id="查询-LIMIT"><a href="#查询-LIMIT" class="headerlink" title="查询-LIMIT"></a>查询-LIMIT</h1><p>限制返回的行数<br></p>
+<figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">SELECT</span> <span class="operator">*</span></span><br><span class="line"><span class="keyword">FROM</span> mytable</span><br><span class="line">LIMIT <span class="number">5</span>;  <span class="operator">/</span><span class="operator">/</span> LIMIT <span class="number">2</span>,<span class="number">5</span> 从<span class="number">3</span>开始的<span class="number">5</span>行</span><br></pre></td></tr></table></figure>
+
+<br>
+
+<h1 id="排序"><a href="#排序" class="headerlink" title="排序"></a>排序</h1><p>ASC ：升序（默认）<br><br>DESC ：降序 <br></p>
+<figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">SELECT</span> <span class="operator">*</span></span><br><span class="line"><span class="keyword">FROM</span> mytable</span><br><span class="line"><span class="keyword">ORDER</span> <span class="keyword">BY</span> col1 <span class="keyword">DESC</span>, col2 <span class="keyword">ASC</span>;</span><br></pre></td></tr></table></figure>
+
+<br>
+
+<h1 id="过滤"><a href="#过滤" class="headerlink" title="过滤"></a>过滤</h1><p><img src="https://raw.githubusercontent.com/brucecai-2001/Image/master/20220714013135.png"></p>
+<br>
+
+<h1 id="通配符"><a href="#通配符" class="headerlink" title="通配符"></a>通配符</h1><p>%   任意数量的任意字符,可以匹配0个字符 <br><br>_   单个任意字符, 不可以匹配0个字符<br><br>[]  括号内的字符<br><br>^   否定<br></p>
+<figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">WHERE</span> col <span class="keyword">LIKE</span> <span class="string">&#x27;[^AB]%&#x27;</span>; <span class="comment">-- 不以 A 和 B 开头的任意文本</span></span><br></pre></td></tr></table></figure>
+
+<br>
+
+<h1 id="计算"><a href="#计算" class="headerlink" title="计算"></a>计算</h1><figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">SELECT</span> col1 <span class="operator">*</span> col2 <span class="keyword">AS</span> alias</span><br><span class="line"><span class="keyword">FROM</span> mytable;</span><br><span class="line"><span class="comment">----------------------------</span></span><br><span class="line"><span class="keyword">SELECT</span> CONCAT(<span class="built_in">TRIM</span>(col1), <span class="string">&#x27;(&#x27;</span>, <span class="built_in">TRIM</span>(col2), <span class="string">&#x27;)&#x27;</span>) <span class="keyword">AS</span> concat_col</span><br><span class="line"><span class="keyword">FROM</span> mytable;</span><br></pre></td></tr></table></figure>
+
+<br>
+
+<h1 id="函数"><a href="#函数" class="headerlink" title="函数"></a>函数</h1><h2 id="汇总"><a href="#汇总" class="headerlink" title="汇总"></a>汇总</h2><p><img src="https://raw.githubusercontent.com/brucecai-2001/Image/master/20220714190125.png"></p>
+<figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">SELECT</span> CONCAT(<span class="built_in">TRIM</span>(col1), <span class="string">&#x27;(&#x27;</span>, <span class="built_in">TRIM</span>(col2), <span class="string">&#x27;)&#x27;</span>) <span class="keyword">AS</span> concat_col</span><br><span class="line"><span class="keyword">FROM</span> mytable;</span><br></pre></td></tr></table></figure>
+
+<h2 id="文本"><a href="#文本" class="headerlink" title="文本"></a>文本</h2><p><img src="https://raw.githubusercontent.com/brucecai-2001/Image/master/20220714190229.png"></p>
+<h2 id="日期"><a href="#日期" class="headerlink" title="日期"></a>日期</h2><p><img src="https://raw.githubusercontent.com/brucecai-2001/Image/master/20220714190601.png"></p>
+<br>
+
+<h1 id="分组"><a href="#分组" class="headerlink" title="分组"></a>分组</h1><figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">SELECT</span> state, <span class="built_in">AVG</span>(points) <span class="keyword">as</span> average_point_byState</span><br><span class="line"><span class="keyword">FROM</span> sql_store.customers</span><br><span class="line"><span class="keyword">GROUP</span> <span class="keyword">BY</span> state;</span><br></pre></td></tr></table></figure>
+<p><img src="https://raw.githubusercontent.com/brucecai-2001/Image/master/20220714191648.png"></p>
+<p>where和having的区别: <br><br><br><br>where是在分组（聚合）前对记录进行筛选，而having是在分组结束后的结果里筛选，最后返回整个sql的查询结果。<br></p>
+<figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">select</span> 列 <span class="keyword">from</span> </span><br><span class="line">表名</span><br><span class="line"><span class="keyword">where</span> [查询条件]</span><br><span class="line"><span class="keyword">group</span> <span class="keyword">by</span> [分组表达式]</span><br><span class="line"><span class="keyword">having</span> [分组过滤条件]</span><br><span class="line"><span class="keyword">order</span> <span class="keyword">by</span> [排序条件]</span><br><span class="line">limit [<span class="keyword">offset</span>,] count;</span><br></pre></td></tr></table></figure>
+
+<br>
+
+<h1 id="子查询"><a href="#子查询" class="headerlink" title="子查询"></a>子查询</h1><p>子查询中只能返回一个字段的数据。可以将子查询的结果作为 WHRER 语句的过滤条件：<br></p>
+<figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">SELECT</span> <span class="operator">*</span></span><br><span class="line"><span class="keyword">FROM</span> mytable1</span><br><span class="line"><span class="keyword">WHERE</span> col1 <span class="keyword">IN</span> (<span class="keyword">SELECT</span> col2 <span class="keyword">FROM</span> mytable2);</span><br></pre></td></tr></table></figure>
+
+<br>
+
+<h1 id="连接"><a href="#连接" class="headerlink" title="连接"></a>连接</h1><h2 id="内连接"><a href="#内连接" class="headerlink" title="内连接"></a>内连接</h2><p>内连接又称等值连接，使用 INNER JOIN 关键字。<br><br><img src="https://raw.githubusercontent.com/brucecai-2001/Image/master/20220714222658.png"></p>
+<figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">SELECT</span> A.value, B.value</span><br><span class="line"><span class="keyword">FROM</span> tablea <span class="keyword">AS</span> A </span><br><span class="line"><span class="keyword">INNER</span> <span class="keyword">JOIN</span> tableb <span class="keyword">AS</span> B <span class="keyword">ON</span> A.key <span class="operator">=</span> B.key;</span><br></pre></td></tr></table></figure>
+
+
+<h2 id="自连接"><a href="#自连接" class="headerlink" title="自连接"></a>自连接</h2><p>自连接可以看成内连接的一种，只是连接的表是自身而已。<br></p>
+<figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">SELECT</span> e1.name</span><br><span class="line"><span class="keyword">FROM</span> employee <span class="keyword">AS</span> e1 <span class="keyword">INNER</span> <span class="keyword">JOIN</span> employee <span class="keyword">AS</span> e2</span><br><span class="line"><span class="keyword">ON</span> e1.department <span class="operator">=</span> e2.department <span class="keyword">AND</span> e2.name <span class="operator">=</span> &quot;Jim&quot;;</span><br></pre></td></tr></table></figure>
+
+
+<h2 id="自然连接"><a href="#自然连接" class="headerlink" title="自然连接"></a>自然连接</h2><p>自然连接是把同名列通过等值测试连接起来的，同名列可以有多个。<br></p>
+<h2 id="外连接"><a href="#外连接" class="headerlink" title="外连接"></a>外连接</h2><p>外连接保留了没有关联的那些行。分为左外连接，右外连接以及全外连接，左外连接就是保留左表没有关联的行。<br><br><img src="https://raw.githubusercontent.com/brucecai-2001/Image/master/20220714222720.png"></p>
+<figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">SELECT</span> Customers.cust_id, Customer.cust_name, Orders.order_id</span><br><span class="line"><span class="keyword">FROM</span> Customers <span class="keyword">LEFT</span> <span class="keyword">OUTER</span> <span class="keyword">JOIN</span> Orders</span><br><span class="line"><span class="keyword">ON</span> Customers.cust_id <span class="operator">=</span> Orders.cust_id;</span><br></pre></td></tr></table></figure>
+
+<br>
+
+<h1 id="组合查询"><a href="#组合查询" class="headerlink" title="组合查询"></a>组合查询</h1><p>使用 UNION 来组合两个查询，如果第一个查询返回 M 行，第二个查询返回 N 行，那么组合查询的结果一般为 M+N 行。<br></p>
+<figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">SELECT</span> col</span><br><span class="line"><span class="keyword">FROM</span> mytable</span><br><span class="line"><span class="keyword">WHERE</span> col <span class="operator">=</span> <span class="number">1</span></span><br><span class="line"><span class="keyword">UNION</span></span><br><span class="line"><span class="keyword">SELECT</span> col</span><br><span class="line"><span class="keyword">FROM</span> mytable</span><br><span class="line"><span class="keyword">WHERE</span> col <span class="operator">=</span><span class="number">2</span>;</span><br></pre></td></tr></table></figure>
+
+<br>
+
+<h1 id="视图"><a href="#视图" class="headerlink" title="视图"></a>视图</h1><p>视图是虚拟的表，本身不包含数据，也就不能对其进行索引操作。<br></p>
+<p>对视图的操作和对普通表的操作一样。<br></p>
+<p>视图具有如下好处：<br></p>
+<p>简化复杂的 SQL 操作，比如复杂的连接；<br><br>只使用实际表的一部分数据；<br><br>通过只给用户访问视图的权限，保证数据的安全性；<br><br>更改数据格式和表示。<br></p>
+<figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">CREATE</span> <span class="keyword">VIEW</span> myview <span class="keyword">AS</span></span><br><span class="line"><span class="keyword">SELECT</span> Concat(col1, col2) <span class="keyword">AS</span> concat_col, col3<span class="operator">*</span>col4 <span class="keyword">AS</span> compute_col</span><br><span class="line"><span class="keyword">FROM</span> mytable</span><br><span class="line"><span class="keyword">WHERE</span> col5 <span class="operator">=</span> val;</span><br></pre></td></tr></table></figure>
+
+<br>
+
+
+        </div>
+
+        
+            <section class="post-copyright">
+                
+                    <p class="copyright-item">
+                        <span>Author:</span>
+                        <span>Xinyu</span>
+                    </p>
+                
+                
+                    <p class="copyright-item">
+                        <span>Permalink:</span>
+                        <span><a href="http://example.com/2022/07/13/[%E6%95%B0%E6%8D%AE%E5%BA%93]mysql%E8%AF%AD%E6%B3%95/">http://example.com/2022/07/13/[%E6%95%B0%E6%8D%AE%E5%BA%93]mysql%E8%AF%AD%E6%B3%95/</a></span>
+                    </p>
+                
+                
+                    <p class="copyright-item">
+                        <span>License:</span>
+                        <span>Copyright (c) 2019 <a target="_blank" rel="noopener" href="http://creativecommons.org/licenses/by-nc/4.0/">CC-BY-NC-4.0</a> LICENSE</span>
+                    </p>
+                
+                
+                     <p class="copyright-item">
+                         <span>Slogan:</span>
+                         <span>Coffee or Tea</span>
+                     </p>
+                
+
+            </section>
+        
+        <section class="post-tags">
+            <div>
+                <span>Tag(s):</span>
+                <span class="tag">
+                    
+                </span>
+            </div>
+            <div>
+                <a href="javascript:window.history.back();">back</a>
+                <span>· </span>
+                <a href="/">home</a>
+            </div>
+        </section>
+        <section class="post-nav">
+            
+                <a class="prev" rel="prev" href="/2022/07/13/%5B%E9%A1%B9%E7%9B%AE%5DIAM/">IAM</a>
+            
+            
+            <a class="next" rel="next" href="/2022/07/11/%5B%E5%BE%AE%E6%9C%8D%E5%8A%A1%5DgRPC/">微服务(2)---RPC和gRPC</a>
+            
+        </section>
+
+
+    </article>
+</div>
+
+            </div>
+            <footer id="footer" class="footer">
+    <div class="copyright">
+        <span>© Xinyu | Powered by <a href="https://hexo.io" target="_blank">Hexo</a> & <a href="https://github.com/Siricee/hexo-theme-Chic" target="_blank">Chic</a></span>
+    </div>
+</footer>
+
+    </div>
+</body>
+
+</html>
