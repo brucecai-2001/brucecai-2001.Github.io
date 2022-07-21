@@ -1,0 +1,307 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+<meta name="viewport"
+      content="width=device-width, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+<meta http-equiv="X-UA-Compatible" content="ie=edge">
+
+    <meta name="author" content="Xinyu">
+
+
+
+
+
+<title>分布式系统协调---事务 | Hexo</title>
+
+
+
+    <link rel="icon" href="/favicon.ico">
+
+
+
+
+    <!-- stylesheets list from _config.yml -->
+    
+    <link rel="stylesheet" href="/css/style.css">
+    
+
+
+
+    <!-- scripts list from _config.yml -->
+    
+    <script src="/js/script.js"></script>
+    
+    <script src="/js/tocbot.min.js"></script>
+    
+
+
+
+    
+    
+        
+    
+
+
+<meta name="generator" content="Hexo 6.2.0"></head>
+
+<body>
+    <script>
+        // this function is used to check current theme before page loaded.
+        (() => {
+            const currentTheme = window.localStorage && window.localStorage.getItem('theme') || '';
+            const isDark = currentTheme === 'dark';
+            const pagebody = document.getElementsByTagName('body')[0]
+            if (isDark) {
+                pagebody.classList.add('dark-theme');
+                // mobile
+                document.getElementById("mobile-toggle-theme").innerText = "· Dark"
+            } else {
+                pagebody.classList.remove('dark-theme');
+                // mobile
+                document.getElementById("mobile-toggle-theme").innerText = "· Light"
+            }
+        })();
+    </script>
+
+    <div class="wrapper">
+        <header>
+    <nav class="navbar">
+        <div class="container">
+            <div class="navbar-header header-logo"><a href="/">Xinyu&#39;s Blog</a></div>
+            <div class="menu navbar-right">
+                
+                    <a class="menu-item" href="/archives">Posts</a>
+                
+                    <a class="menu-item" href="/category">Categories</a>
+                
+                    <a class="menu-item" href="/tag">Tags</a>
+                
+                <input id="switch_default" type="checkbox" class="switch_default">
+                <label for="switch_default" class="toggleBtn"></label>
+            </div>
+        </div>
+    </nav>
+
+    
+    <nav class="navbar-mobile" id="nav-mobile">
+        <div class="container">
+            <div class="navbar-header">
+                <div>
+                    <a href="/">Xinyu&#39;s Blog</a><a id="mobile-toggle-theme">·&nbsp;Light</a>
+                </div>
+                <div class="menu-toggle" onclick="mobileBtn()">&#9776; Menu</div>
+            </div>
+            <div class="menu" id="mobile-menu">
+                
+                    <a class="menu-item" href="/archives">Posts</a>
+                
+                    <a class="menu-item" href="/category">Categories</a>
+                
+                    <a class="menu-item" href="/tag">Tags</a>
+                
+            </div>
+        </div>
+    </nav>
+
+</header>
+<script>
+    var mobileBtn = function f() {
+        var toggleMenu = document.getElementsByClassName("menu-toggle")[0];
+        var mobileMenu = document.getElementById("mobile-menu");
+        if(toggleMenu.classList.contains("active")){
+           toggleMenu.classList.remove("active")
+            mobileMenu.classList.remove("active")
+        }else{
+            toggleMenu.classList.add("active")
+            mobileMenu.classList.add("active")
+        }
+    }
+</script>
+            <div class="main">
+                <div class="container">
+    
+    
+        <div class="post-toc">
+    <div class="tocbot-list">
+    </div>
+    <div class="tocbot-list-menu">
+        <a class="tocbot-toc-expand" onclick="expand_toc()">Expand all</a>
+        <a onclick="go_top()">Back to top</a>
+        <a onclick="go_bottom()">Go to bottom</a>
+    </div>
+</div>
+
+<script>
+    var tocbot_timer;
+    var DEPTH_MAX = 6; // 为 6 时展开所有
+    var tocbot_default_config = {
+        tocSelector: '.tocbot-list',
+        contentSelector: '.post-content',
+        headingSelector: 'h1, h2, h3, h4, h5',
+        orderedList: false,
+        scrollSmooth: true,
+        onClick: extend_click,
+    };
+
+    function extend_click() {
+        clearTimeout(tocbot_timer);
+        tocbot_timer = setTimeout(function() {
+            tocbot.refresh(obj_merge(tocbot_default_config, {
+                hasInnerContainers: true
+            }));
+        }, 420); // 这个值是由 tocbot 源码里定义的 scrollSmoothDuration 得来的
+    }
+
+    document.ready(function() {
+        tocbot.init(obj_merge(tocbot_default_config, {
+            collapseDepth: 1
+        }));
+    });
+
+    function expand_toc() {
+        var b = document.querySelector('.tocbot-toc-expand');
+        var expanded = b.getAttribute('data-expanded');
+        expanded ? b.removeAttribute('data-expanded') : b.setAttribute('data-expanded', true);
+        tocbot.refresh(obj_merge(tocbot_default_config, {
+            collapseDepth: expanded ? 1 : DEPTH_MAX
+        }));
+        b.innerText = expanded ? 'Expand all' : 'Collapse all';
+    }
+
+    function go_top() {
+        window.scrollTo(0, 0);
+    }
+
+    function go_bottom() {
+        window.scrollTo(0, document.body.scrollHeight);
+    }
+
+    function obj_merge(target, source) {
+        for (var item in source) {
+            if (source.hasOwnProperty(item)) {
+                target[item] = source[item];
+            }
+        }
+        return target;
+    }
+</script>
+    
+
+    
+    <article class="post-wrap">
+        <header class="post-header">
+            <h1 class="post-title">分布式系统协调---事务</h1>
+            
+                <div class="post-meta">
+                    
+                        Author: <a itemprop="author" rel="author" href="/">Xinyu</a>
+                    
+
+                    
+                        <span class="post-time">
+                        Date: <a href="#">July 18, 2022&nbsp;&nbsp;23:39:13</a>
+                        </span>
+                    
+                    
+                        <span class="post-category">
+                    Category:
+                            
+                                <a href="/categories/%E5%88%86%E5%B8%83%E5%BC%8F%E5%8D%8F%E8%B0%83%E4%B8%8E%E5%90%8C%E6%AD%A5/">分布式协调与同步</a>
+                            
+                        </span>
+                    
+                </div>
+            
+        </header>
+
+        <div class="post-content">
+            <blockquote>
+<p>事务（Transaction）提供一种机制，将包含一系列操作的工作序列纳入到一个不可分割的执行单元。只有所有操作均被正确执行才能提交事务；任意一个操作失败都会导致整个事务回滚（Rollback）到之前状态，即所有操作均被取消。<br></p>
+</blockquote>
+<blockquote>
+<p>分布式事务，就是在分布式系统中运行的事务，由多个本地事务组合而成<br></p>
+</blockquote>
+<h1 id="事务的ACID"><a href="#事务的ACID" class="headerlink" title="事务的ACID"></a>事务的ACID</h1><p>A: 原子性（Atomicity），即事务最终的状态只有两种，全部执行成功和全部不执行，不会停留在中间某个环节。若处理事务的任何一项操作不成功，就会导致整个事务失败。一旦操作失败，所有操作都会被取消（即回滚），使得事务仿佛没有被执行过一样。<br></p>
+<p>C: 一致性（Consistency），是指事务操作前和操作后，数据满足完整性约束，数据库保持一致性状态。</p>
+<p>I:隔离性（Isolation），是指当系统内有多个事务并发执行时，多个事务同时使用相同的数据时，不会相互干扰，每个事务都有一个完整的数据空间，对其他并发事务是隔离的。也就是说，消费者购买商品这个事务，是不影响其他消费者购买的。<br></p>
+<p>D: 持久性（Durability），也被称为永久性，是指一个事务被执行后，那么它对数据库所做的更新就永久地保存下来了。即使发生系统崩溃或宕机等故障，重新启动数据库系统后，只要数据库能够重新被访问，那么一定能够将其恢复到事务完成时的状态。就像消费者在网站上的购买记录，即使换了手机，也依然可以查到。<br></p>
+<br>
+
+<h1 id="如何实现分布式事务？"><a href="#如何实现分布式事务？" class="headerlink" title="如何实现分布式事务？"></a>如何实现分布式事务？</h1><h1 id="XA"><a href="#XA" class="headerlink" title="XA"></a>XA</h1><p>XA 是一个分布式事务协议，规定了事务管理器和资源管理器接口。因此，XA 协议包括事务管理器和本地资源管理器两个部分。事务管理器相当于协调者，负责各个本地资源的提交和回滚；而资源管理器就是分布式事务的参与者。基于 XA 协议的二阶段提交方法中，二阶段提交协议（Two-phase Commit Protocol，2PC），用于保证分布式系统中事务提交时的数据一致性，是 XA 在全局事务中用于协调多个资源的机制。分为投票（Voting）和提交（Commit）两个阶段。<br></p>
+<p>第一阶段投票：在这一阶段，协调者（Coordinator，即事务管理器）会向事务的参与者（Cohort，即本地资源管理器）发起执行操作的 CanCommit 请求，并等待参与者的响应。参与者接收到请求后，会执行请求中的事务操作，将操作信息记录到事务日志中但不提交（即不会修改数据库中的数据），待参与者执行成功，则向协调者发送“Yes”消息，表示同意操作；若不成功，则发送“No”消息，表示终止操作。<br></p>
+<p>当所有的参与者都返回了操作结果（Yes 或 No 消息）后，系统进入了第二阶段提交阶段（也可以称为，执行阶段）。在提交阶段，协调者会根据所有参与者返回的信息向参与者发送 DoCommit（提交）或 DoAbort（取消）指令。若协调者从参与者那里收到的都是“Yes”消息，则向参与者发送“DoCommit”消息。参与者收到“DoCommit”消息后，完成剩余的操作（比如修改数据库中的数据）并释放资源（整个事务过程中占用的资源），然后向协调者返回“HaveCommitted”消息；若协调者从参与者收到的消息中包含“No”消息，则向所有参与者发送“DoAbort”消息。此时投票阶段发送“Yes”消息的参与者，则会根据之前执行操作时的事务日志对操作进行回滚，就好像没有执行过请求操作一样，然后所有参与者会向协调者发送“HaveCommitted”消息；协调者接收到来自所有参与者的“HaveCommitted”消息后，就意味着整个事务结束了。<br></p>
+<h1 id="三阶段提交方法"><a href="#三阶段提交方法" class="headerlink" title="三阶段提交方法"></a>三阶段提交方法</h1><p>3PC 协议在协调者和参与者均引入了超时机制。即当参与者在预提交阶段向协调者发送 Ack 消息后，如果长时间没有得到协调者的响应，在默认情况下，参与者会自动将超时的事务进行提交，从而减少整个集群的阻塞时间，在一定程度上减少或减弱了 2PC 中出现的同步阻塞问题。但三阶段提交仍然存在数据不一致的情况，比如在 PreCommit 阶段，部分参与者已经接受到 ACK 消息进入执行阶段，但部分参与者与协调者网络不通，导致接收不到 ACK 消息，此时接收到 ACK 消息的参与者会执行任务，未接收到 ACK 消息且网络不通的参与者无法执行任务，最终导致数据不一致。<br></p>
+<h1 id="基于分布式消息的最终一致性方案"><a href="#基于分布式消息的最终一致性方案" class="headerlink" title="基于分布式消息的最终一致性方案"></a>基于分布式消息的最终一致性方案</h1><p>基于分布式消息的最终一致性方案的事务处理，引入了一个消息中间件, 用于在多个应用之间进行消息传递<br></p>
+<p><img src="https://raw.githubusercontent.com/brucecai-2001/Image/master/20220719002038.png"></p>
+<p>下单流程: <br><br><br><img src="https://raw.githubusercontent.com/brucecai-2001/Image/master/20220719002602.png"></p>
+
+        </div>
+
+        
+            <section class="post-copyright">
+                
+                    <p class="copyright-item">
+                        <span>Author:</span>
+                        <span>Xinyu</span>
+                    </p>
+                
+                
+                    <p class="copyright-item">
+                        <span>Permalink:</span>
+                        <span><a href="http://example.com/2022/07/18/[%E5%88%86%E5%B8%83%E5%BC%8F%E7%B3%BB%E7%BB%9F]%E4%BA%8B%E5%8A%A1/">http://example.com/2022/07/18/[%E5%88%86%E5%B8%83%E5%BC%8F%E7%B3%BB%E7%BB%9F]%E4%BA%8B%E5%8A%A1/</a></span>
+                    </p>
+                
+                
+                    <p class="copyright-item">
+                        <span>License:</span>
+                        <span>Copyright (c) 2019 <a target="_blank" rel="noopener" href="http://creativecommons.org/licenses/by-nc/4.0/">CC-BY-NC-4.0</a> LICENSE</span>
+                    </p>
+                
+                
+                     <p class="copyright-item">
+                         <span>Slogan:</span>
+                         <span>Coffee or Tea</span>
+                     </p>
+                
+
+            </section>
+        
+        <section class="post-tags">
+            <div>
+                <span>Tag(s):</span>
+                <span class="tag">
+                    
+                </span>
+            </div>
+            <div>
+                <a href="javascript:window.history.back();">back</a>
+                <span>· </span>
+                <a href="/">home</a>
+            </div>
+        </section>
+        <section class="post-nav">
+            
+                <a class="prev" rel="prev" href="/2022/07/19/%5B%E5%88%86%E5%B8%83%E5%BC%8F%E7%B3%BB%E7%BB%9F%5D%E9%94%81/">分布式系统协调---锁</a>
+            
+            
+            <a class="next" rel="next" href="/2022/07/18/%5BGolang%5DSDK/">Golang---SDK</a>
+            
+        </section>
+
+
+    </article>
+</div>
+
+            </div>
+            <footer id="footer" class="footer">
+    <div class="copyright">
+        <span>© Xinyu | Powered by <a href="https://hexo.io" target="_blank">Hexo</a> & <a href="https://github.com/Siricee/hexo-theme-Chic" target="_blank">Chic</a></span>
+    </div>
+</footer>
+
+    </div>
+</body>
+
+</html>

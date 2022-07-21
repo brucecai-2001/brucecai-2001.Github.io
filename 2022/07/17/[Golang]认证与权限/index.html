@@ -1,0 +1,343 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+<meta name="viewport"
+      content="width=device-width, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+<meta http-equiv="X-UA-Compatible" content="ie=edge">
+
+    <meta name="author" content="Xinyu">
+
+
+
+
+
+<title>Golang---认证与权限 | Hexo</title>
+
+
+
+    <link rel="icon" href="/favicon.ico">
+
+
+
+
+    <!-- stylesheets list from _config.yml -->
+    
+    <link rel="stylesheet" href="/css/style.css">
+    
+
+
+
+    <!-- scripts list from _config.yml -->
+    
+    <script src="/js/script.js"></script>
+    
+    <script src="/js/tocbot.min.js"></script>
+    
+
+
+
+    
+    
+        
+    
+
+
+<meta name="generator" content="Hexo 6.2.0"></head>
+
+<body>
+    <script>
+        // this function is used to check current theme before page loaded.
+        (() => {
+            const currentTheme = window.localStorage && window.localStorage.getItem('theme') || '';
+            const isDark = currentTheme === 'dark';
+            const pagebody = document.getElementsByTagName('body')[0]
+            if (isDark) {
+                pagebody.classList.add('dark-theme');
+                // mobile
+                document.getElementById("mobile-toggle-theme").innerText = "· Dark"
+            } else {
+                pagebody.classList.remove('dark-theme');
+                // mobile
+                document.getElementById("mobile-toggle-theme").innerText = "· Light"
+            }
+        })();
+    </script>
+
+    <div class="wrapper">
+        <header>
+    <nav class="navbar">
+        <div class="container">
+            <div class="navbar-header header-logo"><a href="/">Xinyu&#39;s Blog</a></div>
+            <div class="menu navbar-right">
+                
+                    <a class="menu-item" href="/archives">Posts</a>
+                
+                    <a class="menu-item" href="/category">Categories</a>
+                
+                    <a class="menu-item" href="/tag">Tags</a>
+                
+                <input id="switch_default" type="checkbox" class="switch_default">
+                <label for="switch_default" class="toggleBtn"></label>
+            </div>
+        </div>
+    </nav>
+
+    
+    <nav class="navbar-mobile" id="nav-mobile">
+        <div class="container">
+            <div class="navbar-header">
+                <div>
+                    <a href="/">Xinyu&#39;s Blog</a><a id="mobile-toggle-theme">·&nbsp;Light</a>
+                </div>
+                <div class="menu-toggle" onclick="mobileBtn()">&#9776; Menu</div>
+            </div>
+            <div class="menu" id="mobile-menu">
+                
+                    <a class="menu-item" href="/archives">Posts</a>
+                
+                    <a class="menu-item" href="/category">Categories</a>
+                
+                    <a class="menu-item" href="/tag">Tags</a>
+                
+            </div>
+        </div>
+    </nav>
+
+</header>
+<script>
+    var mobileBtn = function f() {
+        var toggleMenu = document.getElementsByClassName("menu-toggle")[0];
+        var mobileMenu = document.getElementById("mobile-menu");
+        if(toggleMenu.classList.contains("active")){
+           toggleMenu.classList.remove("active")
+            mobileMenu.classList.remove("active")
+        }else{
+            toggleMenu.classList.add("active")
+            mobileMenu.classList.add("active")
+        }
+    }
+</script>
+            <div class="main">
+                <div class="container">
+    
+    
+        <div class="post-toc">
+    <div class="tocbot-list">
+    </div>
+    <div class="tocbot-list-menu">
+        <a class="tocbot-toc-expand" onclick="expand_toc()">Expand all</a>
+        <a onclick="go_top()">Back to top</a>
+        <a onclick="go_bottom()">Go to bottom</a>
+    </div>
+</div>
+
+<script>
+    var tocbot_timer;
+    var DEPTH_MAX = 6; // 为 6 时展开所有
+    var tocbot_default_config = {
+        tocSelector: '.tocbot-list',
+        contentSelector: '.post-content',
+        headingSelector: 'h1, h2, h3, h4, h5',
+        orderedList: false,
+        scrollSmooth: true,
+        onClick: extend_click,
+    };
+
+    function extend_click() {
+        clearTimeout(tocbot_timer);
+        tocbot_timer = setTimeout(function() {
+            tocbot.refresh(obj_merge(tocbot_default_config, {
+                hasInnerContainers: true
+            }));
+        }, 420); // 这个值是由 tocbot 源码里定义的 scrollSmoothDuration 得来的
+    }
+
+    document.ready(function() {
+        tocbot.init(obj_merge(tocbot_default_config, {
+            collapseDepth: 1
+        }));
+    });
+
+    function expand_toc() {
+        var b = document.querySelector('.tocbot-toc-expand');
+        var expanded = b.getAttribute('data-expanded');
+        expanded ? b.removeAttribute('data-expanded') : b.setAttribute('data-expanded', true);
+        tocbot.refresh(obj_merge(tocbot_default_config, {
+            collapseDepth: expanded ? 1 : DEPTH_MAX
+        }));
+        b.innerText = expanded ? 'Expand all' : 'Collapse all';
+    }
+
+    function go_top() {
+        window.scrollTo(0, 0);
+    }
+
+    function go_bottom() {
+        window.scrollTo(0, document.body.scrollHeight);
+    }
+
+    function obj_merge(target, source) {
+        for (var item in source) {
+            if (source.hasOwnProperty(item)) {
+                target[item] = source[item];
+            }
+        }
+        return target;
+    }
+</script>
+    
+
+    
+    <article class="post-wrap">
+        <header class="post-header">
+            <h1 class="post-title">Golang---认证与权限</h1>
+            
+                <div class="post-meta">
+                    
+                        Author: <a itemprop="author" rel="author" href="/">Xinyu</a>
+                    
+
+                    
+                        <span class="post-time">
+                        Date: <a href="#">July 17, 2022&nbsp;&nbsp;20:31:42</a>
+                        </span>
+                    
+                    
+                        <span class="post-category">
+                    Category:
+                            
+                                <a href="/categories/Go/">Go</a>
+                            
+                        </span>
+                    
+                </div>
+            
+        </header>
+
+        <div class="post-content">
+            <blockquote>
+<p>认证（Authentication，英文缩写 authn）：用来验证某个用户是否具有访问系统的权限。如果认证通过，该用户就可以访问系统，从而创建、修改、删除、查询平台支持的资源。</p>
+</blockquote>
+<blockquote>
+<p>授权（Authorization，英文缩写 authz）：用来验证某个用户是否具有访问某个资源的权限，如果授权通过，该用户就能对资源做增删改查等操作。</p>
+</blockquote>
+<p><img src="https://raw.githubusercontent.com/brucecai-2001/Image/master/20220717203707.png"></p>
+<p><em><strong>常见的认证方式有四种，分别是 Basic、Digest、OAuth 和 Bearer</strong></em></p>
+<h1 id="Basic"><a href="#Basic" class="headerlink" title="Basic"></a>Basic</h1><p>将用户名:密码进行 base64 编码后，放到 HTTP Authorization Header 中。HTTP 请求到达后端服务后，后端服务会解析出 Authorization Header 中的 base64 字符串，解码获取用户名和密码，并将用户名和密码跟数据库中记录的值进行比较，如果匹配则认证通过。但是，base64 不是加密技术，入侵者仍然可以截获 base64 字符串，并反编码获取用户名和密码。<br></p>
+<br>
+
+<h1 id="Digest"><a href="#Digest" class="headerlink" title="Digest"></a>Digest</h1><p><img src="https://raw.githubusercontent.com/brucecai-2001/Image/master/20220717204410.png"></p>
+<ol>
+<li>客户端请求服务端的资源。</li>
+<li>在客户端能够证明它知道密码从而确认其身份之前，服务端认证失败，返回401 Unauthorized，并返回WWW-Authenticate头，里面包含认证需要的信息。</li>
+<li>客户端根据WWW-Authenticate头中的信息，选择加密算法，并使用密码随机数 nonce，计算出密码摘要 response，并再次请求服务端。</li>
+<li>服务器将客户端提供的密码摘要与服务器内部计算出的摘要进行对比。如果匹配，就说明客户端知道密码，认证通过，并返回一些与授权会话相关的附加信息，放在 Authorization-Info 中。</li>
+</ol>
+<p>虽然使用摘要可以避免密码以明文方式发送，一定程度上保护了密码的安全性，但是仅仅隐藏密码并不能保证请求是安全的。因为请求（包括密码摘要）仍然可以被截获，这样就可以重放给服务器，带来安全问题<br></p>
+<br>
+
+<h1 id="OAuth"><a href="#OAuth" class="headerlink" title="OAuth"></a>OAuth</h1><p>Auth（开放授权）是一个开放的授权标准，允许用户让第三方应用访问该用户在某一 Web 服务上存储的私密资源（例如照片、视频、音频等），而无需将用户名和密码提供给第三方应用。</p>
+<br>
+
+<h1 id="Bearer"><a href="#Bearer" class="headerlink" title="Bearer"></a>Bearer</h1><p>bearer token 是一个加密字符串，通常由服务端根据密钥生成。客户端在请求服务端时，必须在请求头中包含Authorization: Bearer 。服务端收到请求后，解析出 ，并校验 的合法性，如果校验通过，则认证通过。<br></p>
+<h2 id="基于-JWT-的-Token-认证机制实现"><a href="#基于-JWT-的-Token-认证机制实现" class="headerlink" title="基于 JWT 的 Token 认证机制实现"></a>基于 JWT 的 Token 认证机制实现</h2><p>为了区分用户和保证安全，必须对 API 请求进行鉴权，但是不能要求每一个请求都进行登录操作。合理做法是，在第一次登录之后产生一个有一定有效期的 token，并将它存储在浏览器的 Cookie 或 LocalStorage 之中。之后的请求都携带这个 token ，请求到达服务器端后，服务器端用这个 token 对请求进行认证。在第一次登录之后，服务器会将这个 token 用文件、数据库或缓存服务器等方法存下来，用于之后请求中的比对。<br></p>
+<p>JWT 是 Bearer Token 的一个具体实现，由 JSON 数据格式组成，通过 HASH 散列算法生成一个字符串。该字符串可以用来进行授权和信息交换。无需在服务端存储用户数据，可以减轻服务端压力；而且采用 JSON 数据格式，比较易读。除此之外，使用 JWT Token 还有跨语言、轻量级等优点。<br></p>
+<p><img src="https://raw.githubusercontent.com/brucecai-2001/Image/master/20220717210630.png"></p>
+<ol>
+<li>客户端使用用户名和密码请求登录。</li>
+<li>服务端收到请求后，会去验证用户名和密码。如果用户名和密码跟数据库记录不一致，则验证失败；如果一致则验证通过，服务端会签发一个 Token 返回给客户端。</li>
+<li>客户端收到请求后会将 Token 缓存起来，比如放在浏览器 Cookie 中或者 LocalStorage 中，之后每次请求都会携带该 Token。</li>
+<li>服务端收到请求后，会验证请求中的 Token，验证通过则进行业务逻辑处理，处理完后返回处理后的</li>
+</ol>
+<p>JWT 由三部分组成，分别是 Header、Payload 和 Signature，它们之间用圆点.连接</p>
+<p><img src="https://raw.githubusercontent.com/brucecai-2001/Image/master/20220717210929.png"></p>
+<br>
+
+<p><img src="https://raw.githubusercontent.com/brucecai-2001/Image/master/20220717211559.png"></p>
+<h1 id="权限模型—权限控制列表-ACL"><a href="#权限模型—权限控制列表-ACL" class="headerlink" title="权限模型—权限控制列表(ACL)"></a>权限模型—权限控制列表(ACL)</h1><p>Subject: Colin <br><br>Action: Create <br><br>Object: Article <br></p>
+<br>
+
+<h1 id="基于-ACL-下放权限的权限模型：自主访问控制（DAC）"><a href="#基于-ACL-下放权限的权限模型：自主访问控制（DAC）" class="headerlink" title="基于 ACL 下放权限的权限模型：自主访问控制（DAC）"></a>基于 ACL 下放权限的权限模型：自主访问控制（DAC）</h1><p>使用这种模型，不仅可以判断 Subject 是否可以对 Object 做 Action 操作，同时也能让 Subject 将 Object、Action 的相同权限授权给其他的 Subject。在 ACL 的基础上，DAC 模型将权限下放，允许拥有权限的 Subject 自主地将权限授予其他 Subject<br></p>
+<br>
+
+<h1 id="基于-ACL-且安全性更高的权限模型：强制访问控制（MAC）"><a href="#基于-ACL-且安全性更高的权限模型：强制访问控制（MAC）" class="headerlink" title="基于 ACL 且安全性更高的权限模型：强制访问控制（MAC）"></a>基于 ACL 且安全性更高的权限模型：强制访问控制（MAC）</h1><p>MAC 权限模型下，Subject 和 Object 同时具有安全属性。在做授权时，需要同时满足两点才能授权通过：<br><br>Subject 可以对 Object 做 Action 操作。<br><br>Object 可以被 Subject 做 Action 操作。<br></p>
+<br>
+
+<h1 id="基于角色的访问控制"><a href="#基于角色的访问控制" class="headerlink" title="基于角色的访问控制"></a>基于角色的访问控制</h1><p>引入了 Role（角色）的概念，并且将权限与角色进行关联。用户通过扮演某种角色，具有该角色的所有权限。每个用户关联一个或多个角色，每个角色关联一个或多个权限，每个权限又包含了一个或者多个操作，操作包含了对资源的操作集合。通过用户和权限解耦，可以实现非常灵活的权限管理<br></p>
+<p><img src="https://raw.githubusercontent.com/brucecai-2001/Image/master/20220717212502.png"></p>
+<br>
+
+<h1 id="最强大的权限模型：基于属性的权限验证（ABAC）"><a href="#最强大的权限模型：基于属性的权限验证（ABAC）" class="headerlink" title="最强大的权限模型：基于属性的权限验证（ABAC）"></a>最强大的权限模型：基于属性的权限验证（ABAC）</h1><p>ABAC (Attribute-Based Access Control，基于属性的权限验证），规定了哪些属性的用户可以对哪些属性的资源在哪些限制条件下进行哪些操作。<br></p>
+<figure class="highlight golang"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><span class="line">Subject:</span><br><span class="line">    Name: Colin</span><br><span class="line">    Department: Product</span><br><span class="line">    Role: Writer</span><br><span class="line">Action:</span><br><span class="line">    - create</span><br><span class="line">    - update</span><br><span class="line">Resource:</span><br><span class="line">    Type: Article</span><br><span class="line">    Tag:</span><br><span class="line">        - technology</span><br><span class="line">        - software</span><br><span class="line">    Mode:</span><br><span class="line">        - draft</span><br><span class="line">Contextual:</span><br><span class="line">    IP: <span class="number">10.0</span><span class="number">.0</span><span class="number">.10</span></span><br></pre></td></tr></table></figure>
+<p>产品部门的 Colin 作为一个 Writer 角色，可以通过来源 IP 是 10.0.0.10 的客户端，创建和更新带有 technology 和 software 标签的草稿文章。</p>
+
+        </div>
+
+        
+            <section class="post-copyright">
+                
+                    <p class="copyright-item">
+                        <span>Author:</span>
+                        <span>Xinyu</span>
+                    </p>
+                
+                
+                    <p class="copyright-item">
+                        <span>Permalink:</span>
+                        <span><a href="http://example.com/2022/07/17/[Golang]%E8%AE%A4%E8%AF%81%E4%B8%8E%E6%9D%83%E9%99%90/">http://example.com/2022/07/17/[Golang]%E8%AE%A4%E8%AF%81%E4%B8%8E%E6%9D%83%E9%99%90/</a></span>
+                    </p>
+                
+                
+                    <p class="copyright-item">
+                        <span>License:</span>
+                        <span>Copyright (c) 2019 <a target="_blank" rel="noopener" href="http://creativecommons.org/licenses/by-nc/4.0/">CC-BY-NC-4.0</a> LICENSE</span>
+                    </p>
+                
+                
+                     <p class="copyright-item">
+                         <span>Slogan:</span>
+                         <span>Coffee or Tea</span>
+                     </p>
+                
+
+            </section>
+        
+        <section class="post-tags">
+            <div>
+                <span>Tag(s):</span>
+                <span class="tag">
+                    
+                </span>
+            </div>
+            <div>
+                <a href="javascript:window.history.back();">back</a>
+                <span>· </span>
+                <a href="/">home</a>
+            </div>
+        </section>
+        <section class="post-nav">
+            
+                <a class="prev" rel="prev" href="/2022/07/17/%5B%E5%88%86%E5%B8%83%E5%BC%8F%E7%B3%BB%E7%BB%9F%5D%E4%BA%92%E6%96%A5/">分布式系统协调---互斥算法</a>
+            
+            
+            <a class="next" rel="next" href="/2022/07/17/%5B%E6%93%8D%E4%BD%9C%E7%B3%BB%E7%BB%9F%5D%E5%86%85%E5%AD%98/">操作系统(5)---内存</a>
+            
+        </section>
+
+
+    </article>
+</div>
+
+            </div>
+            <footer id="footer" class="footer">
+    <div class="copyright">
+        <span>© Xinyu | Powered by <a href="https://hexo.io" target="_blank">Hexo</a> & <a href="https://github.com/Siricee/hexo-theme-Chic" target="_blank">Chic</a></span>
+    </div>
+</footer>
+
+    </div>
+</body>
+
+</html>

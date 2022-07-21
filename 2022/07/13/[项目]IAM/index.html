@@ -266,6 +266,20 @@ iam-operating-system 是 IAM 的运营系统，它可以通过查询 MongoDB 获
 <h1 id="IAM软件架构"><a href="#IAM软件架构" class="headerlink" title="IAM软件架构"></a>IAM软件架构</h1><p><strong>前后端分离架构</strong>, 前端负责页面的展示以及数据的加载和渲染，后端只负责返回前端需要的数据。<br><br><br><br><img src="https://raw.githubusercontent.com/brucecai-2001/Image/master/20220713215338.png"><br><br><br></p>
 <p><strong>MVC</strong>, MVC 的全名是 Model View Controller，它是一种架构模式，分为 Model、View、Controller 三层，每一层的功能如下：View（视图）：提供给用户的操作界面，用来处理数据的显示。Controller（控制器）：根据用户从 View 层输入的指令，选取 Model 层中的数据，然后对其进行相应的操作，产生最终结果。Model（模型）：应用程序中用于处理数据逻辑的部分。<br></p>
 <p><img src="https://raw.githubusercontent.com/brucecai-2001/Image/master/20220713215602.png"></p>
+<br>
+
+<h1 id="iam-apiserver"><a href="#iam-apiserver" class="headerlink" title="iam-apiserver"></a>iam-apiserver</h1><p>对外提供 RESTful API 接口，完成用户、密钥、策略三种 REST 资源的增删改查。<br></p>
+<p>认证相关接口: <br><br><img src="https://raw.githubusercontent.com/brucecai-2001/Image/master/20220717213322.png"></p>
+<p>用户相关接口: <br><br><img src="https://raw.githubusercontent.com/brucecai-2001/Image/master/20220717213354.png"></p>
+<p>密钥相关接口: <br><br><img src="https://raw.githubusercontent.com/brucecai-2001/Image/master/20220717213433.png"></p>
+<p>策略相关接口: <br><br><img src="https://raw.githubusercontent.com/brucecai-2001/Image/master/20220717213501.png"></p>
+<h1 id="iam-apiserver-的-REST-API-请求处理流程"><a href="#iam-apiserver-的-REST-API-请求处理流程" class="headerlink" title="iam-apiserver 的 REST API 请求处理流程"></a>iam-apiserver 的 REST API 请求处理流程</h1><p><img src="https://raw.githubusercontent.com/brucecai-2001/Image/master/20220717214225.png"></p>
+<ol>
+<li>首先，通过 API 调用, 请求 iam-apiserver 提供的 RESTful API 接口。</li>
+<li>Gin Web 框架接收到 HTTP 请求之后，会通过认证中间件完成请求的认证，iam-apiserver 提供了 Basic 认证和 Bearer 认证两种认证方式。</li>
+<li>认证通过后，请求会被我们加载的一系列中间件所处理，例如跨域、RequestID、Dump 等中间件。</li>
+<li>最后，进行路由匹配。</li>
+</ol>
 
         </div>
 
@@ -316,7 +330,7 @@ iam-operating-system 是 IAM 的运营系统，它可以通过查询 MongoDB 获
                 <a class="prev" rel="prev" href="/2022/07/14/%5B%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%BD%91%E7%BB%9C%5DCookie&Session/">计算机网络(6)---Cookie & Session & Token</a>
             
             
-            <a class="next" rel="next" href="/2022/07/13/%5B%E6%95%B0%E6%8D%AE%E5%BA%93%5Dmysql%E8%AF%AD%E6%B3%95/">数据库(1)---mysql语法</a>
+            <a class="next" rel="next" href="/2022/07/13/%5B%E6%95%B0%E6%8D%AE%E5%BA%93%5Dmysql%E8%AF%AD%E6%B3%95/">数据库---mysql语法</a>
             
         </section>
 

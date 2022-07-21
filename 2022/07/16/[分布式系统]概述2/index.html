@@ -1,0 +1,335 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+<meta name="viewport"
+      content="width=device-width, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+<meta http-equiv="X-UA-Compatible" content="ie=edge">
+
+    <meta name="author" content="Xinyu">
+
+
+
+
+
+<title>分布式系统---概述(2) | Hexo</title>
+
+
+
+    <link rel="icon" href="/favicon.ico">
+
+
+
+
+    <!-- stylesheets list from _config.yml -->
+    
+    <link rel="stylesheet" href="/css/style.css">
+    
+
+
+
+    <!-- scripts list from _config.yml -->
+    
+    <script src="/js/script.js"></script>
+    
+    <script src="/js/tocbot.min.js"></script>
+    
+
+
+
+    
+    
+        
+    
+
+
+<meta name="generator" content="Hexo 6.2.0"></head>
+
+<body>
+    <script>
+        // this function is used to check current theme before page loaded.
+        (() => {
+            const currentTheme = window.localStorage && window.localStorage.getItem('theme') || '';
+            const isDark = currentTheme === 'dark';
+            const pagebody = document.getElementsByTagName('body')[0]
+            if (isDark) {
+                pagebody.classList.add('dark-theme');
+                // mobile
+                document.getElementById("mobile-toggle-theme").innerText = "· Dark"
+            } else {
+                pagebody.classList.remove('dark-theme');
+                // mobile
+                document.getElementById("mobile-toggle-theme").innerText = "· Light"
+            }
+        })();
+    </script>
+
+    <div class="wrapper">
+        <header>
+    <nav class="navbar">
+        <div class="container">
+            <div class="navbar-header header-logo"><a href="/">Xinyu&#39;s Blog</a></div>
+            <div class="menu navbar-right">
+                
+                    <a class="menu-item" href="/archives">Posts</a>
+                
+                    <a class="menu-item" href="/category">Categories</a>
+                
+                    <a class="menu-item" href="/tag">Tags</a>
+                
+                <input id="switch_default" type="checkbox" class="switch_default">
+                <label for="switch_default" class="toggleBtn"></label>
+            </div>
+        </div>
+    </nav>
+
+    
+    <nav class="navbar-mobile" id="nav-mobile">
+        <div class="container">
+            <div class="navbar-header">
+                <div>
+                    <a href="/">Xinyu&#39;s Blog</a><a id="mobile-toggle-theme">·&nbsp;Light</a>
+                </div>
+                <div class="menu-toggle" onclick="mobileBtn()">&#9776; Menu</div>
+            </div>
+            <div class="menu" id="mobile-menu">
+                
+                    <a class="menu-item" href="/archives">Posts</a>
+                
+                    <a class="menu-item" href="/category">Categories</a>
+                
+                    <a class="menu-item" href="/tag">Tags</a>
+                
+            </div>
+        </div>
+    </nav>
+
+</header>
+<script>
+    var mobileBtn = function f() {
+        var toggleMenu = document.getElementsByClassName("menu-toggle")[0];
+        var mobileMenu = document.getElementById("mobile-menu");
+        if(toggleMenu.classList.contains("active")){
+           toggleMenu.classList.remove("active")
+            mobileMenu.classList.remove("active")
+        }else{
+            toggleMenu.classList.add("active")
+            mobileMenu.classList.add("active")
+        }
+    }
+</script>
+            <div class="main">
+                <div class="container">
+    
+    
+        <div class="post-toc">
+    <div class="tocbot-list">
+    </div>
+    <div class="tocbot-list-menu">
+        <a class="tocbot-toc-expand" onclick="expand_toc()">Expand all</a>
+        <a onclick="go_top()">Back to top</a>
+        <a onclick="go_bottom()">Go to bottom</a>
+    </div>
+</div>
+
+<script>
+    var tocbot_timer;
+    var DEPTH_MAX = 6; // 为 6 时展开所有
+    var tocbot_default_config = {
+        tocSelector: '.tocbot-list',
+        contentSelector: '.post-content',
+        headingSelector: 'h1, h2, h3, h4, h5',
+        orderedList: false,
+        scrollSmooth: true,
+        onClick: extend_click,
+    };
+
+    function extend_click() {
+        clearTimeout(tocbot_timer);
+        tocbot_timer = setTimeout(function() {
+            tocbot.refresh(obj_merge(tocbot_default_config, {
+                hasInnerContainers: true
+            }));
+        }, 420); // 这个值是由 tocbot 源码里定义的 scrollSmoothDuration 得来的
+    }
+
+    document.ready(function() {
+        tocbot.init(obj_merge(tocbot_default_config, {
+            collapseDepth: 1
+        }));
+    });
+
+    function expand_toc() {
+        var b = document.querySelector('.tocbot-toc-expand');
+        var expanded = b.getAttribute('data-expanded');
+        expanded ? b.removeAttribute('data-expanded') : b.setAttribute('data-expanded', true);
+        tocbot.refresh(obj_merge(tocbot_default_config, {
+            collapseDepth: expanded ? 1 : DEPTH_MAX
+        }));
+        b.innerText = expanded ? 'Expand all' : 'Collapse all';
+    }
+
+    function go_top() {
+        window.scrollTo(0, 0);
+    }
+
+    function go_bottom() {
+        window.scrollTo(0, document.body.scrollHeight);
+    }
+
+    function obj_merge(target, source) {
+        for (var item in source) {
+            if (source.hasOwnProperty(item)) {
+                target[item] = source[item];
+            }
+        }
+        return target;
+    }
+</script>
+    
+
+    
+    <article class="post-wrap">
+        <header class="post-header">
+            <h1 class="post-title">分布式系统---概述(2)</h1>
+            
+                <div class="post-meta">
+                    
+                        Author: <a itemprop="author" rel="author" href="/">Xinyu</a>
+                    
+
+                    
+                        <span class="post-time">
+                        Date: <a href="#">July 16, 2022&nbsp;&nbsp;19:46:28</a>
+                        </span>
+                    
+                    
+                        <span class="post-category">
+                    Category:
+                            
+                                <a href="/categories/%E5%88%86%E5%B8%83%E5%BC%8F%E7%B3%BB%E7%BB%9F/">分布式系统</a>
+                            
+                        </span>
+                    
+                </div>
+            
+        </header>
+
+        <div class="post-content">
+            <h1 id="单机系统"><a href="#单机系统" class="headerlink" title="单机系统"></a>单机系统</h1><p><img src="https://raw.githubusercontent.com/brucecai-2001/Image/master/20220716194854.png"></p>
+<p>如果使用单机模式，那么所有的模块和数据均会部署在同一台计算机上，也就是说数据存储、请求处理均由该计算机完成。这种模式的好处是功能、代码和数据集中，便于维护、管理和执行。<br></p>
+<p>单个计算机的处理能力取决于 CPU 和内存等，但硬件的发展速度和性能是有限的，而且升级硬件的性价比也是我们要考虑的，由此决定了 CPU 和内存等硬件的性能将成为单机模式的瓶颈。<br></p>
+<br>
+
+<h1 id="并行系统"><a href="#并行系统" class="headerlink" title="并行系统"></a>并行系统</h1><p>并行计算采用消息共享模式使用多台计算机并行运行或执行多项任务，核心原理是每台计算机上执行相同的程序，将数据进行拆分放到不同的计算机上进行计算。<br><br>并行计算强调的是对数据进行拆分，任务程序在每台机器上运行。要达到这个目的，我们必须首先把单机模式中的应用和数据分离，才可能实现对数据的拆分。这里的应用就是执行任务的程序，任务就是提交的请求。以铁路售票系统为例，运行在服务器上的用户管理、火车票管理和订单管理等程序就是应用，用户提交的查询火车票、购买火车票的请求就是任务。<br></p>
+<p><img src="https://raw.githubusercontent.com/brucecai-2001/Image/master/20220716195202.png"></p>
+<br>
+
+<h1 id="任务并行"><a href="#任务并行" class="headerlink" title="任务并行"></a>任务并行</h1><p>首先将单任务拆分成多个子任务，然后让多个子任务并行执行。<br></p>
+<p><img src="https://raw.githubusercontent.com/brucecai-2001/Image/master/20220716195429.png"></p>
+<br>
+
+<h1 id="分布式是什么"><a href="#分布式是什么" class="headerlink" title="分布式是什么"></a>分布式是什么</h1><p>分布式其实就是将相同或相关的程序运行在多台计算机上，从而实现特定目标的一种计算方式。<br></p>
+<br>
+
+<blockquote>
+<p>性能、资源、可用性和可扩展性是分布式系统的重要指标</p>
+</blockquote>
+<h1 id="性能"><a href="#性能" class="headerlink" title="性能"></a>性能</h1><ol>
+<li>吞吐量指的是，系统在一定时间内可以处理的任务数。这个指标可以非常直接地体现一个系统的性能，就好比在客户非常多的情况下，要评判一个银行柜台职员的办事效率，你可以统计一下他在 1 个小时内接待了多少客户<br></li>
+<li>响应时间, 系统<strong>响应</strong>一个请求或输入需要花费的时间。响应时间直接影响到用户体验，对于时延敏感的业务非常重要<br></li>
+<li>完成时间, 系统<strong>真正完成</strong>一个请求或处理需要花费的时间。任务并行（也叫作任务分布式）模式出现的其中一个目的，就是缩短整个任务的完成时间。</li>
+</ol>
+<br>
+
+<h1 id="资源占用"><a href="#资源占用" class="headerlink" title="资源占用"></a>资源占用</h1><p>资源占用指的是，一个系统提供正常能力需要占用的硬件资源，比如 CPU、内存、硬盘等。<br></p>
+<ol>
+<li>一个系统在没有任何负载时的资源占用，叫做空载资源占用，体现了这个系统自身的资源占用情况。比如，你在手机上安装一个 App，安装的时候通常会提示你有多少 KB，这就是该 App 的空载硬盘资源占用。<br></li>
+<li>一个系统满额负载时的资源占用，叫做满载资源占用，体现了这个系统全力运行时占用资源的情况，也体现了系统的处理能力。<br></li>
+</ol>
+<br>
+
+<h1 id="可用性"><a href="#可用性" class="headerlink" title="可用性"></a>可用性</h1><p>可用性，通常指的是系统在面对各种异常时可以正确提供服务的能力。可用性是分布式系统的一项重要指标，衡量了系统的鲁棒性，是系统容错能力的体现。<br></p>
+<p>系统的可用性可以用系统停止服务的时间与总的时间之比衡量。假设一个网站总的运行时间是 24 小时，在 24 小时内，如果网站故障导致不可用的时间是 4 个小时，那么系统的可用性就是 4&#x2F;24&#x3D;0.167，也就是 0.167 的比例不可用，或者说 0.833 的比例可用。<br></p>
+<p>除此之外，系统的可用性还可以用某功能的失败次数与总的请求次数之比来衡量，比如对网站请求 1000 次，其中有 10 次请求失败，那么可用性就是 99%。<br></p>
+<br>
+
+<h1 id="可扩展性"><a href="#可扩展性" class="headerlink" title="可扩展性"></a>可扩展性</h1><p>可扩展性，指的是分布式系统通过扩展集群机器规模提高系统性能 (吞吐量、响应时间、 完成时间)、存储容量、计算能力的特性，是分布式系统的特有性质。<br></p>
+<p>当任务的需求随着具体业务不断提高时，除了升级系统的性能做垂直 &#x2F; 纵向扩展外，另一个做法就是通过增加机器的方式去水平 &#x2F; 横向扩展系统规模。衡量系统可扩展性的常见指标是加速比（Speedup），也就是一个系统进行扩展后相对扩展前的性能提升。如果你的扩展目标是为了提高系统吞吐量，则可以用扩展后和扩展前的系统吞吐量之比进行衡量。<br></p>
+<br>
+
+<h1 id="不同场景下分布式系统的指标"><a href="#不同场景下分布式系统的指标" class="headerlink" title="不同场景下分布式系统的指标"></a>不同场景下分布式系统的指标</h1><p>电商系统。对于一个电商系统而言，系统设计者最看重的是吞吐量，为了处理更多的用户访问或订单业务，甚至不惜牺牲一些硬件成本。<br></p>
+<p>IoT。对于一个 IoT 系统而言，设计者最看重的是资源占用指标，因为在一些功能极简的 IoT 设备上 RAM、ROM 的可用资源通常都是 KB 级的。<br></p>
+<p>电信业务。对于电信业务而言，最重要的无疑是响应时间、完成时间，以及可用性。因为，你在打电话时不希望你的声音半天才被对方听到，也不希望半天才听到对方的回应，更不希望你的电话无法拨出。<br></p>
+<p>大数据。大数据任务的处理时间可能相对 HPC 系统来讲比较短，但常见的完成时间也达到了小时级，所以扩展性也是大数据系统首先要考虑的。<br></p>
+<p>云计算。对于一个云计算系统而言，常见任务是虚拟主机或容器的创建、资源调整、销毁等操作，如何减少这些操作的完成时间，从而提升用户体验是设计者们要重点关注的。另外，云计算系统本质上卖的是资源，那么降低系统本身的资源开销，也是系统设计的重中之重。<br></p>
+
+        </div>
+
+        
+            <section class="post-copyright">
+                
+                    <p class="copyright-item">
+                        <span>Author:</span>
+                        <span>Xinyu</span>
+                    </p>
+                
+                
+                    <p class="copyright-item">
+                        <span>Permalink:</span>
+                        <span><a href="http://example.com/2022/07/16/[%E5%88%86%E5%B8%83%E5%BC%8F%E7%B3%BB%E7%BB%9F]%E6%A6%82%E8%BF%B02/">http://example.com/2022/07/16/[%E5%88%86%E5%B8%83%E5%BC%8F%E7%B3%BB%E7%BB%9F]%E6%A6%82%E8%BF%B02/</a></span>
+                    </p>
+                
+                
+                    <p class="copyright-item">
+                        <span>License:</span>
+                        <span>Copyright (c) 2019 <a target="_blank" rel="noopener" href="http://creativecommons.org/licenses/by-nc/4.0/">CC-BY-NC-4.0</a> LICENSE</span>
+                    </p>
+                
+                
+                     <p class="copyright-item">
+                         <span>Slogan:</span>
+                         <span>Coffee or Tea</span>
+                     </p>
+                
+
+            </section>
+        
+        <section class="post-tags">
+            <div>
+                <span>Tag(s):</span>
+                <span class="tag">
+                    
+                </span>
+            </div>
+            <div>
+                <a href="javascript:window.history.back();">back</a>
+                <span>· </span>
+                <a href="/">home</a>
+            </div>
+        </section>
+        <section class="post-nav">
+            
+                <a class="prev" rel="prev" href="/2022/07/17/%5B%E6%93%8D%E4%BD%9C%E7%B3%BB%E7%BB%9F%5D%E6%AD%BB%E9%94%81/">操作系统(4)---死锁</a>
+            
+            
+            <a class="next" rel="next" href="/2022/07/16/%5BGolang%5DWeb%E6%9C%8D%E5%8A%A1/">Golang---Web服务 & Gin</a>
+            
+        </section>
+
+
+    </article>
+</div>
+
+            </div>
+            <footer id="footer" class="footer">
+    <div class="copyright">
+        <span>© Xinyu | Powered by <a href="https://hexo.io" target="_blank">Hexo</a> & <a href="https://github.com/Siricee/hexo-theme-Chic" target="_blank">Chic</a></span>
+    </div>
+</footer>
+
+    </div>
+</body>
+
+</html>

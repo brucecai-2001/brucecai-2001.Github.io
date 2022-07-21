@@ -1,0 +1,338 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+<meta name="viewport"
+      content="width=device-width, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+<meta http-equiv="X-UA-Compatible" content="ie=edge">
+
+    <meta name="author" content="Xinyu">
+
+
+
+
+
+<title>Golang---API风格 | Hexo</title>
+
+
+
+    <link rel="icon" href="/favicon.ico">
+
+
+
+
+    <!-- stylesheets list from _config.yml -->
+    
+    <link rel="stylesheet" href="/css/style.css">
+    
+
+
+
+    <!-- scripts list from _config.yml -->
+    
+    <script src="/js/script.js"></script>
+    
+    <script src="/js/tocbot.min.js"></script>
+    
+
+
+
+    
+    
+        
+    
+
+
+<meta name="generator" content="Hexo 6.2.0"></head>
+
+<body>
+    <script>
+        // this function is used to check current theme before page loaded.
+        (() => {
+            const currentTheme = window.localStorage && window.localStorage.getItem('theme') || '';
+            const isDark = currentTheme === 'dark';
+            const pagebody = document.getElementsByTagName('body')[0]
+            if (isDark) {
+                pagebody.classList.add('dark-theme');
+                // mobile
+                document.getElementById("mobile-toggle-theme").innerText = "· Dark"
+            } else {
+                pagebody.classList.remove('dark-theme');
+                // mobile
+                document.getElementById("mobile-toggle-theme").innerText = "· Light"
+            }
+        })();
+    </script>
+
+    <div class="wrapper">
+        <header>
+    <nav class="navbar">
+        <div class="container">
+            <div class="navbar-header header-logo"><a href="/">Xinyu&#39;s Blog</a></div>
+            <div class="menu navbar-right">
+                
+                    <a class="menu-item" href="/archives">Posts</a>
+                
+                    <a class="menu-item" href="/category">Categories</a>
+                
+                    <a class="menu-item" href="/tag">Tags</a>
+                
+                <input id="switch_default" type="checkbox" class="switch_default">
+                <label for="switch_default" class="toggleBtn"></label>
+            </div>
+        </div>
+    </nav>
+
+    
+    <nav class="navbar-mobile" id="nav-mobile">
+        <div class="container">
+            <div class="navbar-header">
+                <div>
+                    <a href="/">Xinyu&#39;s Blog</a><a id="mobile-toggle-theme">·&nbsp;Light</a>
+                </div>
+                <div class="menu-toggle" onclick="mobileBtn()">&#9776; Menu</div>
+            </div>
+            <div class="menu" id="mobile-menu">
+                
+                    <a class="menu-item" href="/archives">Posts</a>
+                
+                    <a class="menu-item" href="/category">Categories</a>
+                
+                    <a class="menu-item" href="/tag">Tags</a>
+                
+            </div>
+        </div>
+    </nav>
+
+</header>
+<script>
+    var mobileBtn = function f() {
+        var toggleMenu = document.getElementsByClassName("menu-toggle")[0];
+        var mobileMenu = document.getElementById("mobile-menu");
+        if(toggleMenu.classList.contains("active")){
+           toggleMenu.classList.remove("active")
+            mobileMenu.classList.remove("active")
+        }else{
+            toggleMenu.classList.add("active")
+            mobileMenu.classList.add("active")
+        }
+    }
+</script>
+            <div class="main">
+                <div class="container">
+    
+    
+        <div class="post-toc">
+    <div class="tocbot-list">
+    </div>
+    <div class="tocbot-list-menu">
+        <a class="tocbot-toc-expand" onclick="expand_toc()">Expand all</a>
+        <a onclick="go_top()">Back to top</a>
+        <a onclick="go_bottom()">Go to bottom</a>
+    </div>
+</div>
+
+<script>
+    var tocbot_timer;
+    var DEPTH_MAX = 6; // 为 6 时展开所有
+    var tocbot_default_config = {
+        tocSelector: '.tocbot-list',
+        contentSelector: '.post-content',
+        headingSelector: 'h1, h2, h3, h4, h5',
+        orderedList: false,
+        scrollSmooth: true,
+        onClick: extend_click,
+    };
+
+    function extend_click() {
+        clearTimeout(tocbot_timer);
+        tocbot_timer = setTimeout(function() {
+            tocbot.refresh(obj_merge(tocbot_default_config, {
+                hasInnerContainers: true
+            }));
+        }, 420); // 这个值是由 tocbot 源码里定义的 scrollSmoothDuration 得来的
+    }
+
+    document.ready(function() {
+        tocbot.init(obj_merge(tocbot_default_config, {
+            collapseDepth: 1
+        }));
+    });
+
+    function expand_toc() {
+        var b = document.querySelector('.tocbot-toc-expand');
+        var expanded = b.getAttribute('data-expanded');
+        expanded ? b.removeAttribute('data-expanded') : b.setAttribute('data-expanded', true);
+        tocbot.refresh(obj_merge(tocbot_default_config, {
+            collapseDepth: expanded ? 1 : DEPTH_MAX
+        }));
+        b.innerText = expanded ? 'Expand all' : 'Collapse all';
+    }
+
+    function go_top() {
+        window.scrollTo(0, 0);
+    }
+
+    function go_bottom() {
+        window.scrollTo(0, document.body.scrollHeight);
+    }
+
+    function obj_merge(target, source) {
+        for (var item in source) {
+            if (source.hasOwnProperty(item)) {
+                target[item] = source[item];
+            }
+        }
+        return target;
+    }
+</script>
+    
+
+    
+    <article class="post-wrap">
+        <header class="post-header">
+            <h1 class="post-title">Golang---API风格</h1>
+            
+                <div class="post-meta">
+                    
+                        Author: <a itemprop="author" rel="author" href="/">Xinyu</a>
+                    
+
+                    
+                        <span class="post-time">
+                        Date: <a href="#">July 15, 2022&nbsp;&nbsp;16:49:37</a>
+                        </span>
+                    
+                    
+                        <span class="post-category">
+                    Category:
+                            
+                                <a href="/categories/Go/">Go</a>
+                            
+                        </span>
+                    
+                </div>
+            
+        </header>
+
+        <div class="post-content">
+            <blockquote>
+<p>RPC（Remote Procedure Call），即远程过程调用，是一个计算机通信协议。该协议允许运行于一台计算机的程序调用另一台计算机的子程序，而程序员不用额外地为这个交互作用编程。</p>
+</blockquote>
+<p><img src="https://raw.githubusercontent.com/brucecai-2001/Image/master/20220715165146.png"></p>
+<ol>
+<li>Client 通过本地调用，调用 Client Stub。</li>
+<li>Client Stub 将参数打包（也叫 Marshalling）成一个消息，然后发送这个消息。</li>
+<li>Client 所在的 OS 将消息发送给 Server。</li>
+<li>Server 端接收到消息后，将消息传递给 Server Stub。</li>
+<li>Server Stub 将消息解包（也叫 Unmarshalling）得到参数。</li>
+<li>Server Stub 调用服务端的子程序（函数），处理完后，将最终结果按照相反的步骤返回给 Client。</li>
+</ol>
+<br>
+<br>
+
+<h1 id="gRPC"><a href="#gRPC" class="headerlink" title="gRPC"></a>gRPC</h1><p><img src="https://raw.githubusercontent.com/brucecai-2001/Image/master/20220715165507.png"></p>
+<p>在 gRPC 中，客户端可以直接调用部署在不同机器上的 gRPC 服务所提供的方法，调用远端的 gRPC 方法就像调用本地的方法一样，非常简单方便，通过 gRPC 调用，我们可以非常容易地构建出一个分布式应用。<br></p>
+<p>gRPC API 接口通常使用的数据传输格式是 Protocol Buffers。<br></p>
+<ol>
+<li>更快的数据传输速度：protobuf 在传输时，会将数据序列化为二进制数据，和 XML、JSON 的文本传输格式相比，这可以节省大量的 IO 操作，从而提高数据传输速度。</li>
+<li>跨平台多语言：protobuf 自带的编译工具 protoc 可以基于 protobuf 定义文件，编译出不同语言的客户端或者服务端，供程序直接调用</li>
+<li>具有非常好的扩展性和兼容性，可以更新已有的数据结构，而不破坏和影响原有的程序。</li>
+</ol>
+<p>在 gRPC 的框架中，Protocol Buffers 主要有三个作用:</p>
+<ol>
+<li>第一，可以用来定义数据结构<figure class="highlight golang"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line">message SecretInfo &#123;</span><br><span class="line">    <span class="type">string</span> name = <span class="number">1</span>;</span><br><span class="line">    <span class="type">string</span> secret_id  = <span class="number">2</span>;</span><br><span class="line">    <span class="type">string</span> username   = <span class="number">3</span>;</span><br><span class="line">    <span class="type">string</span> secret_key = <span class="number">4</span>;</span><br><span class="line">    <span class="type">int64</span> expires = <span class="number">5</span>;</span><br><span class="line">    <span class="type">string</span> description = <span class="number">6</span>;</span><br><span class="line">    <span class="type">string</span> created_at = <span class="number">7</span>;</span><br><span class="line">    <span class="type">string</span> updated_at = <span class="number">8</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></li>
+<li>可以用来定义服务接口<figure class="highlight golang"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">service Cache &#123; </span><br><span class="line">    rpc ListSecrets(ListSecretsRequest) returns (ListSecretsResponse) &#123;&#125; </span><br><span class="line">    rpc ListPolicies(ListPoliciesRequest) returns (ListPoliciesResponse) &#123;&#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></li>
+<li>可以通过 protobuf 序列化和反序列化</li>
+</ol>
+<br>
+<br>
+
+<h1 id="gRPC-示例"><a href="#gRPC-示例" class="headerlink" title="gRPC 示例"></a>gRPC 示例</h1><h2 id="1-定义-gRPC协议"><a href="#1-定义-gRPC协议" class="headerlink" title="1. 定义 gRPC协议"></a>1. 定义 gRPC协议</h2><figure class="highlight golang"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br></pre></td><td class="code"><pre><span class="line">syntax = <span class="string">&quot;proto3&quot;</span>;</span><br><span class="line"></span><br><span class="line">option go_package = <span class="string">&quot;github.com/marmotedu/gopractise-demo/apistyle/greeter/helloworld&quot;</span>;</span><br><span class="line"></span><br><span class="line"><span class="keyword">package</span> helloworld;</span><br><span class="line"></span><br><span class="line"><span class="comment">// The greeting service definition.</span></span><br><span class="line">service Greeter &#123;</span><br><span class="line">  <span class="comment">// Sends a greeting</span></span><br><span class="line">  rpc SayHello (HelloRequest) returns (HelloReply) &#123;&#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">// The request message containing the user&#x27;s name.</span></span><br><span class="line">message HelloRequest &#123;</span><br><span class="line">  <span class="type">string</span> name = <span class="number">1</span>;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">// The response message containing the greetings</span></span><br><span class="line">message HelloReply &#123;</span><br><span class="line">  <span class="type">string</span> message = <span class="number">1</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>gRPC 支持定义 4 种类型的服务方法，分别是简单模式、服务端数据流模式、客户端数据流模式和双向数据流模式。</p>
+<ol>
+<li>简单模式（Simple RPC）：是最简单的 gRPC 模式。客户端发起一次请求，服务端响应一个数据。定义格式为 rpc SayHello (HelloRequest) returns (HelloReply) {}。</li>
+<li>服务端数据流模式（Server-side streaming RPC）：客户端发送一个请求，服务器返回数据流响应，客户端从流中读取数据直到为空。定义格式为 rpc SayHello (HelloRequest) returns (stream HelloReply) {}。</li>
+<li>客户端数据流模式（Client-side streaming RPC）：客户端将消息以流的方式发送给服务器，服务器全部处理完成之后返回一次响应。定义格式为 rpc SayHello (stream HelloRequest) returns (HelloReply) {}。</li>
+<li>双向数据流模式（Bidirectional streaming RPC）：客户端和服务端都可以向对方发送数据流，这个时候双方的数据可以同时互相发送，也就是可以实现实时交互 RPC 框架原理。定义格式为 rpc SayHello (stream HelloRequest) returns (stream HelloReply) {}。</li>
+</ol>
+<h2 id="2-生成客户端和服务器代码。"><a href="#2-生成客户端和服务器代码。" class="headerlink" title="2.生成客户端和服务器代码。"></a>2.生成客户端和服务器代码。</h2><p>接下来，我们需要根据.proto 服务定义生成 gRPC 客户端和服务器接口。我们可以使用 protoc 编译工具，并指定使用其 Go 语言插件<br></p>
+<h2 id="3-gRPC-服务器"><a href="#3-gRPC-服务器" class="headerlink" title="3. gRPC 服务器"></a>3. gRPC 服务器</h2><figure class="highlight golang"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// server is used to implement helloworld.GreeterServer.</span></span><br><span class="line"><span class="keyword">type</span> server <span class="keyword">struct</span> &#123; pb.UnimplementedGreeterServer&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">// SayHello implements helloworld.GreeterServer</span></span><br><span class="line"><span class="function"><span class="keyword">func</span> <span class="params">(s *server)</span></span> SayHello(ctx context.Context, in *pb.HelloRequest) (*pb.HelloReply, <span class="type">error</span>) &#123; </span><br><span class="line">    log.Printf(<span class="string">&quot;Received: %v&quot;</span>, in.GetName()) </span><br><span class="line">    <span class="keyword">return</span> &amp;pb.HelloReply&#123;Message: <span class="string">&quot;Hello &quot;</span> + in.GetName()&#125;, <span class="literal">nil</span></span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">func</span> <span class="title">main</span><span class="params">()</span></span> &#123; </span><br><span class="line">    lis, err := net.Listen(<span class="string">&quot;tcp&quot;</span>, port) </span><br><span class="line">    <span class="keyword">if</span> err != <span class="literal">nil</span> &#123; </span><br><span class="line">        log.Fatalf(<span class="string">&quot;failed to listen: %v&quot;</span>, err) </span><br><span class="line">    &#125; </span><br><span class="line"></span><br><span class="line">    s := grpc.NewServer() </span><br><span class="line">    pb.RegisterGreeterServer(s, &amp;server&#123;&#125;) </span><br><span class="line">    <span class="keyword">if</span> err := s.Serve(lis); </span><br><span class="line">        err != <span class="literal">nil</span> &#123; </span><br><span class="line">        log.Fatalf(<span class="string">&quot;failed to serve: %v&quot;</span>, err) </span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h2 id="4-gRPC-客户端"><a href="#4-gRPC-客户端" class="headerlink" title="4. gRPC 客户端"></a>4. gRPC 客户端</h2><figure class="highlight golang"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">func</span> <span class="title">main</span><span class="params">()</span></span> &#123;</span><br><span class="line">  <span class="comment">// Set up a connection to the server.</span></span><br><span class="line">  conn, err := grpc.Dial(address, grpc.WithInsecure(), grpc.WithBlock())</span><br><span class="line">  <span class="keyword">if</span> err != <span class="literal">nil</span> &#123;</span><br><span class="line">    log.Fatalf(<span class="string">&quot;did not connect: %v&quot;</span>, err)</span><br><span class="line">  &#125;</span><br><span class="line">  <span class="keyword">defer</span> conn.Close()</span><br><span class="line">  c := pb.NewGreeterClient(conn)</span><br><span class="line"></span><br><span class="line">  <span class="comment">// Contact the server and print out its response.</span></span><br><span class="line">  name := defaultName</span><br><span class="line">  <span class="keyword">if</span> <span class="built_in">len</span>(os.Args) &gt; <span class="number">1</span> &#123;</span><br><span class="line">    name = os.Args[<span class="number">1</span>]</span><br><span class="line">  &#125;</span><br><span class="line">  ctx, cancel := context.WithTimeout(context.Background(), time.Second)</span><br><span class="line">  <span class="keyword">defer</span> cancel()</span><br><span class="line">  r, err := c.SayHello(ctx, &amp;pb.HelloRequest&#123;Name: name&#125;)</span><br><span class="line">  <span class="keyword">if</span> err != <span class="literal">nil</span> &#123;</span><br><span class="line">    log.Fatalf(<span class="string">&quot;could not greet: %v&quot;</span>, err)</span><br><span class="line">  &#125;</span><br><span class="line">  log.Printf(<span class="string">&quot;Greeting: %s&quot;</span>, r.Message)</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+
+<h1 id="gRPC-vs-RESTful"><a href="#gRPC-vs-RESTful" class="headerlink" title="gRPC vs RESTful"></a>gRPC vs RESTful</h1><p><img src="https://raw.githubusercontent.com/brucecai-2001/Image/master/20220715172837.png"></p>
+<p>更多的时候，RESTful API 和 gRPC API 是一种合作的关系，对内业务使用 gRPC API，对外业务使用 RESTful API<br></p>
+<p><img src="https://raw.githubusercontent.com/brucecai-2001/Image/master/20220715172920.png"></p>
+
+        </div>
+
+        
+            <section class="post-copyright">
+                
+                    <p class="copyright-item">
+                        <span>Author:</span>
+                        <span>Xinyu</span>
+                    </p>
+                
+                
+                    <p class="copyright-item">
+                        <span>Permalink:</span>
+                        <span><a href="http://example.com/2022/07/15/[Golang]RPC%20API/">http://example.com/2022/07/15/[Golang]RPC%20API/</a></span>
+                    </p>
+                
+                
+                    <p class="copyright-item">
+                        <span>License:</span>
+                        <span>Copyright (c) 2019 <a target="_blank" rel="noopener" href="http://creativecommons.org/licenses/by-nc/4.0/">CC-BY-NC-4.0</a> LICENSE</span>
+                    </p>
+                
+                
+                     <p class="copyright-item">
+                         <span>Slogan:</span>
+                         <span>Coffee or Tea</span>
+                     </p>
+                
+
+            </section>
+        
+        <section class="post-tags">
+            <div>
+                <span>Tag(s):</span>
+                <span class="tag">
+                    
+                </span>
+            </div>
+            <div>
+                <a href="javascript:window.history.back();">back</a>
+                <span>· </span>
+                <a href="/">home</a>
+            </div>
+        </section>
+        <section class="post-nav">
+            
+                <a class="prev" rel="prev" href="/2022/07/15/%5BGolang%5DSwagger/">Golang---Swagger</a>
+            
+            
+            <a class="next" rel="next" href="/2022/07/15/%5BGolang%5DAPI%E9%A3%8E%E6%A0%BC/">Golang---API风格</a>
+            
+        </section>
+
+
+    </article>
+</div>
+
+            </div>
+            <footer id="footer" class="footer">
+    <div class="copyright">
+        <span>© Xinyu | Powered by <a href="https://hexo.io" target="_blank">Hexo</a> & <a href="https://github.com/Siricee/hexo-theme-Chic" target="_blank">Chic</a></span>
+    </div>
+</footer>
+
+    </div>
+</body>
+
+</html>

@@ -1,0 +1,322 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+<meta name="viewport"
+      content="width=device-width, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+<meta http-equiv="X-UA-Compatible" content="ie=edge">
+
+    <meta name="author" content="Xinyu">
+
+
+
+
+
+<title>Golang---API风格 | Hexo</title>
+
+
+
+    <link rel="icon" href="/favicon.ico">
+
+
+
+
+    <!-- stylesheets list from _config.yml -->
+    
+    <link rel="stylesheet" href="/css/style.css">
+    
+
+
+
+    <!-- scripts list from _config.yml -->
+    
+    <script src="/js/script.js"></script>
+    
+    <script src="/js/tocbot.min.js"></script>
+    
+
+
+
+    
+    
+        
+    
+
+
+<meta name="generator" content="Hexo 6.2.0"></head>
+
+<body>
+    <script>
+        // this function is used to check current theme before page loaded.
+        (() => {
+            const currentTheme = window.localStorage && window.localStorage.getItem('theme') || '';
+            const isDark = currentTheme === 'dark';
+            const pagebody = document.getElementsByTagName('body')[0]
+            if (isDark) {
+                pagebody.classList.add('dark-theme');
+                // mobile
+                document.getElementById("mobile-toggle-theme").innerText = "· Dark"
+            } else {
+                pagebody.classList.remove('dark-theme');
+                // mobile
+                document.getElementById("mobile-toggle-theme").innerText = "· Light"
+            }
+        })();
+    </script>
+
+    <div class="wrapper">
+        <header>
+    <nav class="navbar">
+        <div class="container">
+            <div class="navbar-header header-logo"><a href="/">Xinyu&#39;s Blog</a></div>
+            <div class="menu navbar-right">
+                
+                    <a class="menu-item" href="/archives">Posts</a>
+                
+                    <a class="menu-item" href="/category">Categories</a>
+                
+                    <a class="menu-item" href="/tag">Tags</a>
+                
+                <input id="switch_default" type="checkbox" class="switch_default">
+                <label for="switch_default" class="toggleBtn"></label>
+            </div>
+        </div>
+    </nav>
+
+    
+    <nav class="navbar-mobile" id="nav-mobile">
+        <div class="container">
+            <div class="navbar-header">
+                <div>
+                    <a href="/">Xinyu&#39;s Blog</a><a id="mobile-toggle-theme">·&nbsp;Light</a>
+                </div>
+                <div class="menu-toggle" onclick="mobileBtn()">&#9776; Menu</div>
+            </div>
+            <div class="menu" id="mobile-menu">
+                
+                    <a class="menu-item" href="/archives">Posts</a>
+                
+                    <a class="menu-item" href="/category">Categories</a>
+                
+                    <a class="menu-item" href="/tag">Tags</a>
+                
+            </div>
+        </div>
+    </nav>
+
+</header>
+<script>
+    var mobileBtn = function f() {
+        var toggleMenu = document.getElementsByClassName("menu-toggle")[0];
+        var mobileMenu = document.getElementById("mobile-menu");
+        if(toggleMenu.classList.contains("active")){
+           toggleMenu.classList.remove("active")
+            mobileMenu.classList.remove("active")
+        }else{
+            toggleMenu.classList.add("active")
+            mobileMenu.classList.add("active")
+        }
+    }
+</script>
+            <div class="main">
+                <div class="container">
+    
+    
+        <div class="post-toc">
+    <div class="tocbot-list">
+    </div>
+    <div class="tocbot-list-menu">
+        <a class="tocbot-toc-expand" onclick="expand_toc()">Expand all</a>
+        <a onclick="go_top()">Back to top</a>
+        <a onclick="go_bottom()">Go to bottom</a>
+    </div>
+</div>
+
+<script>
+    var tocbot_timer;
+    var DEPTH_MAX = 6; // 为 6 时展开所有
+    var tocbot_default_config = {
+        tocSelector: '.tocbot-list',
+        contentSelector: '.post-content',
+        headingSelector: 'h1, h2, h3, h4, h5',
+        orderedList: false,
+        scrollSmooth: true,
+        onClick: extend_click,
+    };
+
+    function extend_click() {
+        clearTimeout(tocbot_timer);
+        tocbot_timer = setTimeout(function() {
+            tocbot.refresh(obj_merge(tocbot_default_config, {
+                hasInnerContainers: true
+            }));
+        }, 420); // 这个值是由 tocbot 源码里定义的 scrollSmoothDuration 得来的
+    }
+
+    document.ready(function() {
+        tocbot.init(obj_merge(tocbot_default_config, {
+            collapseDepth: 1
+        }));
+    });
+
+    function expand_toc() {
+        var b = document.querySelector('.tocbot-toc-expand');
+        var expanded = b.getAttribute('data-expanded');
+        expanded ? b.removeAttribute('data-expanded') : b.setAttribute('data-expanded', true);
+        tocbot.refresh(obj_merge(tocbot_default_config, {
+            collapseDepth: expanded ? 1 : DEPTH_MAX
+        }));
+        b.innerText = expanded ? 'Expand all' : 'Collapse all';
+    }
+
+    function go_top() {
+        window.scrollTo(0, 0);
+    }
+
+    function go_bottom() {
+        window.scrollTo(0, document.body.scrollHeight);
+    }
+
+    function obj_merge(target, source) {
+        for (var item in source) {
+            if (source.hasOwnProperty(item)) {
+                target[item] = source[item];
+            }
+        }
+        return target;
+    }
+</script>
+    
+
+    
+    <article class="post-wrap">
+        <header class="post-header">
+            <h1 class="post-title">Golang---API风格</h1>
+            
+                <div class="post-meta">
+                    
+                        Author: <a itemprop="author" rel="author" href="/">Xinyu</a>
+                    
+
+                    
+                        <span class="post-time">
+                        Date: <a href="#">July 15, 2022&nbsp;&nbsp;16:13:02</a>
+                        </span>
+                    
+                    
+                        <span class="post-category">
+                    Category:
+                            
+                                <a href="/categories/Go/">Go</a>
+                            
+                        </span>
+                    
+                </div>
+            
+        </header>
+
+        <div class="post-content">
+            <p>绝大部分的 Go 后端服务需要编写 API 接口，对外提供服务。所以在开发之前，我们需要确定一种 API 风格。API 风格也可以理解为 API 类型，目前业界常用的 API 风格有三种：REST、RPC 和 GraphQL。<br></p>
+<h1 id="RESTful-API"><a href="#RESTful-API" class="headerlink" title="RESTful API"></a>RESTful API</h1><p>REST 有一系列规范，满足这些规范的 API 均可称为 RESTful API。REST 规范把所有内容都视为资源，也就是说网络上一切皆资源。REST 架构对资源的操作包括获取、创建、修改和删除，这些操作正好对应 HTTP 协议提供的 GET、POST、PUT 和 DELETE 方法。<br></p>
+<p><img src="https://raw.githubusercontent.com/brucecai-2001/Image/master/20220715162748.png"></p>
+<ol>
+<li>以资源 (resource) 为中心，资源使用 URI 标识，每个资源实例都有一个唯一的 URI 标识</li>
+<li>资源是有状态的，使用 JSON&#x2F;XML 等在 HTTP Body 里表征资源的状态。</li>
+<li>客户端通过四个 HTTP 动词，对服务器端资源进行操作，实现“表现层状态转化”。</li>
+<li>无状态，这里的无状态是指每个 RESTful API 请求都包含了所有足够完成本次操作的信息，服务器端无须保持 session</li>
+</ol>
+<br>
+
+<h1 id="RESTful-API设计原则"><a href="#RESTful-API设计原则" class="headerlink" title="RESTful API设计原则"></a>RESTful API设计原则</h1><h2 id="URI-设计"><a href="#URI-设计" class="headerlink" title="URI 设计"></a>URI 设计</h2><ol>
+<li>资源名使用名词而不是动词，并且用名词复数表示。资源分为 Collection 和 Member 两种。<br><br> Collection：一堆资源的集合。例如我们系统里有很多用户（User）, 这些用户的集合就是 Collection。Collection 的 URI 标识应该是 域名&#x2F;资源名复数, 例如https:&#x2F;&#x2F; iam.api.marmotedu.com&#x2F;users。<br><br> Member：单个特定资源。例如系统中特定名字的用户，就是 Collection 里的一个 Member。Member 的 URI 标识应该是 域名&#x2F;资源名复数&#x2F;资源名称, 例如https:&#x2F;&#x2F; iam.api.marmotedu&#x2F;users&#x2F;admin。<br></li>
+<li>URI 结尾不应包含&#x2F;。</li>
+<li>URI 中不能出现下划线 _</li>
+<li>URI 路径用小写，不要用大写。</li>
+<li>避免层级过深的 URI。超过 2 层的资源嵌套会很乱，建议将其他资源转化为?参数</li>
+<li>将一个操作变成资源的一个属性，比如想在系统中暂时禁用某个用户，可以这么设计 URI：&#x2F;users&#x2F;zhangsan?active&#x3D;false。</li>
+<li>将操作当作是一个资源的嵌套资源</li>
+</ol>
+<br>
+
+<h2 id="REST-资源操作映射为-HTTP-方法"><a href="#REST-资源操作映射为-HTTP-方法" class="headerlink" title="REST 资源操作映射为 HTTP 方法"></a>REST 资源操作映射为 HTTP 方法</h2><p>对资源的操作应该满足安全性和幂等性：<br><br><br><br>安全性：不会改变资源状态，可以理解为只读的。<br><br>幂等性：执行 1 次和执行 N 次，对资源状态改变的效果是等价的。<br></p>
+<p><img src="https://raw.githubusercontent.com/brucecai-2001/Image/master/20220715163642.png"></p>
+<p>在设计 API 时，经常会有批量删除的需求，需要在请求中携带多个需要删除的资源名，但是 HTTP 的 DELETE 方法不能携带多个资源名，这时候可以通过下面三种方式来解决：<br>    1. 发起多个 DELETE 请求。<br>    2. 操作路径中带多个 id，id 之间用分隔符分隔, 例如：DELETE &#x2F;users?ids&#x3D;1,2,3 。<br>    3. 直接使用 POST 方式来批量删除，body 中传入需要删除的资源列表。</p>
+<br>
+
+<h2 id="API-版本管理"><a href="#API-版本管理" class="headerlink" title="API 版本管理"></a>API 版本管理</h2><p>随着时间的推移、需求的变更，一个 API 往往满足不了现有的需求，这时候就需要对 API 进行修改。对 API 进行修改时，不能影响其他调用系统的正常使用，这就要求 API 变更做到向下兼容，也就是新老版本共存。<br></p>
+<p>API 版本有不同的标识方法，在 RESTful API 开发中，通常将版本标识放在如下 3 个位置：<br></p>
+<ol>
+<li>URL 中，比如&#x2F;v1&#x2F;users。</li>
+<li>HTTP Header 中，比如Accept: vnd.example-com.foo+json; version&#x3D;1.0。</li>
+<li>Form 参数中，比如&#x2F;users?version&#x3D;v1。</li>
+</ol>
+
+        </div>
+
+        
+            <section class="post-copyright">
+                
+                    <p class="copyright-item">
+                        <span>Author:</span>
+                        <span>Xinyu</span>
+                    </p>
+                
+                
+                    <p class="copyright-item">
+                        <span>Permalink:</span>
+                        <span><a href="http://example.com/2022/07/15/[Golang]API%E9%A3%8E%E6%A0%BC/">http://example.com/2022/07/15/[Golang]API%E9%A3%8E%E6%A0%BC/</a></span>
+                    </p>
+                
+                
+                    <p class="copyright-item">
+                        <span>License:</span>
+                        <span>Copyright (c) 2019 <a target="_blank" rel="noopener" href="http://creativecommons.org/licenses/by-nc/4.0/">CC-BY-NC-4.0</a> LICENSE</span>
+                    </p>
+                
+                
+                     <p class="copyright-item">
+                         <span>Slogan:</span>
+                         <span>Coffee or Tea</span>
+                     </p>
+                
+
+            </section>
+        
+        <section class="post-tags">
+            <div>
+                <span>Tag(s):</span>
+                <span class="tag">
+                    
+                </span>
+            </div>
+            <div>
+                <a href="javascript:window.history.back();">back</a>
+                <span>· </span>
+                <a href="/">home</a>
+            </div>
+        </section>
+        <section class="post-nav">
+            
+                <a class="prev" rel="prev" href="/2022/07/15/%5BGolang%5DRPC%20API/">Golang---API风格</a>
+            
+            
+            <a class="next" rel="next" href="/2022/07/14/%5BGolang%5D%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F/">Golang---设计模式</a>
+            
+        </section>
+
+
+    </article>
+</div>
+
+            </div>
+            <footer id="footer" class="footer">
+    <div class="copyright">
+        <span>© Xinyu | Powered by <a href="https://hexo.io" target="_blank">Hexo</a> & <a href="https://github.com/Siricee/hexo-theme-Chic" target="_blank">Chic</a></span>
+    </div>
+</footer>
+
+    </div>
+</body>
+
+</html>

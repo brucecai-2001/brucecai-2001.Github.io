@@ -1,0 +1,350 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+<meta name="viewport"
+      content="width=device-width, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+<meta http-equiv="X-UA-Compatible" content="ie=edge">
+
+    <meta name="author" content="Xinyu">
+
+
+
+
+
+<title>Golang---Web服务 &amp; Gin | Hexo</title>
+
+
+
+    <link rel="icon" href="/favicon.ico">
+
+
+
+
+    <!-- stylesheets list from _config.yml -->
+    
+    <link rel="stylesheet" href="/css/style.css">
+    
+
+
+
+    <!-- scripts list from _config.yml -->
+    
+    <script src="/js/script.js"></script>
+    
+    <script src="/js/tocbot.min.js"></script>
+    
+
+
+
+    
+    
+        
+    
+
+
+<meta name="generator" content="Hexo 6.2.0"></head>
+
+<body>
+    <script>
+        // this function is used to check current theme before page loaded.
+        (() => {
+            const currentTheme = window.localStorage && window.localStorage.getItem('theme') || '';
+            const isDark = currentTheme === 'dark';
+            const pagebody = document.getElementsByTagName('body')[0]
+            if (isDark) {
+                pagebody.classList.add('dark-theme');
+                // mobile
+                document.getElementById("mobile-toggle-theme").innerText = "· Dark"
+            } else {
+                pagebody.classList.remove('dark-theme');
+                // mobile
+                document.getElementById("mobile-toggle-theme").innerText = "· Light"
+            }
+        })();
+    </script>
+
+    <div class="wrapper">
+        <header>
+    <nav class="navbar">
+        <div class="container">
+            <div class="navbar-header header-logo"><a href="/">Xinyu&#39;s Blog</a></div>
+            <div class="menu navbar-right">
+                
+                    <a class="menu-item" href="/archives">Posts</a>
+                
+                    <a class="menu-item" href="/category">Categories</a>
+                
+                    <a class="menu-item" href="/tag">Tags</a>
+                
+                <input id="switch_default" type="checkbox" class="switch_default">
+                <label for="switch_default" class="toggleBtn"></label>
+            </div>
+        </div>
+    </nav>
+
+    
+    <nav class="navbar-mobile" id="nav-mobile">
+        <div class="container">
+            <div class="navbar-header">
+                <div>
+                    <a href="/">Xinyu&#39;s Blog</a><a id="mobile-toggle-theme">·&nbsp;Light</a>
+                </div>
+                <div class="menu-toggle" onclick="mobileBtn()">&#9776; Menu</div>
+            </div>
+            <div class="menu" id="mobile-menu">
+                
+                    <a class="menu-item" href="/archives">Posts</a>
+                
+                    <a class="menu-item" href="/category">Categories</a>
+                
+                    <a class="menu-item" href="/tag">Tags</a>
+                
+            </div>
+        </div>
+    </nav>
+
+</header>
+<script>
+    var mobileBtn = function f() {
+        var toggleMenu = document.getElementsByClassName("menu-toggle")[0];
+        var mobileMenu = document.getElementById("mobile-menu");
+        if(toggleMenu.classList.contains("active")){
+           toggleMenu.classList.remove("active")
+            mobileMenu.classList.remove("active")
+        }else{
+            toggleMenu.classList.add("active")
+            mobileMenu.classList.add("active")
+        }
+    }
+</script>
+            <div class="main">
+                <div class="container">
+    
+    
+        <div class="post-toc">
+    <div class="tocbot-list">
+    </div>
+    <div class="tocbot-list-menu">
+        <a class="tocbot-toc-expand" onclick="expand_toc()">Expand all</a>
+        <a onclick="go_top()">Back to top</a>
+        <a onclick="go_bottom()">Go to bottom</a>
+    </div>
+</div>
+
+<script>
+    var tocbot_timer;
+    var DEPTH_MAX = 6; // 为 6 时展开所有
+    var tocbot_default_config = {
+        tocSelector: '.tocbot-list',
+        contentSelector: '.post-content',
+        headingSelector: 'h1, h2, h3, h4, h5',
+        orderedList: false,
+        scrollSmooth: true,
+        onClick: extend_click,
+    };
+
+    function extend_click() {
+        clearTimeout(tocbot_timer);
+        tocbot_timer = setTimeout(function() {
+            tocbot.refresh(obj_merge(tocbot_default_config, {
+                hasInnerContainers: true
+            }));
+        }, 420); // 这个值是由 tocbot 源码里定义的 scrollSmoothDuration 得来的
+    }
+
+    document.ready(function() {
+        tocbot.init(obj_merge(tocbot_default_config, {
+            collapseDepth: 1
+        }));
+    });
+
+    function expand_toc() {
+        var b = document.querySelector('.tocbot-toc-expand');
+        var expanded = b.getAttribute('data-expanded');
+        expanded ? b.removeAttribute('data-expanded') : b.setAttribute('data-expanded', true);
+        tocbot.refresh(obj_merge(tocbot_default_config, {
+            collapseDepth: expanded ? 1 : DEPTH_MAX
+        }));
+        b.innerText = expanded ? 'Expand all' : 'Collapse all';
+    }
+
+    function go_top() {
+        window.scrollTo(0, 0);
+    }
+
+    function go_bottom() {
+        window.scrollTo(0, document.body.scrollHeight);
+    }
+
+    function obj_merge(target, source) {
+        for (var item in source) {
+            if (source.hasOwnProperty(item)) {
+                target[item] = source[item];
+            }
+        }
+        return target;
+    }
+</script>
+    
+
+    
+    <article class="post-wrap">
+        <header class="post-header">
+            <h1 class="post-title">Golang---Web服务 &amp; Gin</h1>
+            
+                <div class="post-meta">
+                    
+                        Author: <a itemprop="author" rel="author" href="/">Xinyu</a>
+                    
+
+                    
+                        <span class="post-time">
+                        Date: <a href="#">July 16, 2022&nbsp;&nbsp;16:52:25</a>
+                        </span>
+                    
+                    
+                        <span class="post-category">
+                    Category:
+                            
+                                <a href="/categories/Go/">Go</a>
+                            
+                        </span>
+                    
+                </div>
+            
+        </header>
+
+        <div class="post-content">
+            <blockquote>
+<p>Go 项目开发中，绝大部分情况下，我们是在写能提供某种功能的后端服务，这些功能以 RPC API 接口或者 RESTful API 接口的形式对外提供，能提供这两种 API 接口的服务也统称为 Web 服务</p>
+</blockquote>
+<h1 id="Web服务"><a href="#Web服务" class="headerlink" title="Web服务"></a>Web服务</h1><p><img src="https://raw.githubusercontent.com/brucecai-2001/Image/master/20220716165900.png"></p>
+<br>
+
+<h1 id="路由匹配"><a href="#路由匹配" class="headerlink" title="路由匹配"></a>路由匹配</h1><p>路由匹配其实就是根据(HTTP方法, 请求路径)匹配到处理这个请求的函数，最终由该函数处理这次请求，并返回结果<br></p>
+<p>对于大型系统，可能会有很多个 API 接口，API 接口随着需求的更新迭代，可能会有多个版本，为了便于管理，我们需要对路由进行分组。<br></p>
+<p>在进行 HTTP 请求时，经常需要针对每一次请求都设置一些通用的操作，比如添加 Header、添加 RequestID、统计请求次数等，这就要求我们的 Web 服务能够支持中间件特性。<br></p>
+<p>为了保证系统安全，对于每一个请求，我们都需要进行认证。Web 服务中，通常有两种认证方式，一种是基于用户名和密码，一种是基于 Token。认证通过之后，就可以继续处理请求了。<br></p>
+<p>为了方便定位和跟踪某一次请求，需要支持 RequestID，定位和跟踪 RequestID 主要是为了排障。<br></p>
+<p>在前后端分离的架构中，前端访问地址和后端访问地址往往是不同的，浏览器为了安全，会针对这种情况设置跨域请求，所以 Web 服务需要能够处理浏览器的跨域请求。<br></p>
+<br>
+
+<h1 id="Gin框架"><a href="#Gin框架" class="headerlink" title="Gin框架"></a>Gin框架</h1><p>Gin是用 Go 语言编写的 Web 框架，功能完善，使用简单，性能很高。Gin 核心的路由功能是通过一个定制版的HttpRouter来实现的，具有很高的路由性能。<br></p>
+<figure class="highlight golang"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">httpServer := &amp;http.Server&#123; </span><br><span class="line">    Addr: <span class="string">&quot;:8080&quot;</span>, </span><br><span class="line">    Handler: router(), </span><br><span class="line">    ReadTimeout: <span class="number">5</span> * time.Second, </span><br><span class="line">    WriteTimeout: <span class="number">10</span> * time.Second,</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<ol>
+<li><p>HTTP&#x2F;HTTPS 支持: </p>
+<figure class="highlight golang"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">httpServer.ListenAndServe()&lt;br&gt;</span><br><span class="line">httpsServer.ListenAndServeTLS(<span class="string">&quot;server.pem&quot;</span>, <span class="string">&quot;server.key&quot;</span>)</span><br></pre></td></tr></table></figure></li>
+<li><p>JSON 数据格式支持: Gin 支持多种数据通信格式，例如 application&#x2F;json、application&#x2F;xml。可以通过c.ShouldBindJSON函数，将 Body 中的 JSON 格式数据解析到指定的 Struct 中，通过c.JSON函数返回 JSON 格式的数据。</p>
+</li>
+<li><p>路由匹配: 精确匹配。例如，路由为 &#x2F;products&#x2F;:name, 模糊匹配。例如，路由为 &#x2F;products&#x2F;*name</p>
+</li>
+<li><p>路由分组: Gin 通过 Group 函数实现了路由分组的功能。路由分组是一个非常常用的功能，可以将相同版本的路由分为一组，也可以将相同 RESTful 资源的路由分为一组</p>
+</li>
+</ol>
+<figure class="highlight golang"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br></pre></td><td class="code"><pre><span class="line">v1 := router.Group(<span class="string">&quot;/v1&quot;</span>, gin.BasicAuth(gin.Accounts&#123;<span class="string">&quot;foo&quot;</span>: <span class="string">&quot;bar&quot;</span>, <span class="string">&quot;colin&quot;</span>: <span class="string">&quot;colin404&quot;</span>&#125;))</span><br><span class="line">&#123;</span><br><span class="line">    productv1 := v1.Group(<span class="string">&quot;/products&quot;</span>)</span><br><span class="line">    &#123;</span><br><span class="line">        <span class="comment">// 路由匹配</span></span><br><span class="line">        productv1.POST(<span class="string">&quot;&quot;</span>, productHandler.Create)</span><br><span class="line">        productv1.GET(<span class="string">&quot;:name&quot;</span>, productHandler.Get)</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    orderv1 := v1.Group(<span class="string">&quot;/orders&quot;</span>)</span><br><span class="line">    &#123;</span><br><span class="line">        <span class="comment">// 路由匹配</span></span><br><span class="line">        orderv1.POST(<span class="string">&quot;&quot;</span>, orderHandler.Create)</span><br><span class="line">        orderv1.GET(<span class="string">&quot;:name&quot;</span>, orderHandler.Get)</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">v2 := router.Group(<span class="string">&quot;/v2&quot;</span>, gin.BasicAuth(gin.Accounts&#123;<span class="string">&quot;foo&quot;</span>: <span class="string">&quot;bar&quot;</span>, <span class="string">&quot;colin&quot;</span>: <span class="string">&quot;colin404&quot;</span>&#125;))</span><br><span class="line">&#123;</span><br><span class="line">    productv2 := v2.Group(<span class="string">&quot;/products&quot;</span>)</span><br><span class="line">    &#123;</span><br><span class="line">        <span class="comment">// 路由匹配</span></span><br><span class="line">        productv2.POST(<span class="string">&quot;&quot;</span>, productHandler.Create)</span><br><span class="line">        productv2.GET(<span class="string">&quot;:name&quot;</span>, productHandler.Get)</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<ol start="5">
+<li><p>一进程多服务: 实现了两个相同的服务，分别监听在不同的端口</p>
+</li>
+<li><p>参数解析: </p>
+<figure class="highlight golang"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">var</span> product Product </span><br><span class="line"><span class="keyword">if</span> err := c.ShouldBindJSON(&amp;product)</span><br></pre></td></tr></table></figure></li>
+</ol>
+<figure class="highlight golang"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">gin.Default().GET(<span class="string">&quot;/:name&quot;</span>, <span class="literal">nil</span>)</span><br><span class="line"></span><br><span class="line">name := c.Param(<span class="string">&quot;name&quot;</span>)</span><br></pre></td></tr></table></figure>
+
+<ol start="7">
+<li><p>参数校验:</p>
+<figure class="highlight golang"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">if</span> _, ok := u.products[product.Name]; ok &#123; </span><br><span class="line">    c.JSON(http.StatusBadRequest, gin.H&#123;</span><br><span class="line">        <span class="string">&quot;error&quot;</span>: fmt.Sprintf(<span class="string">&quot;product %s already exist&quot;</span>, product.Name)</span><br><span class="line">    &#125;) </span><br><span class="line">    <span class="keyword">return</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>逻辑处理: </p>
+<figure class="highlight golang"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">u.products[product.Name] = product </span><br><span class="line">log.Printf(<span class="string">&quot;Register product %s success&quot;</span>, product.Name)</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>返回结果 </p>
+<figure class="highlight golang"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">c.JSON(http.StatusOK, product)</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>中间件</p>
+</li>
+</ol>
+<p>Gin 支持中间件，HTTP 请求在转发到实际的处理函数之前，会被一系列加载的中间件进行处理。在中间件中，可以解析 HTTP 请求做一些逻辑处理<br></p>
+<p><img src="https://raw.githubusercontent.com/brucecai-2001/Image/master/20220716175903.png"></p>
+<figure class="highlight golang"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">router.Use(gin.Logger(), gin.Recovery()) <span class="comment">// 中间件作用于所有的HTTP请求</span></span><br></pre></td></tr></table></figure>
+
+<ol start="11">
+<li>优雅关停</li>
+</ol>
+<p>对于 HTTP 服务来说，如果访问量大，重启服务的时候可能还有很多连接没有断开，请求没有完成。如果这时候直接关闭服务，这些连接会直接断掉，请求异常终止，这就会对用户体验和产品口碑造成很大影响。<br></p>
+<p>借助第三方的 Go 包: 使用 fvbock&#x2F;endless 来替换掉 net&#x2F;http 的 ListenAndServe 方法<br></p>
+<figure class="highlight golang"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">endless.ListenAndServe(<span class="string">&quot;:4242&quot;</span>, router)</span><br></pre></td></tr></table></figure>
+
+<p>编码实现:<br>有缓冲 channel，并且调用 signal.Notify 函数将该 channel 绑定到 SIGINT、SIGTERM 信号上。这样，收到 SIGINT、SIGTERM 信号后，quilt 通道会被写入值，从而结束阻塞状态，程序继续运行，执行 srv.Shutdown(ctx)<br></p>
+<figure class="highlight golang"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">quit := <span class="built_in">make</span>(<span class="keyword">chan</span> os.Signal, <span class="number">1</span>)</span><br><span class="line"><span class="comment">// SIGINT: 程序终止(interrupt)信号, 在用户键入INTR字符(通常是Ctrl-C)时发出</span></span><br><span class="line"><span class="comment">// SIGTERM: 程序结束(terminate)信号, 与SIGKILL不同的是该信号可以被阻塞和处理。通常用来要求程序自己正常退出，shell命令kill缺省产生这个信号</span></span><br><span class="line">signal.Notify(quit, syscall.SIGINT, syscall.SIGTERM)</span><br><span class="line">&lt;-quit </span><br><span class="line">log.Println(<span class="string">&quot;Shutting down server...&quot;</span>)</span><br><span class="line"></span><br><span class="line">srv.Shutdown(ctx)</span><br></pre></td></tr></table></figure>
+        </div>
+
+        
+            <section class="post-copyright">
+                
+                    <p class="copyright-item">
+                        <span>Author:</span>
+                        <span>Xinyu</span>
+                    </p>
+                
+                
+                    <p class="copyright-item">
+                        <span>Permalink:</span>
+                        <span><a href="http://example.com/2022/07/16/[Golang]Web%E6%9C%8D%E5%8A%A1/">http://example.com/2022/07/16/[Golang]Web%E6%9C%8D%E5%8A%A1/</a></span>
+                    </p>
+                
+                
+                    <p class="copyright-item">
+                        <span>License:</span>
+                        <span>Copyright (c) 2019 <a target="_blank" rel="noopener" href="http://creativecommons.org/licenses/by-nc/4.0/">CC-BY-NC-4.0</a> LICENSE</span>
+                    </p>
+                
+                
+                     <p class="copyright-item">
+                         <span>Slogan:</span>
+                         <span>Coffee or Tea</span>
+                     </p>
+                
+
+            </section>
+        
+        <section class="post-tags">
+            <div>
+                <span>Tag(s):</span>
+                <span class="tag">
+                    
+                </span>
+            </div>
+            <div>
+                <a href="javascript:window.history.back();">back</a>
+                <span>· </span>
+                <a href="/">home</a>
+            </div>
+        </section>
+        <section class="post-nav">
+            
+                <a class="prev" rel="prev" href="/2022/07/16/%5B%E5%88%86%E5%B8%83%E5%BC%8F%E7%B3%BB%E7%BB%9F%5D%E6%A6%82%E8%BF%B02/">分布式系统---概述(2)</a>
+            
+            
+            <a class="next" rel="next" href="/2022/07/16/%5BGolang%5D%E5%BA%94%E7%94%A8%E6%9E%B6%E6%9E%84/">Golang---应用构建</a>
+            
+        </section>
+
+
+    </article>
+</div>
+
+            </div>
+            <footer id="footer" class="footer">
+    <div class="copyright">
+        <span>© Xinyu | Powered by <a href="https://hexo.io" target="_blank">Hexo</a> & <a href="https://github.com/Siricee/hexo-theme-Chic" target="_blank">Chic</a></span>
+    </div>
+</footer>
+
+    </div>
+</body>
+
+</html>

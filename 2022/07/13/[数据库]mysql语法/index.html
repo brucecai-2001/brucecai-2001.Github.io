@@ -13,7 +13,7 @@
 
 
 
-<title>数据库(1)---mysql语法 | Hexo</title>
+<title>数据库---mysql语法 | Hexo</title>
 
 
 
@@ -192,7 +192,7 @@
     
     <article class="post-wrap">
         <header class="post-header">
-            <h1 class="post-title">数据库(1)---mysql语法</h1>
+            <h1 class="post-title">数据库---mysql语法</h1>
             
                 <div class="post-meta">
                     
@@ -314,9 +314,7 @@
 
 
 <h2 id="自然连接"><a href="#自然连接" class="headerlink" title="自然连接"></a>自然连接</h2><p>自然连接是把同名列通过等值测试连接起来的，同名列可以有多个。<br></p>
-<h2 id="外连接"><a href="#外连接" class="headerlink" title="外连接"></a>外连接</h2><p>外连接保留了没有关联的那些行。分为左外连接，右外连接以及全外连接，左外连接就是保留左表没有关联的行。<br><br><img src="https://raw.githubusercontent.com/brucecai-2001/Image/master/20220714222720.png"></p>
-<figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">SELECT</span> Customers.cust_id, Customer.cust_name, Orders.order_id</span><br><span class="line"><span class="keyword">FROM</span> Customers <span class="keyword">LEFT</span> <span class="keyword">OUTER</span> <span class="keyword">JOIN</span> Orders</span><br><span class="line"><span class="keyword">ON</span> Customers.cust_id <span class="operator">=</span> Orders.cust_id;</span><br></pre></td></tr></table></figure>
-
+<h2 id="外连接"><a href="#外连接" class="headerlink" title="外连接"></a>外连接</h2><p>外连接保留了没有关联的那些行。分为左外连接，右外连接以及全外连接，左外连接就是保留左表没有关联的行。<br><br><img src="https://raw.githubusercontent.com/brucecai-2001/Image/master/20220720145149.png"></p>
 <br>
 
 <h1 id="组合查询"><a href="#组合查询" class="headerlink" title="组合查询"></a>组合查询</h1><p>使用 UNION 来组合两个查询，如果第一个查询返回 M 行，第二个查询返回 N 行，那么组合查询的结果一般为 M+N 行。<br></p>
@@ -332,6 +330,48 @@
 
 <br>
 
+<h1 id="存储过程"><a href="#存储过程" class="headerlink" title="存储过程"></a>存储过程</h1><p>存储过程可以看成是对一系列 SQL 操作的批处理。<br></p>
+<figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">delimiter $$　　#将语句的结束符号从分号;临时改为两个$$(可以是自定义)</span><br><span class="line"></span><br><span class="line"> <span class="keyword">CREATE</span> <span class="keyword">PROCEDURE</span> delete_matches(<span class="keyword">IN</span> p_playerno <span class="type">INTEGER</span>)</span><br><span class="line"> <span class="keyword">BEGIN</span></span><br><span class="line"> 　　<span class="keyword">DELETE</span> <span class="keyword">FROM</span> <span class="keyword">MATCHES</span></span><br><span class="line">    <span class="keyword">WHERE</span> playerno <span class="operator">=</span> p_playerno;</span><br><span class="line"> <span class="keyword">END</span>$$</span><br><span class="line"></span><br><span class="line">delimiter;　　#将语句的结束符号恢复为分号</span><br></pre></td></tr></table></figure>
+
+<br>
+
+<h1 id="游标"><a href="#游标" class="headerlink" title="游标"></a>游标</h1><p>在存储过程中使用游标可以对一个结果集进行移动遍历。<br></p>
+<h2 id="声明游标"><a href="#声明游标" class="headerlink" title="声明游标"></a>声明游标</h2><figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">DECLARE</span> cursor_name <span class="keyword">CURSOR</span> <span class="keyword">FOR</span> select_statement;</span><br></pre></td></tr></table></figure>
+
+<h2 id="打开游标"><a href="#打开游标" class="headerlink" title="打开游标"></a>打开游标</h2><figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">OPEN</span> cursor_name;</span><br></pre></td></tr></table></figure>
+
+<h2 id="使用游标"><a href="#使用游标" class="headerlink" title="使用游标"></a>使用游标</h2><figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">FETCH</span> cursor_name <span class="keyword">INTO</span> var_name [,var_name]...</span><br></pre></td></tr></table></figure>
+
+<h2 id="关闭游标"><a href="#关闭游标" class="headerlink" title="关闭游标"></a>关闭游标</h2><figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">CLOSE</span> cursor_name;</span><br></pre></td></tr></table></figure>
+
+<br>
+
+<h1 id="触发器"><a href="#触发器" class="headerlink" title="触发器"></a>触发器</h1><p>触发器会在某个表执行以下语句时而自动执行：DELETE、INSERT、UPDATE。</p>
+<figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">CREATE</span> <span class="keyword">TRIGGER</span> mytrigger AFTER <span class="keyword">INSERT</span> <span class="keyword">ON</span> mytable</span><br><span class="line"><span class="keyword">FOR</span> <span class="keyword">EACH</span> <span class="type">ROW</span> <span class="keyword">SELECT</span> NEW.col <span class="keyword">into</span> <span class="variable">@result</span>;</span><br><span class="line"></span><br><span class="line"><span class="keyword">SELECT</span> <span class="variable">@result</span>; <span class="comment">-- 获取结果</span></span><br></pre></td></tr></table></figure>
+
+<br>
+
+<h1 id="事务管理"><a href="#事务管理" class="headerlink" title="事务管理"></a>事务管理</h1><ol>
+<li>不能回退 SELECT 语句，回退 SELECT 语句也没意义；也不能回退 CREATE 和 DROP 语句。</li>
+<li>MySQL 的事务提交默认是隐式提交，每执行一条语句就把这条语句当成一个事务然后进行提交。当出现 START TRANSACTION 语句时，会关闭隐式提交；当 COMMIT 或 ROLLBACK 语句执行后，事务会自动关闭，重新恢复隐式提交。</li>
+<li>如果没有设置保留点，ROLLBACK 会回退到 START TRANSACTION 语句处；如果设置了保留点，并且在 ROLLBACK 中指定该保留点，则会回退到该保留点。</li>
+</ol>
+<br>
+
+<h1 id="账户管理"><a href="#账户管理" class="headerlink" title="账户管理"></a>账户管理</h1><p>创建账户:</p>
+<figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">CREATE</span> <span class="keyword">USER</span> myuser IDENTIFIED <span class="keyword">BY</span> <span class="string">&#x27;mypassword&#x27;</span>;</span><br></pre></td></tr></table></figure>
+
+<p>删除账户:</p>
+<figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">DROP</span> <span class="keyword">USER</span> myuser;</span><br></pre></td></tr></table></figure>
+
+<p>查看权限:</p>
+<figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">SHOW</span> GRANTS <span class="keyword">FOR</span> myuser;</span><br></pre></td></tr></table></figure>
+
+<p>授予权限:</p>
+<figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">GRANT</span> <span class="keyword">SELECT</span>, <span class="keyword">INSERT</span> <span class="keyword">ON</span> mydatabase.<span class="operator">*</span> <span class="keyword">TO</span> myuser;</span><br></pre></td></tr></table></figure>
+
+<p>删除权限:</p>
+<figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">REVOKE</span> <span class="keyword">SELECT</span>, <span class="keyword">INSERT</span> <span class="keyword">ON</span> mydatabase.<span class="operator">*</span> <span class="keyword">FROM</span> myuser;</span><br></pre></td></tr></table></figure>
 
         </div>
 
@@ -382,7 +422,7 @@
                 <a class="prev" rel="prev" href="/2022/07/13/%5B%E9%A1%B9%E7%9B%AE%5DIAM/">IAM</a>
             
             
-            <a class="next" rel="next" href="/2022/07/11/%5B%E5%BE%AE%E6%9C%8D%E5%8A%A1%5DgRPC/">微服务(2)---RPC和gRPC</a>
+            <a class="next" rel="next" href="/2022/07/07/%5B%E6%93%8D%E4%BD%9C%E7%B3%BB%E7%BB%9F%5DIO%E5%A4%8D%E7%94%A8/">操作系统(1)---套接字</a>
             
         </section>
 

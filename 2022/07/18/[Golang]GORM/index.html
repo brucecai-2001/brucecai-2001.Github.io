@@ -1,0 +1,360 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+<meta name="viewport"
+      content="width=device-width, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+<meta http-equiv="X-UA-Compatible" content="ie=edge">
+
+    <meta name="author" content="Xinyu">
+
+
+
+
+
+<title>Golang---GORM | Hexo</title>
+
+
+
+    <link rel="icon" href="/favicon.ico">
+
+
+
+
+    <!-- stylesheets list from _config.yml -->
+    
+    <link rel="stylesheet" href="/css/style.css">
+    
+
+
+
+    <!-- scripts list from _config.yml -->
+    
+    <script src="/js/script.js"></script>
+    
+    <script src="/js/tocbot.min.js"></script>
+    
+
+
+
+    
+    
+        
+    
+
+
+<meta name="generator" content="Hexo 6.2.0"></head>
+
+<body>
+    <script>
+        // this function is used to check current theme before page loaded.
+        (() => {
+            const currentTheme = window.localStorage && window.localStorage.getItem('theme') || '';
+            const isDark = currentTheme === 'dark';
+            const pagebody = document.getElementsByTagName('body')[0]
+            if (isDark) {
+                pagebody.classList.add('dark-theme');
+                // mobile
+                document.getElementById("mobile-toggle-theme").innerText = "· Dark"
+            } else {
+                pagebody.classList.remove('dark-theme');
+                // mobile
+                document.getElementById("mobile-toggle-theme").innerText = "· Light"
+            }
+        })();
+    </script>
+
+    <div class="wrapper">
+        <header>
+    <nav class="navbar">
+        <div class="container">
+            <div class="navbar-header header-logo"><a href="/">Xinyu&#39;s Blog</a></div>
+            <div class="menu navbar-right">
+                
+                    <a class="menu-item" href="/archives">Posts</a>
+                
+                    <a class="menu-item" href="/category">Categories</a>
+                
+                    <a class="menu-item" href="/tag">Tags</a>
+                
+                <input id="switch_default" type="checkbox" class="switch_default">
+                <label for="switch_default" class="toggleBtn"></label>
+            </div>
+        </div>
+    </nav>
+
+    
+    <nav class="navbar-mobile" id="nav-mobile">
+        <div class="container">
+            <div class="navbar-header">
+                <div>
+                    <a href="/">Xinyu&#39;s Blog</a><a id="mobile-toggle-theme">·&nbsp;Light</a>
+                </div>
+                <div class="menu-toggle" onclick="mobileBtn()">&#9776; Menu</div>
+            </div>
+            <div class="menu" id="mobile-menu">
+                
+                    <a class="menu-item" href="/archives">Posts</a>
+                
+                    <a class="menu-item" href="/category">Categories</a>
+                
+                    <a class="menu-item" href="/tag">Tags</a>
+                
+            </div>
+        </div>
+    </nav>
+
+</header>
+<script>
+    var mobileBtn = function f() {
+        var toggleMenu = document.getElementsByClassName("menu-toggle")[0];
+        var mobileMenu = document.getElementById("mobile-menu");
+        if(toggleMenu.classList.contains("active")){
+           toggleMenu.classList.remove("active")
+            mobileMenu.classList.remove("active")
+        }else{
+            toggleMenu.classList.add("active")
+            mobileMenu.classList.add("active")
+        }
+    }
+</script>
+            <div class="main">
+                <div class="container">
+    
+    
+        <div class="post-toc">
+    <div class="tocbot-list">
+    </div>
+    <div class="tocbot-list-menu">
+        <a class="tocbot-toc-expand" onclick="expand_toc()">Expand all</a>
+        <a onclick="go_top()">Back to top</a>
+        <a onclick="go_bottom()">Go to bottom</a>
+    </div>
+</div>
+
+<script>
+    var tocbot_timer;
+    var DEPTH_MAX = 6; // 为 6 时展开所有
+    var tocbot_default_config = {
+        tocSelector: '.tocbot-list',
+        contentSelector: '.post-content',
+        headingSelector: 'h1, h2, h3, h4, h5',
+        orderedList: false,
+        scrollSmooth: true,
+        onClick: extend_click,
+    };
+
+    function extend_click() {
+        clearTimeout(tocbot_timer);
+        tocbot_timer = setTimeout(function() {
+            tocbot.refresh(obj_merge(tocbot_default_config, {
+                hasInnerContainers: true
+            }));
+        }, 420); // 这个值是由 tocbot 源码里定义的 scrollSmoothDuration 得来的
+    }
+
+    document.ready(function() {
+        tocbot.init(obj_merge(tocbot_default_config, {
+            collapseDepth: 1
+        }));
+    });
+
+    function expand_toc() {
+        var b = document.querySelector('.tocbot-toc-expand');
+        var expanded = b.getAttribute('data-expanded');
+        expanded ? b.removeAttribute('data-expanded') : b.setAttribute('data-expanded', true);
+        tocbot.refresh(obj_merge(tocbot_default_config, {
+            collapseDepth: expanded ? 1 : DEPTH_MAX
+        }));
+        b.innerText = expanded ? 'Expand all' : 'Collapse all';
+    }
+
+    function go_top() {
+        window.scrollTo(0, 0);
+    }
+
+    function go_bottom() {
+        window.scrollTo(0, document.body.scrollHeight);
+    }
+
+    function obj_merge(target, source) {
+        for (var item in source) {
+            if (source.hasOwnProperty(item)) {
+                target[item] = source[item];
+            }
+        }
+        return target;
+    }
+</script>
+    
+
+    
+    <article class="post-wrap">
+        <header class="post-header">
+            <h1 class="post-title">Golang---GORM</h1>
+            
+                <div class="post-meta">
+                    
+                        Author: <a itemprop="author" rel="author" href="/">Xinyu</a>
+                    
+
+                    
+                        <span class="post-time">
+                        Date: <a href="#">July 18, 2022&nbsp;&nbsp;16:03:50</a>
+                        </span>
+                    
+                    
+                        <span class="post-category">
+                    Category:
+                            
+                                <a href="/categories/Go/">Go</a>
+                            
+                        </span>
+                    
+                </div>
+            
+        </header>
+
+        <div class="post-content">
+            <h1 id="MOdels"><a href="#MOdels" class="headerlink" title="MOdels"></a>MOdels</h1><p>GORM 模型（Models），Models 是标准的 Go struct，用来代表数据库中的一个表结构。可以给 Models 添加 TableName 方法，来告诉 GORM 该 Models 映射到数据库中的哪张表<br></p>
+<figure class="highlight golang"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">type</span> Product <span class="keyword">struct</span> &#123;</span><br><span class="line">    gorm.Model</span><br><span class="line">    Code  <span class="type">string</span> <span class="string">`gorm:&quot;column:code&quot;`</span></span><br><span class="line">    Price <span class="type">uint</span>   <span class="string">`gorm:&quot;column:price&quot;`</span></span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">// TableName maps to mysql table name.</span></span><br><span class="line"><span class="function"><span class="keyword">func</span> <span class="params">(p *Product)</span></span> TableName() <span class="type">string</span> &#123;</span><br><span class="line">    <span class="keyword">return</span> <span class="string">&quot;product&quot;</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<br>
+
+<h1 id="打开数据库"><a href="#打开数据库" class="headerlink" title="打开数据库"></a>打开数据库</h1><figure class="highlight golang"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">dsn := fmt.Sprintf(<span class="string">`%s:%s@tcp(%s)/%s?charset=utf8&amp;parseTime=%t&amp;loc=%s`</span>, *username, *password, *host, *database, <span class="literal">true</span>, <span class="string">&quot;Local&quot;</span>) </span><br><span class="line"></span><br><span class="line">db, err := gorm.Open(mysql.Open(dsn), &amp;gorm.Config&#123;&#125;)</span><br></pre></td></tr></table></figure>
+<p>创建完数据库连接之后，会返回数据库实例 db ，之后就可以调用 db 实例中的方法，完成数据库的 CURD 操作。</p>
+<br>
+
+<h1 id="自动迁移表结构。"><a href="#自动迁移表结构。" class="headerlink" title="自动迁移表结构。"></a>自动迁移表结构。</h1><figure class="highlight golang"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">db.AutoMigrate(&amp;Product&#123;&#125;)</span><br></pre></td></tr></table></figure>
+<p>GORM 的 AutoMigrate 方法，只对新增的字段或索引进行变更，理论上是没有风险的。<br></p>
+<br>
+
+<h1 id="插入"><a href="#插入" class="headerlink" title="插入"></a>插入</h1><figure class="highlight golang"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">//  Insert the value into database</span></span><br><span class="line"><span class="keyword">if</span> err := db.Create(&amp;Product&#123;Code: <span class="string">&quot;D42&quot;</span>, Price: <span class="number">100</span>&#125;).Error; err != <span class="literal">nil</span> &#123;</span><br><span class="line">    log.Fatalf(<span class="string">&quot;Create error: %v&quot;</span>, err)</span><br><span class="line">&#125;</span><br><span class="line"><span class="comment">//PrintProducts 方法打印当前表中的所有数据记录</span></span><br><span class="line">PrintProducts(db)</span><br></pre></td></tr></table></figure>
+
+<p>当需要插入的数据量比较大时，可以批量插入，以提高插入性能：<br></p>
+<figure class="highlight golang"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">var</span> users = []User&#123;&#123;Name: <span class="string">&quot;jinzhu1&quot;</span>&#125;, &#123;Name: <span class="string">&quot;jinzhu2&quot;</span>&#125;, &#123;Name: <span class="string">&quot;jinzhu3&quot;</span>&#125;&#125;</span><br><span class="line">DB.Create(&amp;users)</span><br><span class="line"></span><br><span class="line"><span class="keyword">for</span> _, user := <span class="keyword">range</span> users &#123;</span><br><span class="line">  user.ID <span class="comment">// 1,2,3</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<br>
+
+
+<h1 id="更新表记录。"><a href="#更新表记录。" class="headerlink" title="更新表记录。"></a>更新表记录。</h1><figure class="highlight golang"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">db.First(&amp;user)</span><br><span class="line"></span><br><span class="line">user.Name = <span class="string">&quot;jinzhu 2&quot;</span></span><br><span class="line">user.Age = <span class="number">100</span></span><br><span class="line"><span class="comment">// UPDATE users SET name=&#x27;jinzhu 2&#x27;, age=100, birthday=&#x27;2016-01-01&#x27;, updated_at = &#x27;2013-11-17 21:34:10&#x27; WHERE id=111;</span></span><br><span class="line">db.Save(&amp;user)</span><br></pre></td></tr></table></figure>
+<p>通过 Save 方法，可以把 product 变量中所有跟数据库不一致的字段更新到数据库中</p>
+<br>
+
+<h1 id="删除表记录。"><a href="#删除表记录。" class="headerlink" title="删除表记录。"></a>删除表记录。</h1><figure class="highlight golang"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// Delete value match given conditions</span></span><br><span class="line"><span class="comment">//// UPDATE Products SET deleted_at=&quot;2013-10-29 10:23&quot; WHERE code = D42</span></span><br><span class="line"><span class="keyword">if</span> err := db.Where(<span class="string">&quot;code = ?&quot;</span>, <span class="string">&quot;D42&quot;</span>).Delete(&amp;Product&#123;&#125;).Error; err != <span class="literal">nil</span> &#123;</span><br><span class="line">    log.Fatalf(<span class="string">&quot;Delete product error: %v&quot;</span>, err)</span><br><span class="line">&#125;</span><br><span class="line">PrintProducts(db)</span><br></pre></td></tr></table></figure>
+
+<p>批量删除: <br></p>
+<figure class="highlight golang"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">db.Where(<span class="string">&quot;name in (?)&quot;</span>, []<span class="type">string</span>&#123;<span class="string">&quot;jinzhu&quot;</span>, <span class="string">&quot;colin&quot;</span>&#125;).Delete(&amp;User&#123;&#125;)</span><br></pre></td></tr></table></figure>
+
+<p>软删除: 软删除是指执行 Delete 时，记录不会被从数据库中真正删除。GORM 会将 DeletedAt 设置为当前时间，并且不能通过正常的方式查询到该记录。如果模型包含了一个 gorm.DeletedAt 字段，GORM 在执行删除操作时，会软删除该记录。软删除可以使这些重要的数据后期能够被恢复，并且便于以后的排障。<br></p>
+<figure class="highlight golang"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">db.Unscoped().Where(<span class="string">&quot;age = 20&quot;</span>).Find(&amp;users)</span><br><span class="line"><span class="comment">//SELECT * FROM users WHERE age = 20;</span></span><br></pre></td></tr></table></figure>
+
+<p>永久删除: <br></p>
+<figure class="highlight golang"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// DELETE FROM orders WHERE id=10;</span></span><br><span class="line">db.Unscoped().Delete(&amp;order)</span><br></pre></td></tr></table></figure>
+
+<br>
+
+<h1 id="查询单条记录"><a href="#查询单条记录" class="headerlink" title="查询单条记录"></a>查询单条记录</h1><figure class="highlight golang"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// 获取第一条记录（主键升序）</span></span><br><span class="line"><span class="comment">// SELECT * FROM users ORDER BY id LIMIT 1;</span></span><br><span class="line">db.First(&amp;user)</span><br><span class="line"></span><br><span class="line"><span class="comment">// 获取最后一条记录（主键降序）</span></span><br><span class="line"><span class="comment">// SELECT * FROM users ORDER BY id DESC LIMIT 1;</span></span><br><span class="line">db.Last(&amp;user)</span><br><span class="line">result := db.First(&amp;user)</span><br><span class="line">result.RowsAffected <span class="comment">// 返回找到的记录数</span></span><br><span class="line">result.Error        <span class="comment">// returns error</span></span><br><span class="line"></span><br><span class="line"><span class="comment">// 检查 ErrRecordNotFound 错误</span></span><br><span class="line">errors.Is(result.Error, gorm.ErrRecordNotFound)</span><br></pre></td></tr></table></figure>
+
+<br>
+
+<h1 id="查询所有符合条件的记录"><a href="#查询所有符合条件的记录" class="headerlink" title="查询所有符合条件的记录"></a>查询所有符合条件的记录</h1><figure class="highlight golang"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">users := <span class="built_in">make</span>([]*User, <span class="number">0</span>)</span><br><span class="line"></span><br><span class="line"><span class="comment">// SELECT * FROM users WHERE name &lt;&gt; &#x27;jinzhu&#x27;;</span></span><br><span class="line">db.Where(<span class="string">&quot;name &lt;&gt; ?&quot;</span>, <span class="string">&quot;jinzhu&quot;</span>).Find(&amp;users)</span><br></pre></td></tr></table></figure>
+
+<br>
+
+<h1 id="智能选择字段"><a href="#智能选择字段" class="headerlink" title="智能选择字段"></a>智能选择字段</h1><figure class="highlight golang"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">type</span> APIUser <span class="keyword">struct</span> &#123;</span><br><span class="line">  ID   <span class="type">uint</span></span><br><span class="line">  Name <span class="type">string</span></span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">// SELECT `id`, `name` FROM `users` LIMIT 10;</span></span><br><span class="line">db.Model(&amp;User&#123;&#125;).Limit(<span class="number">10</span>).Find(&amp;APIUser&#123;&#125;)</span><br></pre></td></tr></table></figure>
+
+<br>
+
+<h1 id="指定检索记录时的排序方式"><a href="#指定检索记录时的排序方式" class="headerlink" title="指定检索记录时的排序方式"></a>指定检索记录时的排序方式</h1><figure class="highlight golang"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// SELECT * FROM users ORDER BY age desc, name;</span></span><br><span class="line">db.Order(<span class="string">&quot;age desc, name&quot;</span>).Find(&amp;users)</span><br></pre></td></tr></table></figure>
+
+<br>
+
+<h1 id="Limit-amp-Offset"><a href="#Limit-amp-Offset" class="headerlink" title="Limit &amp; Offset"></a>Limit &amp; Offset</h1><p>Offset 指定从第几条记录开始查询，Limit 指定返回的最大记录数。</p>
+<figure class="highlight golang"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// SELECT * FROM users OFFSET 5 LIMIT 10;</span></span><br><span class="line">db.Limit(<span class="number">10</span>).Offset(<span class="number">5</span>).Find(&amp;users)</span><br></pre></td></tr></table></figure>
+
+<br>
+
+<h1 id="Count-可以获取匹配的条数。"><a href="#Count-可以获取匹配的条数。" class="headerlink" title="Count 可以获取匹配的条数。"></a>Count 可以获取匹配的条数。</h1><figure class="highlight golang"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">var</span> count <span class="type">int64</span></span><br><span class="line"><span class="comment">// SELECT count(1) FROM users WHERE name = &#x27;jinzhu&#x27;; (count)</span></span><br><span class="line">db.Model(&amp;User&#123;&#125;).Where(<span class="string">&quot;name = ?&quot;</span>, <span class="string">&quot;jinzhu&quot;</span>).Count(&amp;count)</span><br></pre></td></tr></table></figure>
+
+<br>
+
+<h1 id="原生-SQL"><a href="#原生-SQL" class="headerlink" title="原生 SQL"></a>原生 SQL</h1><figure class="highlight golang"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">type</span> Result <span class="keyword">struct</span> &#123;</span><br><span class="line">  ID   <span class="type">int</span></span><br><span class="line">  Name <span class="type">string</span></span><br><span class="line">  Age  <span class="type">int</span></span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="keyword">var</span> result Result</span><br><span class="line">db.Raw(<span class="string">&quot;SELECT id, name, age FROM users WHERE name = ?&quot;</span>, <span class="number">3</span>).Scan(&amp;result)</span><br></pre></td></tr></table></figure>
+
+<br>
+
+<h1 id="GORM-钩子"><a href="#GORM-钩子" class="headerlink" title="GORM 钩子"></a>GORM 钩子</h1><p><img src="https://raw.githubusercontent.com/brucecai-2001/Image/master/20220718165327.png"> s</p>
+<br>
+
+
+<p>🔗： <a target="_blank" rel="noopener" href="https://gorm.io/zh_CN/">https://gorm.io/zh_CN/</a></p>
+
+        </div>
+
+        
+            <section class="post-copyright">
+                
+                    <p class="copyright-item">
+                        <span>Author:</span>
+                        <span>Xinyu</span>
+                    </p>
+                
+                
+                    <p class="copyright-item">
+                        <span>Permalink:</span>
+                        <span><a href="http://example.com/2022/07/18/[Golang]GORM/">http://example.com/2022/07/18/[Golang]GORM/</a></span>
+                    </p>
+                
+                
+                    <p class="copyright-item">
+                        <span>License:</span>
+                        <span>Copyright (c) 2019 <a target="_blank" rel="noopener" href="http://creativecommons.org/licenses/by-nc/4.0/">CC-BY-NC-4.0</a> LICENSE</span>
+                    </p>
+                
+                
+                     <p class="copyright-item">
+                         <span>Slogan:</span>
+                         <span>Coffee or Tea</span>
+                     </p>
+                
+
+            </section>
+        
+        <section class="post-tags">
+            <div>
+                <span>Tag(s):</span>
+                <span class="tag">
+                    
+                </span>
+            </div>
+            <div>
+                <a href="javascript:window.history.back();">back</a>
+                <span>· </span>
+                <a href="/">home</a>
+            </div>
+        </section>
+        <section class="post-nav">
+            
+                <a class="prev" rel="prev" href="/2022/07/18/%5BGolang%5DSDK/">Golang---SDK</a>
+            
+            
+            <a class="next" rel="next" href="/2022/07/18/%5B%E5%88%86%E5%B8%83%E5%BC%8F%E7%B3%BB%E7%BB%9F%5D%E9%80%89%E4%B8%BE/">分布式系统协调---选举算法</a>
+            
+        </section>
+
+
+    </article>
+</div>
+
+            </div>
+            <footer id="footer" class="footer">
+    <div class="copyright">
+        <span>© Xinyu | Powered by <a href="https://hexo.io" target="_blank">Hexo</a> & <a href="https://github.com/Siricee/hexo-theme-Chic" target="_blank">Chic</a></span>
+    </div>
+</footer>
+
+    </div>
+</body>
+
+</html>
