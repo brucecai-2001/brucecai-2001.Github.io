@@ -1,0 +1,310 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+<meta name="viewport"
+      content="width=device-width, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+<meta http-equiv="X-UA-Compatible" content="ie=edge">
+
+    <meta name="author" content="Xinyu">
+
+
+
+
+
+<title>分布式高可用---流量控制 | Hexo</title>
+
+
+
+    <link rel="icon" href="/favicon.ico">
+
+
+
+
+    <!-- stylesheets list from _config.yml -->
+    
+    <link rel="stylesheet" href="/css/style.css">
+    
+
+
+
+    <!-- scripts list from _config.yml -->
+    
+    <script src="/js/script.js"></script>
+    
+    <script src="/js/tocbot.min.js"></script>
+    
+
+
+
+    
+    
+        
+    
+
+
+<meta name="generator" content="Hexo 6.2.0"></head>
+
+<body>
+    <script>
+        // this function is used to check current theme before page loaded.
+        (() => {
+            const currentTheme = window.localStorage && window.localStorage.getItem('theme') || '';
+            const isDark = currentTheme === 'dark';
+            const pagebody = document.getElementsByTagName('body')[0]
+            if (isDark) {
+                pagebody.classList.add('dark-theme');
+                // mobile
+                document.getElementById("mobile-toggle-theme").innerText = "· Dark"
+            } else {
+                pagebody.classList.remove('dark-theme');
+                // mobile
+                document.getElementById("mobile-toggle-theme").innerText = "· Light"
+            }
+        })();
+    </script>
+
+    <div class="wrapper">
+        <header>
+    <nav class="navbar">
+        <div class="container">
+            <div class="navbar-header header-logo"><a href="/">Xinyu&#39;s Blog</a></div>
+            <div class="menu navbar-right">
+                
+                    <a class="menu-item" href="/archives">Posts</a>
+                
+                    <a class="menu-item" href="/category">Categories</a>
+                
+                    <a class="menu-item" href="/tag">Tags</a>
+                
+                <input id="switch_default" type="checkbox" class="switch_default">
+                <label for="switch_default" class="toggleBtn"></label>
+            </div>
+        </div>
+    </nav>
+
+    
+    <nav class="navbar-mobile" id="nav-mobile">
+        <div class="container">
+            <div class="navbar-header">
+                <div>
+                    <a href="/">Xinyu&#39;s Blog</a><a id="mobile-toggle-theme">·&nbsp;Light</a>
+                </div>
+                <div class="menu-toggle" onclick="mobileBtn()">&#9776; Menu</div>
+            </div>
+            <div class="menu" id="mobile-menu">
+                
+                    <a class="menu-item" href="/archives">Posts</a>
+                
+                    <a class="menu-item" href="/category">Categories</a>
+                
+                    <a class="menu-item" href="/tag">Tags</a>
+                
+            </div>
+        </div>
+    </nav>
+
+</header>
+<script>
+    var mobileBtn = function f() {
+        var toggleMenu = document.getElementsByClassName("menu-toggle")[0];
+        var mobileMenu = document.getElementById("mobile-menu");
+        if(toggleMenu.classList.contains("active")){
+           toggleMenu.classList.remove("active")
+            mobileMenu.classList.remove("active")
+        }else{
+            toggleMenu.classList.add("active")
+            mobileMenu.classList.add("active")
+        }
+    }
+</script>
+            <div class="main">
+                <div class="container">
+    
+    
+        <div class="post-toc">
+    <div class="tocbot-list">
+    </div>
+    <div class="tocbot-list-menu">
+        <a class="tocbot-toc-expand" onclick="expand_toc()">Expand all</a>
+        <a onclick="go_top()">Back to top</a>
+        <a onclick="go_bottom()">Go to bottom</a>
+    </div>
+</div>
+
+<script>
+    var tocbot_timer;
+    var DEPTH_MAX = 6; // 为 6 时展开所有
+    var tocbot_default_config = {
+        tocSelector: '.tocbot-list',
+        contentSelector: '.post-content',
+        headingSelector: 'h1, h2, h3, h4, h5',
+        orderedList: false,
+        scrollSmooth: true,
+        onClick: extend_click,
+    };
+
+    function extend_click() {
+        clearTimeout(tocbot_timer);
+        tocbot_timer = setTimeout(function() {
+            tocbot.refresh(obj_merge(tocbot_default_config, {
+                hasInnerContainers: true
+            }));
+        }, 420); // 这个值是由 tocbot 源码里定义的 scrollSmoothDuration 得来的
+    }
+
+    document.ready(function() {
+        tocbot.init(obj_merge(tocbot_default_config, {
+            collapseDepth: 1
+        }));
+    });
+
+    function expand_toc() {
+        var b = document.querySelector('.tocbot-toc-expand');
+        var expanded = b.getAttribute('data-expanded');
+        expanded ? b.removeAttribute('data-expanded') : b.setAttribute('data-expanded', true);
+        tocbot.refresh(obj_merge(tocbot_default_config, {
+            collapseDepth: expanded ? 1 : DEPTH_MAX
+        }));
+        b.innerText = expanded ? 'Expand all' : 'Collapse all';
+    }
+
+    function go_top() {
+        window.scrollTo(0, 0);
+    }
+
+    function go_bottom() {
+        window.scrollTo(0, document.body.scrollHeight);
+    }
+
+    function obj_merge(target, source) {
+        for (var item in source) {
+            if (source.hasOwnProperty(item)) {
+                target[item] = source[item];
+            }
+        }
+        return target;
+    }
+</script>
+    
+
+    
+    <article class="post-wrap">
+        <header class="post-header">
+            <h1 class="post-title">分布式高可用---流量控制</h1>
+            
+                <div class="post-meta">
+                    
+                        Author: <a itemprop="author" rel="author" href="/">Xinyu</a>
+                    
+
+                    
+                        <span class="post-time">
+                        Date: <a href="#">July 26, 2022&nbsp;&nbsp;16:10:39</a>
+                        </span>
+                    
+                    
+                        <span class="post-category">
+                    Category:
+                            
+                                <a href="/categories/%E5%88%86%E5%B8%83%E5%BC%8F%E9%AB%98%E5%8F%AF%E7%94%A8/">分布式高可用</a>
+                            
+                        </span>
+                    
+                </div>
+            
+        </header>
+
+        <div class="post-content">
+            <p>负载均衡的核心在于，将用户请求均匀分配到多个处理服务器处理，以解决单个服务器的单点瓶颈问题。但，如果用户请求数非常多的话，即便实现了负载均衡，服务器能力达到上限，还是无法处理所有的用户请求。<br></p>
+<p>分布式流量控制就是在分布式系统下，控制每个服务器接收的请求数，以保证服务器来得及处理这些请求，也就是说尽可能保证用户请求持续地被处理，而不是让大量的用户请求“阻塞”在服务器中，等待被执行。<br></p>
+<h1 id="漏桶策"><a href="#漏桶策" class="headerlink" title="漏桶策"></a>漏桶策</h1><p>漏桶策略借鉴上述原理，无论用户请求有多少，无论请求速率有多大，“漏桶”都会接收下来，但从漏桶里出来的请求是固定速率的，保证服务器可以处理得游刃有余。当“漏桶”因为容量限制放不下更多的请求时，就会选择丢弃部分请求。这种思路其实就是一种“宽进严出”的策略。<br></p>
+<p><img src="https://raw.githubusercontent.com/brucecai-2001/Image/master/20220726162218.png"></p>
+<br>
+
+<h1 id="令牌桶策略"><a href="#令牌桶策略" class="headerlink" title="令牌桶策略"></a>令牌桶策略</h1><p>一个固定容量的存放令牌的桶，我们以固定速率向桶里放入令牌，桶满时会丢弃多出的令牌。每当请求到来时，必须先到桶里取一个令牌才可被服务器处理，也就是说只有拿到了令牌的请求才会被服务器处理 <br></p>
+<p><img src="https://raw.githubusercontent.com/brucecai-2001/Image/master/20220726162317.png"></p>
+<p>令牌以每秒 3 个的速率放入到令牌桶中，桶的容量为 10。通常情况下， 每秒会有 2 个用户请求，请求到来时就会到桶里取一个令牌，由于请求的速率低于放令牌的速率，因此令牌桶里令牌会逐渐增多，直到达到桶的容量。超过桶容量后，令牌会被丢弃。<br></p>
+<p>当有突发大流量时，只要令牌桶里有足够多的令牌，请求就会被迅速执行。通常情况下，令牌桶容量的设置，可以接近服务器处理的极限，这样就可以有效利用服务器的资源。因此，这种策略适用于有突发特性的流量，且流量需要即时处理的场景。<br></p>
+<br>
+
+<h1 id="Sentinel"><a href="#Sentinel" class="headerlink" title="Sentinel"></a>Sentinel</h1><p>Sentinel 的核心是，监控应用的并发线程数或 QPS（请求数 &#x2F; 每秒）指标，当达到系统设定的阈值时，Sentinel 可以采取一定的策略对流量进行控制，以避免应用被瞬时高流量击垮，从而保证应用高可靠。<br></p>
+<p>在 Sentinel 中，关于流量控制有两种方式：一种是通过并发线程数进行流量控制，另一种是通过 QPS 指标进行流量控制。<br></p>
+<h2 id="通过并发线程数进行流量控制"><a href="#通过并发线程数进行流量控制" class="headerlink" title="通过并发线程数进行流量控制"></a>通过并发线程数进行流量控制</h2><p><img src="https://raw.githubusercontent.com/brucecai-2001/Image/master/20220727020028.png"></p>
+<p>如果现在同时有 4 个请求到来，那么只有 3 个请求可以被并发处理，而剩下的一个请求要么丢弃，要么等待空闲线程。在 Sentinel 中，就采用了直接拒绝的方式，即新来的请求会直接拒绝。<br></p>
+<h2 id="通过-QPS-指标进行流量控制吧"><a href="#通过-QPS-指标进行流量控制吧" class="headerlink" title="通过 QPS 指标进行流量控制吧"></a>通过 QPS 指标进行流量控制吧</h2><p>QPS 是指每秒的请求数，大流量也就意味着 QPS 大。当 QPS 达到阈值时，Sentinel 提供了三种流量控制策略，分别是直接拒绝、预热（Warm Up）和匀速排队。<br></p>
+<p>直接拒绝，是最直接也是最暴力的方式，与并发线程数流量控制采取的方式一致，就是当 QPS 达到系统设定的阈值时，直接拒绝新来的请求 <br></p>
+<p>预热。当系统的 QPS 长期处于一个较低水平时，一旦发生流量骤增，如果直接让系统每秒处理大量的请求，可能会因为服务器处理能力不足，导致系统崩溃。因此，Sentinel 提供了一种“预热”机制，让系统的 QPS 缓慢增加，在一定的时间内逐渐增加到上限。预热这种策略有点像是一种特殊的令牌桶：放令牌的速率通常保持在一个较低的水平，当流量突增时，放令牌的速率不会一下子提高到最高水平，而是会慢慢增加，直到增加到最大速率则不可再增加。因此，该策略与令牌桶策略的适用场景类似，即适用于具有突发特性的流量，且流量可以即时处理的场景。<br></p>
+<p><img src="https://raw.githubusercontent.com/brucecai-2001/Image/master/20220727022202.png"></p>
+<p>匀速排队的思想，其实本质就是漏桶策略。它会严格控制系统每秒处理的请求数，请求数很多时，请求之间的间隔也会保持一致。<br></p>
+<p><img src="https://raw.githubusercontent.com/brucecai-2001/Image/master/20220727022441.png"></p>
+
+        </div>
+
+        
+            <section class="post-copyright">
+                
+                    <p class="copyright-item">
+                        <span>Author:</span>
+                        <span>Xinyu</span>
+                    </p>
+                
+                
+                    <p class="copyright-item">
+                        <span>Permalink:</span>
+                        <span><a href="http://example.com/2022/07/26/[%E5%88%86%E5%B8%83%E5%BC%8F%E7%B3%BB%E7%BB%9F]%E6%B5%81%E9%87%8F%E6%8E%A7%E5%88%B6/">http://example.com/2022/07/26/[%E5%88%86%E5%B8%83%E5%BC%8F%E7%B3%BB%E7%BB%9F]%E6%B5%81%E9%87%8F%E6%8E%A7%E5%88%B6/</a></span>
+                    </p>
+                
+                
+                    <p class="copyright-item">
+                        <span>License:</span>
+                        <span>Copyright (c) 2019 <a target="_blank" rel="noopener" href="http://creativecommons.org/licenses/by-nc/4.0/">CC-BY-NC-4.0</a> LICENSE</span>
+                    </p>
+                
+                
+                     <p class="copyright-item">
+                         <span>Slogan:</span>
+                         <span>Coffee or Tea</span>
+                     </p>
+                
+
+            </section>
+        
+        <section class="post-tags">
+            <div>
+                <span>Tag(s):</span>
+                <span class="tag">
+                    
+                </span>
+            </div>
+            <div>
+                <a href="javascript:window.history.back();">back</a>
+                <span>· </span>
+                <a href="/">home</a>
+            </div>
+        </section>
+        <section class="post-nav">
+            
+                <a class="prev" rel="prev" href="/2022/07/27/%5B%E5%88%86%E5%B8%83%E5%BC%8F%E7%B3%BB%E7%BB%9F%5D%E6%95%85%E9%9A%9C%E9%9A%94%E7%A6%BB/">分布式高可用---故障隔离</a>
+            
+            
+            <a class="next" rel="next" href="/2022/07/25/%5BRedis%5D%E6%8C%81%E4%B9%85%E5%8C%96/">Redis---持久化</a>
+            
+        </section>
+
+
+    </article>
+</div>
+
+            </div>
+            <footer id="footer" class="footer">
+    <div class="copyright">
+        <span>© Xinyu | Powered by <a href="https://hexo.io" target="_blank">Hexo</a> & <a href="https://github.com/Siricee/hexo-theme-Chic" target="_blank">Chic</a></span>
+    </div>
+</footer>
+
+    </div>
+</body>
+
+</html>

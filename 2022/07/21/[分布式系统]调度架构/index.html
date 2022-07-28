@@ -13,7 +13,7 @@
 
 
 
-<title>分布式调度结构---单体调度 | Hexo</title>
+<title>分布式调度结构---调度 | Hexo</title>
 
 
 
@@ -192,7 +192,7 @@
     
     <article class="post-wrap">
         <header class="post-header">
-            <h1 class="post-title">分布式调度结构---单体调度</h1>
+            <h1 class="post-title">分布式调度结构---调度</h1>
             
                 <div class="post-meta">
                     
@@ -227,6 +227,26 @@
 <p>Borg 调度算法的核心思想是“筛选可行，评分取优”: 可行性检查，找到一组可以运行任务的机器（即上图中的 Borglet）；评分，从可行的机器中选择一个合适的机器（即上图中的 Borglet）。</p>
 <p>可行性检查，找到一组可以运行任务的机器（即上图中的 Borglet）；评分，从可行的机器中选择一个合适的机器（即上图中的 Borglet）。</p>
 <p>Borg 的评分机制有很多种, 常见的评分算法，包括“最差匹配”和“最佳匹配”两种。</p>
+<br>
+
+
+
+
+<blockquote>
+<p>单体调度框架会随着任务类型增加而变得越来越复杂，最终出现扩展瓶颈。为了提升调度效率并支持多种类型的任务，最直接的一个想法就是，能不能把资源和任务分开调度，也就是说一层调度器只负责资源管理和分配，另外一层调度器负责任务与资源的匹配呢。</p>
+</blockquote>
+<h1 id="两层架构"><a href="#两层架构" class="headerlink" title="两层架构"></a>两层架构</h1><p><img src="https://raw.githubusercontent.com/brucecai-2001/Image/master/20220721152815.png"></p>
+<p>Scheduler-1 表示第一层调度，负责收集和管理集群中的资源信息；Scheduler-2 表示第二层调度，Scheduler-1 会将集群资源发送给 Scheduler-2，然后 Scheduler-2 根据任务的资源需求和 Scheduler-1 发送的资源信息进行任务匹配和调度。<br></p>
+<br>
+
+<h1 id="Mesos"><a href="#Mesos" class="headerlink" title="Mesos"></a>Mesos</h1><p><img src="https://raw.githubusercontent.com/brucecai-2001/Image/master/20220721153219.png"></p>
+<p>框架向 Mesos Master 注册；<br><br>Mesos Slave 节点定期或周期向 Mesos Master 上报本节点的空闲资源；<br><br>Mesos Master 的 Scheduler 进程收集所有节点的空闲资源信息，并以 Resource Offer 的方式将空闲资源发送给注册的框架；<br><br>框架的 Scheduler 接收到 Mesos 发送的资源后，进行任务调度与匹配，匹配成功后，将匹配结果下发给 Mesos Master，并由 Mesos Master 转发给相应节点的执行器执行任务。<br></p>
+<h1 id="最大最小公平算法"><a href="#最大最小公平算法" class="headerlink" title="最大最小公平算法"></a>最大最小公平算法</h1><p><img src="https://raw.githubusercontent.com/brucecai-2001/Image/master/20220721153833.png"></p>
+<h1 id="主导资源公平算法"><a href="#主导资源公平算法" class="headerlink" title="主导资源公平算法"></a>主导资源公平算法</h1><p><img src="https://raw.githubusercontent.com/brucecai-2001/Image/master/20220721154153.png"></p>
+<br>
+
+<h1 id="共享状态调度器"><a href="#共享状态调度器" class="headerlink" title="共享状态调度器"></a>共享状态调度器</h1><p>通过将单体调度器分解为多个调度器，每个调度器都有全局的资源状态信息，从而实现最优的任务调度，提供了更好的可扩展性。</p>
+<p><img src="https://raw.githubusercontent.com/brucecai-2001/Image/master/20220721155834.png"></p>
 
         </div>
 
@@ -273,6 +293,8 @@
             </div>
         </section>
         <section class="post-nav">
+            
+                <a class="prev" rel="prev" href="/2022/07/21/%5B%E5%88%86%E5%B8%83%E5%BC%8F%E7%B3%BB%E7%BB%9F%5DMR/">分布式计算---MapReduce</a>
             
             
             <a class="next" rel="next" href="/2022/07/21/%5B%E5%88%86%E5%B8%83%E5%BC%8F%E7%B3%BB%E7%BB%9F%5D%E4%BD%93%E7%B3%BB%E7%BB%93%E6%9E%84/">分布式体系结构---集中式与非集中式结构</a>

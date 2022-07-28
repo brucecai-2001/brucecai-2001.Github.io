@@ -1,0 +1,321 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+<meta name="viewport"
+      content="width=device-width, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+<meta http-equiv="X-UA-Compatible" content="ie=edge">
+
+    <meta name="author" content="Xinyu">
+
+
+
+
+
+<title>分布式计算---MapReduce | Hexo</title>
+
+
+
+    <link rel="icon" href="/favicon.ico">
+
+
+
+
+    <!-- stylesheets list from _config.yml -->
+    
+    <link rel="stylesheet" href="/css/style.css">
+    
+
+
+
+    <!-- scripts list from _config.yml -->
+    
+    <script src="/js/script.js"></script>
+    
+    <script src="/js/tocbot.min.js"></script>
+    
+
+
+
+    
+    
+        
+    
+
+
+<meta name="generator" content="Hexo 6.2.0"></head>
+
+<body>
+    <script>
+        // this function is used to check current theme before page loaded.
+        (() => {
+            const currentTheme = window.localStorage && window.localStorage.getItem('theme') || '';
+            const isDark = currentTheme === 'dark';
+            const pagebody = document.getElementsByTagName('body')[0]
+            if (isDark) {
+                pagebody.classList.add('dark-theme');
+                // mobile
+                document.getElementById("mobile-toggle-theme").innerText = "· Dark"
+            } else {
+                pagebody.classList.remove('dark-theme');
+                // mobile
+                document.getElementById("mobile-toggle-theme").innerText = "· Light"
+            }
+        })();
+    </script>
+
+    <div class="wrapper">
+        <header>
+    <nav class="navbar">
+        <div class="container">
+            <div class="navbar-header header-logo"><a href="/">Xinyu&#39;s Blog</a></div>
+            <div class="menu navbar-right">
+                
+                    <a class="menu-item" href="/archives">Posts</a>
+                
+                    <a class="menu-item" href="/category">Categories</a>
+                
+                    <a class="menu-item" href="/tag">Tags</a>
+                
+                <input id="switch_default" type="checkbox" class="switch_default">
+                <label for="switch_default" class="toggleBtn"></label>
+            </div>
+        </div>
+    </nav>
+
+    
+    <nav class="navbar-mobile" id="nav-mobile">
+        <div class="container">
+            <div class="navbar-header">
+                <div>
+                    <a href="/">Xinyu&#39;s Blog</a><a id="mobile-toggle-theme">·&nbsp;Light</a>
+                </div>
+                <div class="menu-toggle" onclick="mobileBtn()">&#9776; Menu</div>
+            </div>
+            <div class="menu" id="mobile-menu">
+                
+                    <a class="menu-item" href="/archives">Posts</a>
+                
+                    <a class="menu-item" href="/category">Categories</a>
+                
+                    <a class="menu-item" href="/tag">Tags</a>
+                
+            </div>
+        </div>
+    </nav>
+
+</header>
+<script>
+    var mobileBtn = function f() {
+        var toggleMenu = document.getElementsByClassName("menu-toggle")[0];
+        var mobileMenu = document.getElementById("mobile-menu");
+        if(toggleMenu.classList.contains("active")){
+           toggleMenu.classList.remove("active")
+            mobileMenu.classList.remove("active")
+        }else{
+            toggleMenu.classList.add("active")
+            mobileMenu.classList.add("active")
+        }
+    }
+</script>
+            <div class="main">
+                <div class="container">
+    
+    
+        <div class="post-toc">
+    <div class="tocbot-list">
+    </div>
+    <div class="tocbot-list-menu">
+        <a class="tocbot-toc-expand" onclick="expand_toc()">Expand all</a>
+        <a onclick="go_top()">Back to top</a>
+        <a onclick="go_bottom()">Go to bottom</a>
+    </div>
+</div>
+
+<script>
+    var tocbot_timer;
+    var DEPTH_MAX = 6; // 为 6 时展开所有
+    var tocbot_default_config = {
+        tocSelector: '.tocbot-list',
+        contentSelector: '.post-content',
+        headingSelector: 'h1, h2, h3, h4, h5',
+        orderedList: false,
+        scrollSmooth: true,
+        onClick: extend_click,
+    };
+
+    function extend_click() {
+        clearTimeout(tocbot_timer);
+        tocbot_timer = setTimeout(function() {
+            tocbot.refresh(obj_merge(tocbot_default_config, {
+                hasInnerContainers: true
+            }));
+        }, 420); // 这个值是由 tocbot 源码里定义的 scrollSmoothDuration 得来的
+    }
+
+    document.ready(function() {
+        tocbot.init(obj_merge(tocbot_default_config, {
+            collapseDepth: 1
+        }));
+    });
+
+    function expand_toc() {
+        var b = document.querySelector('.tocbot-toc-expand');
+        var expanded = b.getAttribute('data-expanded');
+        expanded ? b.removeAttribute('data-expanded') : b.setAttribute('data-expanded', true);
+        tocbot.refresh(obj_merge(tocbot_default_config, {
+            collapseDepth: expanded ? 1 : DEPTH_MAX
+        }));
+        b.innerText = expanded ? 'Expand all' : 'Collapse all';
+    }
+
+    function go_top() {
+        window.scrollTo(0, 0);
+    }
+
+    function go_bottom() {
+        window.scrollTo(0, document.body.scrollHeight);
+    }
+
+    function obj_merge(target, source) {
+        for (var item in source) {
+            if (source.hasOwnProperty(item)) {
+                target[item] = source[item];
+            }
+        }
+        return target;
+    }
+</script>
+    
+
+    
+    <article class="post-wrap">
+        <header class="post-header">
+            <h1 class="post-title">分布式计算---MapReduce</h1>
+            
+                <div class="post-meta">
+                    
+                        Author: <a itemprop="author" rel="author" href="/">Xinyu</a>
+                    
+
+                    
+                        <span class="post-time">
+                        Date: <a href="#">July 21, 2022&nbsp;&nbsp;16:16:20</a>
+                        </span>
+                    
+                    
+                        <span class="post-category">
+                    Category:
+                            
+                                <a href="/categories/%E5%88%86%E5%B8%83%E5%BC%8F%E8%AE%A1%E7%AE%97/">分布式计算</a>
+                            
+                        </span>
+                    
+                </div>
+            
+        </header>
+
+        <div class="post-content">
+            <h1 id="分而治之"><a href="#分而治之" class="headerlink" title="分而治之"></a>分而治之</h1><p>分治法就是将一个复杂的、难以直接解决的大问题，分割成一些规模较小的、可以比较简单的或直接求解的子问题，这些子问题之间相互独立且与原问题形式相同，递归地求解这些子问题，然后将子问题的解合并得到原问题的解。</p>
+<br>
+
+<h1 id="MapReduce"><a href="#MapReduce" class="headerlink" title="MapReduce"></a>MapReduce</h1><p>MapReduce 分为 Map 和 Reduce 两个核心阶段，其中 Map 对应“分”，即把复杂的任务分解为若干个“简单的任务”执行；Reduce 对应着“合”，即对 Map 阶段的结果进行汇总。<br></p>
+<p><img src="https://raw.githubusercontent.com/brucecai-2001/Image/master/20220721163120.png"></p>
+<br>
+
+<h2 id="Map阶段"><a href="#Map阶段" class="headerlink" title="Map阶段"></a>Map阶段</h2><p>将大数据计算任务拆分为多个子任务。相对于原始任务来说，划分后的子任务与原任务是同质的，比如原任务是统计全国人口数，拆分为统计省的人口数子任务时，都是统计人口数；并且，子任务的数据规模和计算规模会小很多。<br></p>
+<p>多个子任务之间没有依赖，可以独立运行、并行计算，比如按照省统计人口数，统计河北省的人口数和统计湖南省的人口数之间没有依赖关系，可以独立、并行地统计。<br></p>
+<h2 id="Reduce阶段"><a href="#Reduce阶段" class="headerlink" title="Reduce阶段"></a>Reduce阶段</h2><p>第一阶段拆分的子任务计算完成后，汇总所有子任务的计算结果，以得到最终结果。也就是，汇总各个省统计的人口数，得到全国的总人口数。<br></p>
+<br>
+
+<h1 id="架构"><a href="#架构" class="headerlink" title="架构"></a>架构</h1><p><img src="https://raw.githubusercontent.com/brucecai-2001/Image/master/20220721164306.png"></p>
+<p>Master，也就是 MRAppMaster，该模块像一个大总管一样，独掌大权，负责分配任务，协调任务的运行，并为 Mapper 分配 map() 函数操作、为 Reducer 分配 reduce() 函数操作。<br></p>
+<p>Mapper worker，负责 Map 函数功能，即负责执行子任务。<br></p>
+<p>Reducer worker，负责 Reduce 函数功能，即负责汇总各个子任务的结果。<br></p>
+<br>
+
+<h1 id="工作流程"><a href="#工作流程" class="headerlink" title="工作流程"></a>工作流程</h1><p><strong>整个 MapReduce 的工作流程主要可以概括为 5 个阶段，即：Input（输入）、Splitting（拆分）、Mapping（映射）、Reducing（化简）以及 Final Result（输出）。</strong></p>
+<p><img src="https://raw.githubusercontent.com/brucecai-2001/Image/master/20220721164406.png"></p>
+<p>step1：User Program 将任务下发到 MRAppMaster 中。然后，MRAppMaster 执行任务拆分步骤，把 User Program 下发的任务划分成 M 个子任务（M 是用户自定义的数值）。假设，MapReduce 函数将任务划分成了 5 个，其中 Map 作业有 3 个，Reduce 作业有 2 个；集群内的 MRAppMaster 以及 Worker 节点都有任务的副本。<br></p>
+<p>step2：MRAppMaster 分别为 Mapper 和 Reducer 分配相应的 Map 和 Reduce 作业。Map 作业的数量就是划分后的子任务数量，也就是 3 个；Reduce 作业是 2 个。<br></p>
+<p>step3：被分配了 Map 作业的 Worker，开始读取子任务的输入数据，并从输入数据中抽取出 键值对，每一个键值对都作为参数传递给 map() 函数。<br></p>
+<p>step4：map() 函数的输出结果存储在环形缓冲区 kvBuffer 中，这些 Map 结果会被定期写入本地磁盘中，被存储在 R 个不同的磁盘区。这里的 R 表示 Reduce 作业的数量，也是由用户定义的。在这个案例中，R&#x3D;2。此外，每个 Map 结果的存储位置都会上报给 MRAppMaster。<br></p>
+<p>step5：MRAppMaster 通知 Reducer 它负责的作业在哪一个分区，Reducer 远程读取相应的 Map 结果，即中间键值对。当 Reducer 把它负责的所有中间键值对都读过来后，首先根据键值对的 key 值对中间键值对进行排序，将相同 key 值的键值对聚集在一起，从而有利于 Reducer 对 Map 结果进行统计。<br></p>
+<p>step6：Reducer 遍历排序后的中间键值对，将具有相同 key 值的键值对合并，并将统计结果作为输出文件存入负责的分区中。<br></p>
+<br>
+
+<h1 id="案例—统计苏锡常地区第二季度手机订单数量-Top3-的品牌"><a href="#案例—统计苏锡常地区第二季度手机订单数量-Top3-的品牌" class="headerlink" title="案例—统计苏锡常地区第二季度手机订单数量 Top3 的品牌"></a>案例—统计苏锡常地区第二季度手机订单数量 Top3 的品牌</h1><p>任务拆分（Splitting 阶段）。根据地理位置，分别统计苏州、无锡、常州第二季度手机订单 Top3 品牌，从而将大规模任务划分为 3 个子任务。<br></p>
+<p>通过循环调用 map() 函数，统计每个品牌手机的订单数量。其中，key 为手机品牌，value 为手机购买数量（单位：万台）。<br></p>
+<p>在映射之后，要对映射后的结果进行排序整合，然后才能执行归约操作，因此往往将这一排序整合的操作单独放出来，称之为 Shuffling<br></p>
+<p>Reducing 阶段，归并同一个品牌的购买次数。 <br></p>
+<p><img src="https://raw.githubusercontent.com/brucecai-2001/Image/master/20220721165617.png"></p>
+
+        </div>
+
+        
+            <section class="post-copyright">
+                
+                    <p class="copyright-item">
+                        <span>Author:</span>
+                        <span>Xinyu</span>
+                    </p>
+                
+                
+                    <p class="copyright-item">
+                        <span>Permalink:</span>
+                        <span><a href="http://example.com/2022/07/21/[%E5%88%86%E5%B8%83%E5%BC%8F%E7%B3%BB%E7%BB%9F]MR/">http://example.com/2022/07/21/[%E5%88%86%E5%B8%83%E5%BC%8F%E7%B3%BB%E7%BB%9F]MR/</a></span>
+                    </p>
+                
+                
+                    <p class="copyright-item">
+                        <span>License:</span>
+                        <span>Copyright (c) 2019 <a target="_blank" rel="noopener" href="http://creativecommons.org/licenses/by-nc/4.0/">CC-BY-NC-4.0</a> LICENSE</span>
+                    </p>
+                
+                
+                     <p class="copyright-item">
+                         <span>Slogan:</span>
+                         <span>Coffee or Tea</span>
+                     </p>
+                
+
+            </section>
+        
+        <section class="post-tags">
+            <div>
+                <span>Tag(s):</span>
+                <span class="tag">
+                    
+                </span>
+            </div>
+            <div>
+                <a href="javascript:window.history.back();">back</a>
+                <span>· </span>
+                <a href="/">home</a>
+            </div>
+        </section>
+        <section class="post-nav">
+            
+                <a class="prev" rel="prev" href="/2022/07/21/%5BRedis%5D%E8%AF%AD%E6%B3%95/">Redis---语法和数据类型</a>
+            
+            
+            <a class="next" rel="next" href="/2022/07/21/%5B%E5%88%86%E5%B8%83%E5%BC%8F%E7%B3%BB%E7%BB%9F%5D%E8%B0%83%E5%BA%A6%E6%9E%B6%E6%9E%84/">分布式调度结构---调度</a>
+            
+        </section>
+
+
+    </article>
+</div>
+
+            </div>
+            <footer id="footer" class="footer">
+    <div class="copyright">
+        <span>© Xinyu | Powered by <a href="https://hexo.io" target="_blank">Hexo</a> & <a href="https://github.com/Siricee/hexo-theme-Chic" target="_blank">Chic</a></span>
+    </div>
+</footer>
+
+    </div>
+</body>
+
+</html>

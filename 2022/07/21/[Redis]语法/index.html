@@ -1,0 +1,322 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+<meta name="viewport"
+      content="width=device-width, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+<meta http-equiv="X-UA-Compatible" content="ie=edge">
+
+    <meta name="author" content="Xinyu">
+
+
+
+
+
+<title>Redis---语法和数据类型 | Hexo</title>
+
+
+
+    <link rel="icon" href="/favicon.ico">
+
+
+
+
+    <!-- stylesheets list from _config.yml -->
+    
+    <link rel="stylesheet" href="/css/style.css">
+    
+
+
+
+    <!-- scripts list from _config.yml -->
+    
+    <script src="/js/script.js"></script>
+    
+    <script src="/js/tocbot.min.js"></script>
+    
+
+
+
+    
+    
+        
+    
+
+
+<meta name="generator" content="Hexo 6.2.0"></head>
+
+<body>
+    <script>
+        // this function is used to check current theme before page loaded.
+        (() => {
+            const currentTheme = window.localStorage && window.localStorage.getItem('theme') || '';
+            const isDark = currentTheme === 'dark';
+            const pagebody = document.getElementsByTagName('body')[0]
+            if (isDark) {
+                pagebody.classList.add('dark-theme');
+                // mobile
+                document.getElementById("mobile-toggle-theme").innerText = "· Dark"
+            } else {
+                pagebody.classList.remove('dark-theme');
+                // mobile
+                document.getElementById("mobile-toggle-theme").innerText = "· Light"
+            }
+        })();
+    </script>
+
+    <div class="wrapper">
+        <header>
+    <nav class="navbar">
+        <div class="container">
+            <div class="navbar-header header-logo"><a href="/">Xinyu&#39;s Blog</a></div>
+            <div class="menu navbar-right">
+                
+                    <a class="menu-item" href="/archives">Posts</a>
+                
+                    <a class="menu-item" href="/category">Categories</a>
+                
+                    <a class="menu-item" href="/tag">Tags</a>
+                
+                <input id="switch_default" type="checkbox" class="switch_default">
+                <label for="switch_default" class="toggleBtn"></label>
+            </div>
+        </div>
+    </nav>
+
+    
+    <nav class="navbar-mobile" id="nav-mobile">
+        <div class="container">
+            <div class="navbar-header">
+                <div>
+                    <a href="/">Xinyu&#39;s Blog</a><a id="mobile-toggle-theme">·&nbsp;Light</a>
+                </div>
+                <div class="menu-toggle" onclick="mobileBtn()">&#9776; Menu</div>
+            </div>
+            <div class="menu" id="mobile-menu">
+                
+                    <a class="menu-item" href="/archives">Posts</a>
+                
+                    <a class="menu-item" href="/category">Categories</a>
+                
+                    <a class="menu-item" href="/tag">Tags</a>
+                
+            </div>
+        </div>
+    </nav>
+
+</header>
+<script>
+    var mobileBtn = function f() {
+        var toggleMenu = document.getElementsByClassName("menu-toggle")[0];
+        var mobileMenu = document.getElementById("mobile-menu");
+        if(toggleMenu.classList.contains("active")){
+           toggleMenu.classList.remove("active")
+            mobileMenu.classList.remove("active")
+        }else{
+            toggleMenu.classList.add("active")
+            mobileMenu.classList.add("active")
+        }
+    }
+</script>
+            <div class="main">
+                <div class="container">
+    
+    
+        <div class="post-toc">
+    <div class="tocbot-list">
+    </div>
+    <div class="tocbot-list-menu">
+        <a class="tocbot-toc-expand" onclick="expand_toc()">Expand all</a>
+        <a onclick="go_top()">Back to top</a>
+        <a onclick="go_bottom()">Go to bottom</a>
+    </div>
+</div>
+
+<script>
+    var tocbot_timer;
+    var DEPTH_MAX = 6; // 为 6 时展开所有
+    var tocbot_default_config = {
+        tocSelector: '.tocbot-list',
+        contentSelector: '.post-content',
+        headingSelector: 'h1, h2, h3, h4, h5',
+        orderedList: false,
+        scrollSmooth: true,
+        onClick: extend_click,
+    };
+
+    function extend_click() {
+        clearTimeout(tocbot_timer);
+        tocbot_timer = setTimeout(function() {
+            tocbot.refresh(obj_merge(tocbot_default_config, {
+                hasInnerContainers: true
+            }));
+        }, 420); // 这个值是由 tocbot 源码里定义的 scrollSmoothDuration 得来的
+    }
+
+    document.ready(function() {
+        tocbot.init(obj_merge(tocbot_default_config, {
+            collapseDepth: 1
+        }));
+    });
+
+    function expand_toc() {
+        var b = document.querySelector('.tocbot-toc-expand');
+        var expanded = b.getAttribute('data-expanded');
+        expanded ? b.removeAttribute('data-expanded') : b.setAttribute('data-expanded', true);
+        tocbot.refresh(obj_merge(tocbot_default_config, {
+            collapseDepth: expanded ? 1 : DEPTH_MAX
+        }));
+        b.innerText = expanded ? 'Expand all' : 'Collapse all';
+    }
+
+    function go_top() {
+        window.scrollTo(0, 0);
+    }
+
+    function go_bottom() {
+        window.scrollTo(0, document.body.scrollHeight);
+    }
+
+    function obj_merge(target, source) {
+        for (var item in source) {
+            if (source.hasOwnProperty(item)) {
+                target[item] = source[item];
+            }
+        }
+        return target;
+    }
+</script>
+    
+
+    
+    <article class="post-wrap">
+        <header class="post-header">
+            <h1 class="post-title">Redis---语法和数据类型</h1>
+            
+                <div class="post-meta">
+                    
+                        Author: <a itemprop="author" rel="author" href="/">Xinyu</a>
+                    
+
+                    
+                        <span class="post-time">
+                        Date: <a href="#">July 21, 2022&nbsp;&nbsp;18:31:18</a>
+                        </span>
+                    
+                    
+                        <span class="post-category">
+                    Category:
+                            
+                                <a href="/categories/Redis/">Redis</a>
+                            
+                        </span>
+                    
+                </div>
+            
+        </header>
+
+        <div class="post-content">
+            <h1 id="Key"><a href="#Key" class="headerlink" title="Key"></a>Key</h1><p>查询所有键: keys * <br><br>插入键值: set key value <br><br>查询对应键值: get key <br><br>判断键是否存在: exists key <strong>返回 1 存在， 0 不存</strong><br><br>查看键类型: type key <br><br>删除键: del key <br><br>非阻塞异步删除: unlink key <br><br>设置过期时间: expire key <br><br>查看过期时间: ttl key <br><br>查看键值数量: dbsize <br><br>清空: flushdb <br></p>
+<br>
+
+<h1 id="String"><a href="#String" class="headerlink" title="String"></a>String</h1><p>二进制安全，string可以包含任何数据，eg. 图片，视频<br><br>最大512M<br></p>
+<p>追加值: append key value <br><br>值长度: strlen key <br><br>当key存在时设置value: setnx key value <br><br>数字加一: incr key <br><br>数字减一: decr key <br><br>加减大于1: incrby&#x2F;decrby key xx <br></p>
+<p><strong>incr&#x2F;decr 都是原子性的</strong></p>
+<p>同时设置多个键值: mset k1 v1 k2 v2 <br><br>同时取出多个值: mget k1 k2 k3 <br><br>获取一个value范围的值: getrange key start end <br><br>在范围内设置值: setrange key start end <br><br>在创建时设置过期时间: setex key expire <br></p>
+<br>
+
+<h1 id="List"><a href="#List" class="headerlink" title="List"></a>List</h1><p>单键多值, 底层是一个双向列表 <br></p>
+<p>从左侧插入: lpush k1 v1 v2 v3  v3–v2–v1 <br><br>从右侧插入: rpush k1 v1 v2 v3  v1–v2–v3 <br><br>取所有的值: l&#x2F;rrange k1 0 -1 <br><br>从左边取值: lpop k1 <br><br>从右边取值: rpop k1 <br><br>获取指定位置: lindex key index <br><br>改变指定的值: lset key index new_value<br>获取长度: llen key <br><br>在值前后插入新值: linsert key after&#x2F;before value new_value<br></p>
+<br>
+
+<h1 id="Set"><a href="#Set" class="headerlink" title="Set"></a>Set</h1><p>插入集合: sadd key v1 v2<br><br>取出所有值: smembers key <br><br>判断是否有值: sismember key value <br><br>返回元素个数: scard key <br><br>删除元素: srem key value <br><br>随机取出一个值: spop key <br><br>随机取出几\n个值不删除: srandmember key n <br><br>将一个值从一个集合移动到另一个集合: smove source destination value <br><br>返回两个合集交集: sinter key1 key2 <br><br>返回并集: sunion key1 key2 <br><br>返回差集: sdiff key1 key2 <br></p>
+<br>
+
+<h1 id="哈希"><a href="#哈希" class="headerlink" title="哈希"></a>哈希</h1><p>key –&gt; object <br></p>
+<p>添加数据: haset key filed value <br><br>取数据:   hget key filed <br><br>一次性多次设置: hmset key f1 v1 f2 v2 f3 v3 <br><br>查看filed是否存在: hexist key filed <br><br>查看所有fileds: hkeys key <br><br>value +&#x3D; incremnet: hincrby key filed increment <br><br>将filed设置为var: hsetnx key field var <br></p>
+<br>
+
+<h1 id="Zset"><a href="#Zset" class="headerlink" title="Zset"></a>Zset</h1><p>没有重复元素的字符串合集，每个元素都有一个评分， zset中的成员按从高到低排序。底层是跳表<br></p>
+<p>添加: zadd key score1 v1 score2 v2 <br><br>取值: zrange key start end <br><br>评分区间，从小到大: zrangeby score key min max <br><br>从大到小: zrevrangebyscore key max min <br><br>删除元素: zrem key value <br><br>统计区间: zcount key min max <br><br>返回排名: zrank key value <br></p>
+<br>
+
+<h1 id="位图"><a href="#位图" class="headerlink" title="位图"></a>位图</h1><p>key value(01010100101001010010011001) <br></p>
+<p>设置值: setbit key offset value <br><br>查询值: getbit key offset <br><br>查询1的数量: bitcount key start end <br><br>位操作: bitop and&#x2F;or&#x2F;xor destkey key1 key2</p>
+<br>
+
+<h1 id="HyperLogLog"><a href="#HyperLogLog" class="headerlink" title="HyperLogLog"></a>HyperLogLog</h1><p>快速计算基数 <br></p>
+<p>加入数据: pfadd key value <br><br>统计基数: pfcount key <br><br>合并: pfmerge destkey sourcekey…<br></p>
+<br>
+
+<h1 id="Geo"><a href="#Geo" class="headerlink" title="Geo"></a>Geo</h1><p>二维坐标，提供经纬度设置，查询，计算距离 <br></p>
+<p>添加: geoadd key longitude latitude name <br><br>获取制定地区的坐标: geopos key name <br><br>获取两个地方的直线距离: getdist key name1 name2 unit <br><br>给定经纬度为中心方圆多少里内的城市: georadius key longtidue latitude radius unit <br></p>
+
+        </div>
+
+        
+            <section class="post-copyright">
+                
+                    <p class="copyright-item">
+                        <span>Author:</span>
+                        <span>Xinyu</span>
+                    </p>
+                
+                
+                    <p class="copyright-item">
+                        <span>Permalink:</span>
+                        <span><a href="http://example.com/2022/07/21/[Redis]%E8%AF%AD%E6%B3%95/">http://example.com/2022/07/21/[Redis]%E8%AF%AD%E6%B3%95/</a></span>
+                    </p>
+                
+                
+                    <p class="copyright-item">
+                        <span>License:</span>
+                        <span>Copyright (c) 2019 <a target="_blank" rel="noopener" href="http://creativecommons.org/licenses/by-nc/4.0/">CC-BY-NC-4.0</a> LICENSE</span>
+                    </p>
+                
+                
+                     <p class="copyright-item">
+                         <span>Slogan:</span>
+                         <span>Coffee or Tea</span>
+                     </p>
+                
+
+            </section>
+        
+        <section class="post-tags">
+            <div>
+                <span>Tag(s):</span>
+                <span class="tag">
+                    
+                </span>
+            </div>
+            <div>
+                <a href="javascript:window.history.back();">back</a>
+                <span>· </span>
+                <a href="/">home</a>
+            </div>
+        </section>
+        <section class="post-nav">
+            
+                <a class="prev" rel="prev" href="/2022/07/23/%5B%E5%88%86%E5%B8%83%E5%BC%8F%E7%B3%BB%E7%BB%9F%5DStream/">分布式计算---Stream</a>
+            
+            
+            <a class="next" rel="next" href="/2022/07/21/%5B%E5%88%86%E5%B8%83%E5%BC%8F%E7%B3%BB%E7%BB%9F%5DMR/">分布式计算---MapReduce</a>
+            
+        </section>
+
+
+    </article>
+</div>
+
+            </div>
+            <footer id="footer" class="footer">
+    <div class="copyright">
+        <span>© Xinyu | Powered by <a href="https://hexo.io" target="_blank">Hexo</a> & <a href="https://github.com/Siricee/hexo-theme-Chic" target="_blank">Chic</a></span>
+    </div>
+</footer>
+
+    </div>
+</body>
+
+</html>

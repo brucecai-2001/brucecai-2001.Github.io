@@ -13,7 +13,7 @@
 
 
 
-<title>数据库---MySQL练习 | Hexo</title>
+<title>分布式计算---Actor | Hexo</title>
 
 
 
@@ -192,7 +192,7 @@
     
     <article class="post-wrap">
         <header class="post-header">
-            <h1 class="post-title">数据库---MySQL练习</h1>
+            <h1 class="post-title">分布式计算---Actor</h1>
             
                 <div class="post-meta">
                     
@@ -201,14 +201,14 @@
 
                     
                         <span class="post-time">
-                        Date: <a href="#">July 20, 2022&nbsp;&nbsp;14:13:36</a>
+                        Date: <a href="#">July 23, 2022&nbsp;&nbsp;1:48:30</a>
                         </span>
                     
                     
                         <span class="post-category">
                     Category:
                             
-                                <a href="/categories/%E6%95%B0%E6%8D%AE%E5%BA%93/">数据库</a>
+                                <a href="/categories/%E5%88%86%E5%B8%83%E5%BC%8F%E8%AE%A1%E7%AE%97/">分布式计算</a>
                             
                         </span>
                     
@@ -217,12 +217,15 @@
         </header>
 
         <div class="post-content">
-            <h1 id="NULL"><a href="#NULL" class="headerlink" title="NULL"></a>NULL</h1><p>MySQL 使用三值逻辑 —— TRUE, FALSE 和 UNKNOWN。任何与 NULL 值进行的比较都会与第三种值 UNKNOWN 做比较。这个“任何值”包括 NULL 本身！这就是为什么 MySQL 提供 IS NULL 和 IS NOT NULL 两种操作来对 NULL 特殊判断。</p>
-<p>过滤一个包含NULL的列</p>
-<figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">SELECT</span> name <span class="keyword">FROM</span> customer <span class="keyword">WHERE</span> referee_id <span class="operator">!=</span> <span class="number">2</span> <span class="keyword">OR</span> referee_id <span class="keyword">IS</span> <span class="keyword">NULL</span>;</span><br></pre></td></tr></table></figure>
+            <p>Actor 模型，代表一种分布式并行计算模型。这种模型有自己的一套规则，规定了 Actor 的内部计算逻辑，以及多个 Actor 之间的通信规则。在 Actor 模型里，每个 Actor 相当于系统中的一个组件，都是基本的计算单元 <br></p>
+<p>对于 Actor 模式，对象 A、B 和 C 对应着 Actor A、Actor B 和 Actor C，当 Actor A 和 Actor B 需要执行 Actor C 中的 Function 逻辑时，Actor A 和 Actor B 会将消息发送给 Actor C， Actor C 的消息队列存储着 Actor A 和 Actor B 的消息，然后根据消息的先后顺序，执行 Function 即可。<br></p>
+<h1 id="Actor-计算模式"><a href="#Actor-计算模式" class="headerlink" title="Actor 计算模式"></a>Actor 计算模式</h1><p><img src="https://raw.githubusercontent.com/brucecai-2001/Image/master/20220723015712.png"></p>
+<p><strong>Actor 模型的三要素是状态、行为和消息</strong></p>
+<p>状态（State）。Actor 的状态指的是，Actor 组件本身的信息，相当于 OOP 对象中的属性。Actor 的状态会受 Actor 自身行为的影响，且只能被自己修改。<br></p>
+<p>行为（Behavior）。Actor 的行为指的是，Actor 的计算处理操作，相当于 OOP 对象中的成员函数。Actor 之间不能直接调用其他 Actor 的计算逻辑。Actor 只有收到消息才会触发自身的计算行为。<br></p>
+<p>消息（Mail）。Actor 的消息以邮件形式在多个 Actor 之间通信传递，每个 Actor 会有一个自己的邮箱（MailBox），用于接收来自其他 Actor 的消息，因此 Actor 模型中的消息也称为邮件。一般情况下，对于邮箱里面的消息，Actor 是按照消息达到的先后顺序（FIFO）进行读取和处理的。<br></p>
 <br>
 
-<h1 id="没下过订单的客户"><a href="#没下过订单的客户" class="headerlink" title="没下过订单的客户"></a>没下过订单的客户</h1><figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">select</span> customers.name <span class="keyword">as</span> <span class="string">&#x27;Customers&#x27;</span></span><br><span class="line"><span class="keyword">from</span> customers</span><br><span class="line"><span class="keyword">where</span> customers.id <span class="keyword">not</span> <span class="keyword">in</span></span><br><span class="line">(</span><br><span class="line">    <span class="keyword">select</span> customerid <span class="keyword">from</span> orders</span><br><span class="line">);</span><br></pre></td></tr></table></figure>
         </div>
 
         
@@ -236,7 +239,7 @@
                 
                     <p class="copyright-item">
                         <span>Permalink:</span>
-                        <span><a href="http://example.com/2022/07/20/[%E6%95%B0%E6%8D%AE%E5%BA%93]SQL%E7%BB%83%E4%B9%A0/">http://example.com/2022/07/20/[%E6%95%B0%E6%8D%AE%E5%BA%93]SQL%E7%BB%83%E4%B9%A0/</a></span>
+                        <span><a href="http://example.com/2022/07/23/[%E5%88%86%E5%B8%83%E5%BC%8F%E7%B3%BB%E7%BB%9F]Actor/">http://example.com/2022/07/23/[%E5%88%86%E5%B8%83%E5%BC%8F%E7%B3%BB%E7%BB%9F]Actor/</a></span>
                     </p>
                 
                 
@@ -269,10 +272,10 @@
         </section>
         <section class="post-nav">
             
-                <a class="prev" rel="prev" href="/2022/07/21/%5B%E5%88%86%E5%B8%83%E5%BC%8F%E7%B3%BB%E7%BB%9F%5D%E4%BD%93%E7%B3%BB%E7%BB%93%E6%9E%84/">分布式体系结构---集中式与非集中式结构</a>
+                <a class="prev" rel="prev" href="/2022/07/23/%5B%E5%88%86%E5%B8%83%E5%BC%8F%E7%B3%BB%E7%BB%9F%5D%E8%BF%9C%E7%A8%8B%E8%B0%83%E7%94%A8/">分布式通信---远程调用</a>
             
             
-            <a class="next" rel="next" href="/2022/07/19/%5BGolang%5D%E8%99%9A%E6%8B%9F%E5%8C%96/">Golang---虚拟化</a>
+            <a class="next" rel="next" href="/2022/07/23/%5B%E5%88%86%E5%B8%83%E5%BC%8F%E7%B3%BB%E7%BB%9F%5DStream/">分布式计算---Stream</a>
             
         </section>
 

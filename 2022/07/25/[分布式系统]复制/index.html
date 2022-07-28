@@ -1,0 +1,315 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+<meta name="viewport"
+      content="width=device-width, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+<meta http-equiv="X-UA-Compatible" content="ie=edge">
+
+    <meta name="author" content="Xinyu">
+
+
+
+
+
+<title>分布式数据存储---复制 | Hexo</title>
+
+
+
+    <link rel="icon" href="/favicon.ico">
+
+
+
+
+    <!-- stylesheets list from _config.yml -->
+    
+    <link rel="stylesheet" href="/css/style.css">
+    
+
+
+
+    <!-- scripts list from _config.yml -->
+    
+    <script src="/js/script.js"></script>
+    
+    <script src="/js/tocbot.min.js"></script>
+    
+
+
+
+    
+    
+        
+    
+
+
+<meta name="generator" content="Hexo 6.2.0"></head>
+
+<body>
+    <script>
+        // this function is used to check current theme before page loaded.
+        (() => {
+            const currentTheme = window.localStorage && window.localStorage.getItem('theme') || '';
+            const isDark = currentTheme === 'dark';
+            const pagebody = document.getElementsByTagName('body')[0]
+            if (isDark) {
+                pagebody.classList.add('dark-theme');
+                // mobile
+                document.getElementById("mobile-toggle-theme").innerText = "· Dark"
+            } else {
+                pagebody.classList.remove('dark-theme');
+                // mobile
+                document.getElementById("mobile-toggle-theme").innerText = "· Light"
+            }
+        })();
+    </script>
+
+    <div class="wrapper">
+        <header>
+    <nav class="navbar">
+        <div class="container">
+            <div class="navbar-header header-logo"><a href="/">Xinyu&#39;s Blog</a></div>
+            <div class="menu navbar-right">
+                
+                    <a class="menu-item" href="/archives">Posts</a>
+                
+                    <a class="menu-item" href="/category">Categories</a>
+                
+                    <a class="menu-item" href="/tag">Tags</a>
+                
+                <input id="switch_default" type="checkbox" class="switch_default">
+                <label for="switch_default" class="toggleBtn"></label>
+            </div>
+        </div>
+    </nav>
+
+    
+    <nav class="navbar-mobile" id="nav-mobile">
+        <div class="container">
+            <div class="navbar-header">
+                <div>
+                    <a href="/">Xinyu&#39;s Blog</a><a id="mobile-toggle-theme">·&nbsp;Light</a>
+                </div>
+                <div class="menu-toggle" onclick="mobileBtn()">&#9776; Menu</div>
+            </div>
+            <div class="menu" id="mobile-menu">
+                
+                    <a class="menu-item" href="/archives">Posts</a>
+                
+                    <a class="menu-item" href="/category">Categories</a>
+                
+                    <a class="menu-item" href="/tag">Tags</a>
+                
+            </div>
+        </div>
+    </nav>
+
+</header>
+<script>
+    var mobileBtn = function f() {
+        var toggleMenu = document.getElementsByClassName("menu-toggle")[0];
+        var mobileMenu = document.getElementById("mobile-menu");
+        if(toggleMenu.classList.contains("active")){
+           toggleMenu.classList.remove("active")
+            mobileMenu.classList.remove("active")
+        }else{
+            toggleMenu.classList.add("active")
+            mobileMenu.classList.add("active")
+        }
+    }
+</script>
+            <div class="main">
+                <div class="container">
+    
+    
+        <div class="post-toc">
+    <div class="tocbot-list">
+    </div>
+    <div class="tocbot-list-menu">
+        <a class="tocbot-toc-expand" onclick="expand_toc()">Expand all</a>
+        <a onclick="go_top()">Back to top</a>
+        <a onclick="go_bottom()">Go to bottom</a>
+    </div>
+</div>
+
+<script>
+    var tocbot_timer;
+    var DEPTH_MAX = 6; // 为 6 时展开所有
+    var tocbot_default_config = {
+        tocSelector: '.tocbot-list',
+        contentSelector: '.post-content',
+        headingSelector: 'h1, h2, h3, h4, h5',
+        orderedList: false,
+        scrollSmooth: true,
+        onClick: extend_click,
+    };
+
+    function extend_click() {
+        clearTimeout(tocbot_timer);
+        tocbot_timer = setTimeout(function() {
+            tocbot.refresh(obj_merge(tocbot_default_config, {
+                hasInnerContainers: true
+            }));
+        }, 420); // 这个值是由 tocbot 源码里定义的 scrollSmoothDuration 得来的
+    }
+
+    document.ready(function() {
+        tocbot.init(obj_merge(tocbot_default_config, {
+            collapseDepth: 1
+        }));
+    });
+
+    function expand_toc() {
+        var b = document.querySelector('.tocbot-toc-expand');
+        var expanded = b.getAttribute('data-expanded');
+        expanded ? b.removeAttribute('data-expanded') : b.setAttribute('data-expanded', true);
+        tocbot.refresh(obj_merge(tocbot_default_config, {
+            collapseDepth: expanded ? 1 : DEPTH_MAX
+        }));
+        b.innerText = expanded ? 'Expand all' : 'Collapse all';
+    }
+
+    function go_top() {
+        window.scrollTo(0, 0);
+    }
+
+    function go_bottom() {
+        window.scrollTo(0, document.body.scrollHeight);
+    }
+
+    function obj_merge(target, source) {
+        for (var item in source) {
+            if (source.hasOwnProperty(item)) {
+                target[item] = source[item];
+            }
+        }
+        return target;
+    }
+</script>
+    
+
+    
+    <article class="post-wrap">
+        <header class="post-header">
+            <h1 class="post-title">分布式数据存储---复制</h1>
+            
+                <div class="post-meta">
+                    
+                        Author: <a itemprop="author" rel="author" href="/">Xinyu</a>
+                    
+
+                    
+                        <span class="post-time">
+                        Date: <a href="#">July 25, 2022&nbsp;&nbsp;15:49:06</a>
+                        </span>
+                    
+                    
+                        <span class="post-category">
+                    Category:
+                            
+                                <a href="/categories/%E5%88%86%E5%B8%83%E5%BC%8F%E5%AD%98%E5%82%A8/">分布式存储</a>
+                            
+                        </span>
+                    
+                </div>
+            
+        </header>
+
+        <div class="post-content">
+            <p>在实际情况下，仅考虑数据分片，其实是无法真正应用到生产环境的。因为，故障导致数据丢失和不可用是很常见的情况。因此，在进行分布式数据存储设计时，通常会考虑对数据进行备份，以提高数据的可用性和可靠性，而实现数据备份的关键技术就是“数据复制技术”。<br></p>
+<p>数据复制是一种实现数据备份的技术。比如，现在有节点 1 和节点 2，节点 1 上存储了 10M 用户数据，直观地说，数据复制技术就是将节点 1 上的这 10M 数据拷贝到节点 2 上，以使得节点 1 和节点 2 上存储了相同的数据，也就是节点 2 对节点 1 的数据进行了备份。当节点 1 出现故障后，可以通过获取节点 2 上的数据，实现分布式存储系统的自动容错。<br></p>
+<blockquote>
+<p>数据复制技术实际就是指，如何让主备数据库保持数据一致的技术。</p>
+</blockquote>
+<br>
+
+<h1 id="同步复制技术原理及应用"><a href="#同步复制技术原理及应用" class="headerlink" title="同步复制技术原理及应用"></a>同步复制技术原理及应用</h1><p>同步复制技术是指，当用户请求更新数据时，主数据库必须要同步到备数据库之后才可给用户返回，即如果主数据库没有同步到备数据库，用户的更新操作会一直阻塞。这种方式保证了数据的强一致性，但牺牲了系统的可用性。<br></p>
+<p>在一个分布式数据库系统中，有两个节点，分别作为主节点和备节点。通常情况下，两个节点均可接收用户读请求，然后将本节点的数据及时返回给用户，也就是说读请求响应比较快。而如果用户发送的是写请求，写操作必须由主节点进行，即使用户将写请求发送到备节点，备节点也会将该请求转发给主节点，因此写请求通常比读请求响应慢<br></p>
+<p><img src="https://raw.githubusercontent.com/brucecai-2001/Image/master/20220725155811.png"></p>
+<br>
+
+<h1 id="异步复制技术原理及应用"><a href="#异步复制技术原理及应用" class="headerlink" title="异步复制技术原理及应用"></a>异步复制技术原理及应用</h1><p>异步复制技术是指，当用户请求更新数据时，主数据库处理完请求后可直接给用户响应，而不必等待备数据库完成同步，即备数据库会异步进行数据的同步，用户的更新操作不会因为备数据库未完成数据同步而导致阻塞。显然，这种方式保证了系统的可用性，但牺牲了数据的一致性。<br></p>
+<p><img src="https://raw.githubusercontent.com/brucecai-2001/Image/master/20220725160228.png"></p>
+<p>主数据库完成写操作后，可直接给用户回复执行成功，将写操作写入 binary log 中，binary log 中记录着主数据库执行的所有更新操作，以便备数据库获取更新信息。<br><br>备数据库启动一个 IO 线程专门读取 binary log 中的内容然后写入 relay log 中。<br><br>备数据库启动一个 SQL 线程会定时检查 relay log 里的内容，如发现有新内容则会立即在备数据库中执行，从而实现数据的一致。<br></p>
+<p><img src="https://raw.githubusercontent.com/brucecai-2001/Image/master/20220725160504.png"></p>
+<br>
+
+<h1 id="半同步复制技术原理及应用"><a href="#半同步复制技术原理及应用" class="headerlink" title="半同步复制技术原理及应用"></a>半同步复制技术原理及应用</h1><p>同步复制技术会满足数据的强一致性，但会牺牲一定的可用性；异步复制技术会满足高可用，但一定程度上牺牲了数据的一致性。介于两者中间的是，半同步复制技术。半同步复制技术的核心是，用户发出写请求后，主数据库会执行写操作，并给备数据库发送同步请求，但主数据库不用等待所有备数据库回复数据同步成功便可响应用户，也就是说主数据库可以等待一部分备数据库同步完成后响应用户写操作执行成功。<br></p>
+<p>半同步复制技术通常有两种方式：<br></p>
+<p>一种是，当主数据库收到多个备数据库中的某一个回复数据同步成功后，便可给用户响应写操作完成；<br><br>或主数据库等超过一半节点（包括主数据库）回复数据更新成功后，再给用户响应写操作成功。<br></p>
+<p>第二种半同步复制方案要求的一致性比第一种要高一些，但相对可用性会低一些。在 ZooKeeper 集群中，写请求必须由 Leader 节点进行处理，每次写请求 Leader 会征求其他 Follower 的同意，只有当多数节点同意后写操作才可成功，因此保证了较高的一致性。</p>
+<p><strong>多数的分布式存储系统可以通过配置来选择不同的数据复制技术。比如上面讲过的 MySQL 数据库集群，就支持全同步复制、异步复制和半同步复制三种模式</strong></p>
+<br>
+
+<h1 id="在半同步复制技术中，对于未回复数据更新结果的节点，如何解决数据不一致或冲突呢？"><a href="#在半同步复制技术中，对于未回复数据更新结果的节点，如何解决数据不一致或冲突呢？" class="headerlink" title="在半同步复制技术中，对于未回复数据更新结果的节点，如何解决数据不一致或冲突呢？"></a>在半同步复制技术中，对于未回复数据更新结果的节点，如何解决数据不一致或冲突呢？</h1><p>不同的场景有不同的处理方式，需要根据用户的需求进行选择，比如以最新数据为准、以最大数据为准等，没有统一的评判规则，和用户的需求紧密相关。由于在分布式系统中，很多系统采用了 Raft 算法<br></p>
+<p>Raft 算法采用的是第二种半同步复制技术，也就是主数据库等超过一半节点（包括主数据库）回复数据更新成功后，再给用户响应写操作成功。当有 Follower 节点的数据与 Leader 节点数据不一致时，采用强制复制策略来解决不一致情况。由于所有的数据更新操作最先在 Leader 节点执行，因此当产生冲突时，以 Leader 节点为准。Leader 节点上会对比与自己数据不一致的 Follower 节点所存储的信息，找到两者最后达成一致的地方，然后强制将这个地方之后的数据复制到该 Follower 节点上<br></p>
+
+        </div>
+
+        
+            <section class="post-copyright">
+                
+                    <p class="copyright-item">
+                        <span>Author:</span>
+                        <span>Xinyu</span>
+                    </p>
+                
+                
+                    <p class="copyright-item">
+                        <span>Permalink:</span>
+                        <span><a href="http://example.com/2022/07/25/[%E5%88%86%E5%B8%83%E5%BC%8F%E7%B3%BB%E7%BB%9F]%E5%A4%8D%E5%88%B6/">http://example.com/2022/07/25/[%E5%88%86%E5%B8%83%E5%BC%8F%E7%B3%BB%E7%BB%9F]%E5%A4%8D%E5%88%B6/</a></span>
+                    </p>
+                
+                
+                    <p class="copyright-item">
+                        <span>License:</span>
+                        <span>Copyright (c) 2019 <a target="_blank" rel="noopener" href="http://creativecommons.org/licenses/by-nc/4.0/">CC-BY-NC-4.0</a> LICENSE</span>
+                    </p>
+                
+                
+                     <p class="copyright-item">
+                         <span>Slogan:</span>
+                         <span>Coffee or Tea</span>
+                     </p>
+                
+
+            </section>
+        
+        <section class="post-tags">
+            <div>
+                <span>Tag(s):</span>
+                <span class="tag">
+                    
+                </span>
+            </div>
+            <div>
+                <a href="javascript:window.history.back();">back</a>
+                <span>· </span>
+                <a href="/">home</a>
+            </div>
+        </section>
+        <section class="post-nav">
+            
+                <a class="prev" rel="prev" href="/2022/07/25/%5B%E5%88%86%E5%B8%83%E5%BC%8F%E7%B3%BB%E7%BB%9F%5D%E7%BC%93%E5%AD%98/">分布式数据存储---缓存</a>
+            
+            
+            <a class="next" rel="next" href="/2022/07/25/%5BRedis%5D%E4%BA%8B%E5%8A%A1/">Redis---事务和锁</a>
+            
+        </section>
+
+
+    </article>
+</div>
+
+            </div>
+            <footer id="footer" class="footer">
+    <div class="copyright">
+        <span>© Xinyu | Powered by <a href="https://hexo.io" target="_blank">Hexo</a> & <a href="https://github.com/Siricee/hexo-theme-Chic" target="_blank">Chic</a></span>
+    </div>
+</footer>
+
+    </div>
+</body>
+
+</html>

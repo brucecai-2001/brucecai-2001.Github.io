@@ -1,0 +1,308 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+<meta name="viewport"
+      content="width=device-width, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+<meta http-equiv="X-UA-Compatible" content="ie=edge">
+
+    <meta name="author" content="Xinyu">
+
+
+
+
+
+<title>分布式计算---Stream | Hexo</title>
+
+
+
+    <link rel="icon" href="/favicon.ico">
+
+
+
+
+    <!-- stylesheets list from _config.yml -->
+    
+    <link rel="stylesheet" href="/css/style.css">
+    
+
+
+
+    <!-- scripts list from _config.yml -->
+    
+    <script src="/js/script.js"></script>
+    
+    <script src="/js/tocbot.min.js"></script>
+    
+
+
+
+    
+    
+        
+    
+
+
+<meta name="generator" content="Hexo 6.2.0"></head>
+
+<body>
+    <script>
+        // this function is used to check current theme before page loaded.
+        (() => {
+            const currentTheme = window.localStorage && window.localStorage.getItem('theme') || '';
+            const isDark = currentTheme === 'dark';
+            const pagebody = document.getElementsByTagName('body')[0]
+            if (isDark) {
+                pagebody.classList.add('dark-theme');
+                // mobile
+                document.getElementById("mobile-toggle-theme").innerText = "· Dark"
+            } else {
+                pagebody.classList.remove('dark-theme');
+                // mobile
+                document.getElementById("mobile-toggle-theme").innerText = "· Light"
+            }
+        })();
+    </script>
+
+    <div class="wrapper">
+        <header>
+    <nav class="navbar">
+        <div class="container">
+            <div class="navbar-header header-logo"><a href="/">Xinyu&#39;s Blog</a></div>
+            <div class="menu navbar-right">
+                
+                    <a class="menu-item" href="/archives">Posts</a>
+                
+                    <a class="menu-item" href="/category">Categories</a>
+                
+                    <a class="menu-item" href="/tag">Tags</a>
+                
+                <input id="switch_default" type="checkbox" class="switch_default">
+                <label for="switch_default" class="toggleBtn"></label>
+            </div>
+        </div>
+    </nav>
+
+    
+    <nav class="navbar-mobile" id="nav-mobile">
+        <div class="container">
+            <div class="navbar-header">
+                <div>
+                    <a href="/">Xinyu&#39;s Blog</a><a id="mobile-toggle-theme">·&nbsp;Light</a>
+                </div>
+                <div class="menu-toggle" onclick="mobileBtn()">&#9776; Menu</div>
+            </div>
+            <div class="menu" id="mobile-menu">
+                
+                    <a class="menu-item" href="/archives">Posts</a>
+                
+                    <a class="menu-item" href="/category">Categories</a>
+                
+                    <a class="menu-item" href="/tag">Tags</a>
+                
+            </div>
+        </div>
+    </nav>
+
+</header>
+<script>
+    var mobileBtn = function f() {
+        var toggleMenu = document.getElementsByClassName("menu-toggle")[0];
+        var mobileMenu = document.getElementById("mobile-menu");
+        if(toggleMenu.classList.contains("active")){
+           toggleMenu.classList.remove("active")
+            mobileMenu.classList.remove("active")
+        }else{
+            toggleMenu.classList.add("active")
+            mobileMenu.classList.add("active")
+        }
+    }
+</script>
+            <div class="main">
+                <div class="container">
+    
+    
+        <div class="post-toc">
+    <div class="tocbot-list">
+    </div>
+    <div class="tocbot-list-menu">
+        <a class="tocbot-toc-expand" onclick="expand_toc()">Expand all</a>
+        <a onclick="go_top()">Back to top</a>
+        <a onclick="go_bottom()">Go to bottom</a>
+    </div>
+</div>
+
+<script>
+    var tocbot_timer;
+    var DEPTH_MAX = 6; // 为 6 时展开所有
+    var tocbot_default_config = {
+        tocSelector: '.tocbot-list',
+        contentSelector: '.post-content',
+        headingSelector: 'h1, h2, h3, h4, h5',
+        orderedList: false,
+        scrollSmooth: true,
+        onClick: extend_click,
+    };
+
+    function extend_click() {
+        clearTimeout(tocbot_timer);
+        tocbot_timer = setTimeout(function() {
+            tocbot.refresh(obj_merge(tocbot_default_config, {
+                hasInnerContainers: true
+            }));
+        }, 420); // 这个值是由 tocbot 源码里定义的 scrollSmoothDuration 得来的
+    }
+
+    document.ready(function() {
+        tocbot.init(obj_merge(tocbot_default_config, {
+            collapseDepth: 1
+        }));
+    });
+
+    function expand_toc() {
+        var b = document.querySelector('.tocbot-toc-expand');
+        var expanded = b.getAttribute('data-expanded');
+        expanded ? b.removeAttribute('data-expanded') : b.setAttribute('data-expanded', true);
+        tocbot.refresh(obj_merge(tocbot_default_config, {
+            collapseDepth: expanded ? 1 : DEPTH_MAX
+        }));
+        b.innerText = expanded ? 'Expand all' : 'Collapse all';
+    }
+
+    function go_top() {
+        window.scrollTo(0, 0);
+    }
+
+    function go_bottom() {
+        window.scrollTo(0, document.body.scrollHeight);
+    }
+
+    function obj_merge(target, source) {
+        for (var item in source) {
+            if (source.hasOwnProperty(item)) {
+                target[item] = source[item];
+            }
+        }
+        return target;
+    }
+</script>
+    
+
+    
+    <article class="post-wrap">
+        <header class="post-header">
+            <h1 class="post-title">分布式计算---Stream</h1>
+            
+                <div class="post-meta">
+                    
+                        Author: <a itemprop="author" rel="author" href="/">Xinyu</a>
+                    
+
+                    
+                        <span class="post-time">
+                        Date: <a href="#">July 23, 2022&nbsp;&nbsp;1:20:17</a>
+                        </span>
+                    
+                    
+                        <span class="post-category">
+                    Category:
+                            
+                                <a href="/categories/%E5%88%86%E5%B8%83%E5%BC%8F%E8%AE%A1%E7%AE%97/">分布式计算</a>
+                            
+                        </span>
+                    
+                </div>
+            
+        </header>
+
+        <div class="post-content">
+            <blockquote>
+<p>实时性任务主要是针对流数据的处理，对处理时延要求很高，通常需要有常驻服务进程，等待数据的随时到来随时处理，以保证低时延。处理流数据任务的计算模式，在分布式领域中叫作 Stream。</p>
+</blockquote>
+<p>流数据的特征主要包括以下 4 点：数据如流水般持续、快速地到达；海量数据规模，数据量可达到 TB 级甚至 PB 级；对实时性要求高，随着时间流逝，数据的价值会大幅降低；数据顺序无法保证，也就是说系统无法控制将要处理的数据元素的顺序。<br></p>
+<h1 id="Stream原理"><a href="#Stream原理" class="headerlink" title="Stream原理"></a>Stream原理</h1><p>使用流计算进行数据处理，一般包括 3 个步骤:</p>
+<p><img src="https://raw.githubusercontent.com/brucecai-2001/Image/master/20220723013041.png"></p>
+<p>第一步，提交流式计算作业。流式计算作业是一种常驻计算服务，比如实时交通监测服务、实时天气预报服务等。对于流式计算作业，首先必须预先定义计算逻辑，并提交到流计算系统中，使得流计算系统知道自己该如何处理数据。<br></p>
+<p>第二步，加载流式数据进行流计算。流式计算作业一旦启动将一直处于等待事件触发的状态，一旦有小批量数据进入流式数据存储，系统会立刻执行计算逻辑并迅速得到结果。<br></p>
+<p>第三步，持续输出计算结果。流式计算作业在得到小批量数据的计算结果后，可以立刻将结果数据写入在线 &#x2F; 批量系统，无需等待整体数据的计算结果，以进一步做到实时计算结果的实时展现。<br></p>
+<br>
+
+<h1 id="Storm"><a href="#Storm" class="headerlink" title="Storm"></a>Storm</h1><p>Storm 集群上有两种节点，即主节点（Master Node）和工作节点（Worker Nodes）。<br></p>
+<p>Nimbus 是整个 Storm 集群的主守护进程，以唯一实例的方式运行在主节点上。它负责把任务分配和分发给集群的工作节点，并监控这些任务的执行情况。当某个节点故障时，它会重新分配该故障节点上的任务到其它节点。<br></p>
+<p>Supervisor 是 Storm 集群里工作守护进程，每个工作节点都存在一个这样的实例。它通过 Zookeeper 与 Nimbus 守护进程进行通信。在接受到 Nimbus 分配的任务后，它会为每个任务启动单独的工作进程。<br></p>
+<p><img src="https://raw.githubusercontent.com/brucecai-2001/Image/master/20220723013954.png"></p>
+<p>Master Node 与 Worker Node 之间的交互通过 ZooKeeper 完成，由于 Nimbus 和 Supervisors 是 Master Node 和 Worker Node 之间负责交互的进程，因此 Nimbus 和 Supervisors 之间的所有协调都是通过 ZooKeeper 集群完成的，比如 Nimbus 会将任务的分配情况或信息发送给 ZooKeeper 集群，然后 Supervisors 向 ZooKeeper 集群获取任务，并启动工作进程以执行任务。<br></p>
+<p>Supervisor 接收到分配的任务后，会启动工作节点的工作进程 (Worker) 去执行任务。我们知道，一个计算任务可以分成任务数据的读取以及任务执行两部分。Worker 提供了两个组件 Spout 和 Bolt，分别进行数据读取和任务执行。<br></p>
+<p><img src="https://raw.githubusercontent.com/brucecai-2001/Image/master/20220723014542.png"></p>
+<p>Spout 用于接收源数据。通常情况下，Spout 会从一个外部的数据源读取数据元组，然后将它们发送到拓扑中。例如，Spout 从 Twitter API 读取推文并将其发布到拓扑中。<br></p>
+<p>Bolt 负责处理输入的数据流，比如数据过滤（filtering）、函数处理（functions）、聚合（aggregations）、联结（joins）、数据库交互等。数据处理后可能输出新的流作为下一个 Bolt 的输入。每个 Bolt 往往只具备单一的计算逻辑。当我们执行简单的数据流转换时，比如仅进行数据过滤，则通常一个 Bolt 可以实现<br></p>
+
+        </div>
+
+        
+            <section class="post-copyright">
+                
+                    <p class="copyright-item">
+                        <span>Author:</span>
+                        <span>Xinyu</span>
+                    </p>
+                
+                
+                    <p class="copyright-item">
+                        <span>Permalink:</span>
+                        <span><a href="http://example.com/2022/07/23/[%E5%88%86%E5%B8%83%E5%BC%8F%E7%B3%BB%E7%BB%9F]Stream/">http://example.com/2022/07/23/[%E5%88%86%E5%B8%83%E5%BC%8F%E7%B3%BB%E7%BB%9F]Stream/</a></span>
+                    </p>
+                
+                
+                    <p class="copyright-item">
+                        <span>License:</span>
+                        <span>Copyright (c) 2019 <a target="_blank" rel="noopener" href="http://creativecommons.org/licenses/by-nc/4.0/">CC-BY-NC-4.0</a> LICENSE</span>
+                    </p>
+                
+                
+                     <p class="copyright-item">
+                         <span>Slogan:</span>
+                         <span>Coffee or Tea</span>
+                     </p>
+                
+
+            </section>
+        
+        <section class="post-tags">
+            <div>
+                <span>Tag(s):</span>
+                <span class="tag">
+                    
+                </span>
+            </div>
+            <div>
+                <a href="javascript:window.history.back();">back</a>
+                <span>· </span>
+                <a href="/">home</a>
+            </div>
+        </section>
+        <section class="post-nav">
+            
+                <a class="prev" rel="prev" href="/2022/07/23/%5B%E5%88%86%E5%B8%83%E5%BC%8F%E7%B3%BB%E7%BB%9F%5DActor/">分布式计算---Actor</a>
+            
+            
+            <a class="next" rel="next" href="/2022/07/21/%5BRedis%5D%E8%AF%AD%E6%B3%95/">Redis---语法和数据类型</a>
+            
+        </section>
+
+
+    </article>
+</div>
+
+            </div>
+            <footer id="footer" class="footer">
+    <div class="copyright">
+        <span>© Xinyu | Powered by <a href="https://hexo.io" target="_blank">Hexo</a> & <a href="https://github.com/Siricee/hexo-theme-Chic" target="_blank">Chic</a></span>
+    </div>
+</footer>
+
+    </div>
+</body>
+
+</html>

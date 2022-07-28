@@ -1,0 +1,327 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+<meta name="viewport"
+      content="width=device-width, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+<meta http-equiv="X-UA-Compatible" content="ie=edge">
+
+    <meta name="author" content="Xinyu">
+
+
+
+
+
+<title>Redis---主从 | Hexo</title>
+
+
+
+    <link rel="icon" href="/favicon.ico">
+
+
+
+
+    <!-- stylesheets list from _config.yml -->
+    
+    <link rel="stylesheet" href="/css/style.css">
+    
+
+
+
+    <!-- scripts list from _config.yml -->
+    
+    <script src="/js/script.js"></script>
+    
+    <script src="/js/tocbot.min.js"></script>
+    
+
+
+
+    
+    
+        
+    
+
+
+<meta name="generator" content="Hexo 6.2.0"></head>
+
+<body>
+    <script>
+        // this function is used to check current theme before page loaded.
+        (() => {
+            const currentTheme = window.localStorage && window.localStorage.getItem('theme') || '';
+            const isDark = currentTheme === 'dark';
+            const pagebody = document.getElementsByTagName('body')[0]
+            if (isDark) {
+                pagebody.classList.add('dark-theme');
+                // mobile
+                document.getElementById("mobile-toggle-theme").innerText = "· Dark"
+            } else {
+                pagebody.classList.remove('dark-theme');
+                // mobile
+                document.getElementById("mobile-toggle-theme").innerText = "· Light"
+            }
+        })();
+    </script>
+
+    <div class="wrapper">
+        <header>
+    <nav class="navbar">
+        <div class="container">
+            <div class="navbar-header header-logo"><a href="/">Xinyu&#39;s Blog</a></div>
+            <div class="menu navbar-right">
+                
+                    <a class="menu-item" href="/archives">Posts</a>
+                
+                    <a class="menu-item" href="/category">Categories</a>
+                
+                    <a class="menu-item" href="/tag">Tags</a>
+                
+                <input id="switch_default" type="checkbox" class="switch_default">
+                <label for="switch_default" class="toggleBtn"></label>
+            </div>
+        </div>
+    </nav>
+
+    
+    <nav class="navbar-mobile" id="nav-mobile">
+        <div class="container">
+            <div class="navbar-header">
+                <div>
+                    <a href="/">Xinyu&#39;s Blog</a><a id="mobile-toggle-theme">·&nbsp;Light</a>
+                </div>
+                <div class="menu-toggle" onclick="mobileBtn()">&#9776; Menu</div>
+            </div>
+            <div class="menu" id="mobile-menu">
+                
+                    <a class="menu-item" href="/archives">Posts</a>
+                
+                    <a class="menu-item" href="/category">Categories</a>
+                
+                    <a class="menu-item" href="/tag">Tags</a>
+                
+            </div>
+        </div>
+    </nav>
+
+</header>
+<script>
+    var mobileBtn = function f() {
+        var toggleMenu = document.getElementsByClassName("menu-toggle")[0];
+        var mobileMenu = document.getElementById("mobile-menu");
+        if(toggleMenu.classList.contains("active")){
+           toggleMenu.classList.remove("active")
+            mobileMenu.classList.remove("active")
+        }else{
+            toggleMenu.classList.add("active")
+            mobileMenu.classList.add("active")
+        }
+    }
+</script>
+            <div class="main">
+                <div class="container">
+    
+    
+        <div class="post-toc">
+    <div class="tocbot-list">
+    </div>
+    <div class="tocbot-list-menu">
+        <a class="tocbot-toc-expand" onclick="expand_toc()">Expand all</a>
+        <a onclick="go_top()">Back to top</a>
+        <a onclick="go_bottom()">Go to bottom</a>
+    </div>
+</div>
+
+<script>
+    var tocbot_timer;
+    var DEPTH_MAX = 6; // 为 6 时展开所有
+    var tocbot_default_config = {
+        tocSelector: '.tocbot-list',
+        contentSelector: '.post-content',
+        headingSelector: 'h1, h2, h3, h4, h5',
+        orderedList: false,
+        scrollSmooth: true,
+        onClick: extend_click,
+    };
+
+    function extend_click() {
+        clearTimeout(tocbot_timer);
+        tocbot_timer = setTimeout(function() {
+            tocbot.refresh(obj_merge(tocbot_default_config, {
+                hasInnerContainers: true
+            }));
+        }, 420); // 这个值是由 tocbot 源码里定义的 scrollSmoothDuration 得来的
+    }
+
+    document.ready(function() {
+        tocbot.init(obj_merge(tocbot_default_config, {
+            collapseDepth: 1
+        }));
+    });
+
+    function expand_toc() {
+        var b = document.querySelector('.tocbot-toc-expand');
+        var expanded = b.getAttribute('data-expanded');
+        expanded ? b.removeAttribute('data-expanded') : b.setAttribute('data-expanded', true);
+        tocbot.refresh(obj_merge(tocbot_default_config, {
+            collapseDepth: expanded ? 1 : DEPTH_MAX
+        }));
+        b.innerText = expanded ? 'Expand all' : 'Collapse all';
+    }
+
+    function go_top() {
+        window.scrollTo(0, 0);
+    }
+
+    function go_bottom() {
+        window.scrollTo(0, document.body.scrollHeight);
+    }
+
+    function obj_merge(target, source) {
+        for (var item in source) {
+            if (source.hasOwnProperty(item)) {
+                target[item] = source[item];
+            }
+        }
+        return target;
+    }
+</script>
+    
+
+    
+    <article class="post-wrap">
+        <header class="post-header">
+            <h1 class="post-title">Redis---主从</h1>
+            
+                <div class="post-meta">
+                    
+                        Author: <a itemprop="author" rel="author" href="/">Xinyu</a>
+                    
+
+                    
+                        <span class="post-time">
+                        Date: <a href="#">July 27, 2022&nbsp;&nbsp;23:17:53</a>
+                        </span>
+                    
+                    
+                        <span class="post-category">
+                    Category:
+                            
+                                <a href="/categories/Redis/">Redis</a>
+                            
+                        </span>
+                    
+                </div>
+            
+        </header>
+
+        <div class="post-content">
+            <h1 id="主从复制"><a href="#主从复制" class="headerlink" title="主从复制"></a>主从复制</h1><p>主机写，从机读 <br></p>
+<ol>
+<li><p>创建 &#x2F;MyRedis文件夹 <br></p>
+</li>
+<li><p>复制redis.conf到文件夹中 <br></p>
+</li>
+<li><p>一主两从， 创建三个配置文件 <br></p>
+</li>
+</ol>
+<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">include /MyRedis/redis.conf</span><br><span class="line">pidfile /var/run/redis_6379.pid</span><br><span class="line">port <span class="number">6379</span></span><br><span class="line">dbfilename dump6379.rdb</span><br></pre></td></tr></table></figure>
+
+<ol start="4">
+<li><p>启动redis: redis-server .conf <br></p>
+</li>
+<li><p>从机上执行: slaveof ip port <br></p>
+</li>
+</ol>
+<p>当从服务器宕机重启后会丢失主从关系， 重新连接主机后会从头复制主机数据(全量复制)  <br><br>主机宕机后，从机不会上位 <br></p>
+<br>
+
+<h1 id="主从复制原理"><a href="#主从复制原理" class="headerlink" title="主从复制原理"></a>主从复制原理</h1><ol>
+<li>连接上主服务器后，从服务器向主服务器发送数据同步消息 </li>
+<li>主服务器接收到同步消息后，主服务器将数据进行持久化(rdb文件)，从服务器拿到rdb后恢复数据</li>
+<li>每次主服务器进行写操作后，和从服务器进行数据同步</li>
+</ol>
+<br>
+
+<h1 id="从机当主机"><a href="#从机当主机" class="headerlink" title="从机当主机"></a>从机当主机</h1><p>master宕机后， 从机当主机<br></p>
+<p>slaveof no one</p>
+<br>
+
+<h1 id="哨兵模式"><a href="#哨兵模式" class="headerlink" title="哨兵模式"></a>哨兵模式</h1><p>哨兵是 Redis 的一种运行模式，它专注于对 Redis 实例（主节点、从节点）运行状态的监控，并能够在主节点发生故障时通过一系列的机制实现选主及主从切换，实现故障转移，确保整个 Redis 系统的可用性。<br></p>
+<h2 id="监控"><a href="#监控" class="headerlink" title="监控"></a>监控</h2><p>监控: 以每秒一次的频率向所有武当弟子、掌门与哨兵（包括 Master、Slave、其他 Sentinel 在内）发送 PING 命令，如果 slave 没有在在规定时间内响应「哨兵」的 PING 命令，「哨兵」就认为这哥们可能嗝屁了，就会将他记录为「下线状态」；master 掌门没有在规定时间响应 「哨兵」的 PING 命令，哨兵就判定掌门下线，开始执行「自动切换 master 掌门」的流程。<br></p>
+<p>判断 master 是否下线不能只有一个「哨兵」说了算，只有过半的哨兵判断 master 已经「主观下线」，这时候才能将 master 标记为「客观下线」,只有 master 被判定为「客观下线」，才会进一步触发哨兵开始主从切换流程。简单来说，主观下线是哨兵自己认为节点宕机，而客观下线是不但哨兵自己认为节点宕机，而且该哨兵与其他哨兵沟通后，达到一定数量的哨兵都认为该哥们嗝屁了。<br></p>
+<p>sentinel monitor mymaster 127.0.0.1 6379 2<br></p>
+<p>2：法定数量，代表只有两个或两个以上的哨兵认为主节点不可用的时候，才会把 master 设置为客观下线状态，然后进行 failover 操作。<br></p>
+<h2 id="自动切换主库"><a href="#自动切换主库" class="headerlink" title="自动切换主库"></a>自动切换主库</h2><p>过滤: <br><br>从库当前在线状态，下线的直接丢弃；<br><br>评估之前的网络连接状态 down-after-milliseconds * 10：如果从库总是和主库断连，而且断连次数超出了一定的阈值（10 次），我们就有理由相信，这个从库的网络状况并不是太好，就可以把这个从库筛掉了。<br></p>
+<p>打分: <br><br>slave 优先级，通过 slave-priority 配置项，给不同的从库设置不同优先级（后台有人没办法），优先级高的直接晋级为新 master 掌门。<br><br>slave_repl_offset与 master_repl_offset进度差距, 比较 slave 与旧 master 复制进度的差距；<br><br>在优先级和复制进度都相同的情况下，ID 号最小的从库得分最高，会被选为新主库。<br></p>
+<h2 id="通知"><a href="#通知" class="headerlink" title="通知"></a>通知</h2><p>「哨兵」将新 「master 掌门」的连接信息发送给其他 slave 武当弟子，并且让 slave 执行 replacaof 命令，和新「master 掌门」建立连接，并进行数据复制学习新掌门的所有武功。<br></p>
+
+        </div>
+
+        
+            <section class="post-copyright">
+                
+                    <p class="copyright-item">
+                        <span>Author:</span>
+                        <span>Xinyu</span>
+                    </p>
+                
+                
+                    <p class="copyright-item">
+                        <span>Permalink:</span>
+                        <span><a href="http://example.com/2022/07/27/[Redis]%E4%B8%BB%E4%BB%8E/">http://example.com/2022/07/27/[Redis]%E4%B8%BB%E4%BB%8E/</a></span>
+                    </p>
+                
+                
+                    <p class="copyright-item">
+                        <span>License:</span>
+                        <span>Copyright (c) 2019 <a target="_blank" rel="noopener" href="http://creativecommons.org/licenses/by-nc/4.0/">CC-BY-NC-4.0</a> LICENSE</span>
+                    </p>
+                
+                
+                     <p class="copyright-item">
+                         <span>Slogan:</span>
+                         <span>Coffee or Tea</span>
+                     </p>
+                
+
+            </section>
+        
+        <section class="post-tags">
+            <div>
+                <span>Tag(s):</span>
+                <span class="tag">
+                    
+                </span>
+            </div>
+            <div>
+                <a href="javascript:window.history.back();">back</a>
+                <span>· </span>
+                <a href="/">home</a>
+            </div>
+        </section>
+        <section class="post-nav">
+            
+                <a class="prev" rel="prev" href="/2022/07/28/%5BRedis%5D%E9%9B%86%E7%BE%A4/">Redis---集群</a>
+            
+            
+            <a class="next" rel="next" href="/2022/07/27/%5B%E5%88%86%E5%B8%83%E5%BC%8F%E7%B3%BB%E7%BB%9F%5D%E6%95%85%E9%9A%9C%E9%9A%94%E7%A6%BB/">分布式高可用---故障隔离</a>
+            
+        </section>
+
+
+    </article>
+</div>
+
+            </div>
+            <footer id="footer" class="footer">
+    <div class="copyright">
+        <span>© Xinyu | Powered by <a href="https://hexo.io" target="_blank">Hexo</a> & <a href="https://github.com/Siricee/hexo-theme-Chic" target="_blank">Chic</a></span>
+    </div>
+</footer>
+
+    </div>
+</body>
+
+</html>
