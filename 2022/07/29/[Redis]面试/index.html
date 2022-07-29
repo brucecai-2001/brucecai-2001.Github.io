@@ -13,7 +13,7 @@
 
 
 
-<title>计算机网络---常见问题(2) | Hexo</title>
+<title>Redis---应用常见问题 | Hexo</title>
 
 
 
@@ -192,7 +192,7 @@
     
     <article class="post-wrap">
         <header class="post-header">
-            <h1 class="post-title">计算机网络---常见问题(2)</h1>
+            <h1 class="post-title">Redis---应用常见问题</h1>
             
                 <div class="post-meta">
                     
@@ -201,14 +201,14 @@
 
                     
                         <span class="post-time">
-                        Date: <a href="#">July 29, 2022&nbsp;&nbsp;0:14:05</a>
+                        Date: <a href="#">July 29, 2022&nbsp;&nbsp;15:44:04</a>
                         </span>
                     
                     
                         <span class="post-category">
                     Category:
                             
-                                <a href="/categories/%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%BD%91%E7%BB%9C/">计算机网络</a>
+                                <a href="/categories/Redis/">Redis</a>
                             
                         </span>
                     
@@ -217,10 +217,45 @@
         </header>
 
         <div class="post-content">
-            <p>Linux使用了TCP&#x2F;IP网络模型<br></p>
-<p><img src="https://raw.githubusercontent.com/brucecai-2001/Image/master/20220729002548.png"></p>
-<h1 id="Linux-接收网络包的流程"><a href="#Linux-接收网络包的流程" class="headerlink" title="Linux 接收网络包的流程"></a>Linux 接收网络包的流程</h1><p>网卡是计算机里的一个硬件，专门负责接收和发送网络包，当网卡接收到一个网络包后，会通过 DMA 技术，将网络包放入到 Ring Buffer，这个是一个环形缓冲区。<br></p>
-<p>Linux 内核在 2.6 版本中引入了 NAPI 机制，它是混合「中断和轮询」的方式来接收网络包，它的核心概念就是不采用中断的方式读取数据，而是首先采用中断唤醒数据接收的服务程序，然后 poll 的方法来轮询数据。当有网络包到达时，网卡发起硬件中断，于是会执行网卡硬件中断处理函数，中断处理函数处理完需要「暂时屏蔽中断」，然后唤醒「软中断」来轮询处理数据，直到没有新数据时才恢复中断，这样一次中断处理多个网络包<br></p>
+            <h1 id="缓存穿透"><a href="#缓存穿透" class="headerlink" title="缓存穿透"></a>缓存穿透</h1><p><strong>缓存穿透是指缓存和数据库中都没有的数据，而用户不断发起请求</strong> <br></p>
+<p>直接原因:<br></p>
+<ol>
+<li>非正常url访问</li>
+<li>redis查询不到数据库</li>
+</ol>
+<br>
+
+<p>解决方案: <br></p>
+<ol>
+<li>空值缓存: 如果一个查询返回到结果为空，将这个空结果进行缓存<br></li>
+<li>使用bitmap创建一个可访问的白名单，用户id作为偏移量，每次访问将访问的用户id和bitmap的id比较</li>
+<li>布隆过滤器: 和bitmap类似但效率更高</li>
+<li>实时监控</li>
+<li>对参数做校验</li>
+</ol>
+<br>
+
+<h1 id="缓存击穿"><a href="#缓存击穿" class="headerlink" title="缓存击穿"></a>缓存击穿</h1><p><strong>缓存击穿是指一个Key非常热点，在不停的扛着大并发，大并发集中对这一个点进行访问，当这个Key在失效的瞬间，持续的大并发就穿破缓存，直接请求数据库</strong> <br></p>
+<ol>
+<li>数据库访问压力瞬时增大</li>
+<li>redis key并没有大量过期</li>
+<li>redis正常运行</li>
+</ol>
+<p>解决方案: <br></p>
+<ol>
+<li>预先设置热门数据，实时调整key过期时间</li>
+<li>使用锁: 当缓存失效时只允许一个请求去访问数据库和更新缓存，其它请求等待Redis缓存中的数据。<br></li>
+</ol>
+<br>
+
+<h1 id="缓存雪崩"><a href="#缓存雪崩" class="headerlink" title="缓存雪崩"></a>缓存雪崩</h1><p><strong>在极少时间段，大量key集中过期</strong> <br></p>
+<p>解决方案: <br></p>
+<ol>
+<li>如果Redis是集群部署，将热点数据均匀分布在不同的Redis库中也能避免全部失效的问题 <br></li>
+<li>设置过期标志，当缓存快过期则通知另外的线程在后台更新key的缓存 <br></li>
+<li>将缓存失效时间分散开 <br></li>
+<li>对同一ip做请求频率的限制，例如每一秒限制100个请求，每一分钟限制1000个请求，具体的频率限制根据你的系统业务特点和用户群体而定</li>
+</ol>
 
         </div>
 
@@ -235,7 +270,7 @@
                 
                     <p class="copyright-item">
                         <span>Permalink:</span>
-                        <span><a href="http://example.com/2022/07/29/[%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%BD%91%E7%BB%9C]%E5%9F%BA%E7%A1%802/">http://example.com/2022/07/29/[%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%BD%91%E7%BB%9C]%E5%9F%BA%E7%A1%802/</a></span>
+                        <span><a href="http://example.com/2022/07/29/[Redis]%E9%9D%A2%E8%AF%95/">http://example.com/2022/07/29/[Redis]%E9%9D%A2%E8%AF%95/</a></span>
                     </p>
                 
                 
@@ -268,10 +303,8 @@
         </section>
         <section class="post-nav">
             
-                <a class="prev" rel="prev" href="/2022/07/29/%5BRedis%5D%E9%9D%A2%E8%AF%95/">Redis---应用常见问题</a>
             
-            
-            <a class="next" rel="next" href="/2022/07/28/%5B%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%BD%91%E7%BB%9C%5D%E5%9F%BA%E7%A1%80/">计算机网络---常见问题</a>
+            <a class="next" rel="next" href="/2022/07/29/%5B%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%BD%91%E7%BB%9C%5D%E5%9F%BA%E7%A1%802/">计算机网络---常见问题(2)</a>
             
         </section>
 
