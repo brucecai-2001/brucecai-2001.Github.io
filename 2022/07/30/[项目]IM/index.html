@@ -13,7 +13,7 @@
 
 
 
-<title>Redis---应用常见问题 | Hexo</title>
+<title>IM即时通讯系统 | Hexo</title>
 
 
 
@@ -192,7 +192,7 @@
     
     <article class="post-wrap">
         <header class="post-header">
-            <h1 class="post-title">Redis---应用常见问题</h1>
+            <h1 class="post-title">IM即时通讯系统</h1>
             
                 <div class="post-meta">
                     
@@ -201,14 +201,14 @@
 
                     
                         <span class="post-time">
-                        Date: <a href="#">July 29, 2022&nbsp;&nbsp;15:44:04</a>
+                        Date: <a href="#">July 30, 2022&nbsp;&nbsp;18:05:24</a>
                         </span>
                     
                     
                         <span class="post-category">
                     Category:
                             
-                                <a href="/categories/Redis/">Redis</a>
+                                <a href="/categories/%E9%A1%B9%E7%9B%AE/">项目</a>
                             
                         </span>
                     
@@ -217,45 +217,12 @@
         </header>
 
         <div class="post-content">
-            <h1 id="缓存穿透"><a href="#缓存穿透" class="headerlink" title="缓存穿透"></a>缓存穿透</h1><p><strong>缓存穿透是指缓存和数据库中都没有的数据，而用户不断发起请求</strong> <br></p>
-<p>直接原因:<br></p>
-<ol>
-<li>非正常url访问</li>
-<li>redis查询不到数据库</li>
-</ol>
-<br>
-
-<p>解决方案: <br></p>
-<ol>
-<li>空值缓存: 如果一个查询返回到结果为空，将这个空结果进行缓存<br></li>
-<li>使用bitmap创建一个可访问的白名单，用户id作为偏移量，每次访问将访问的用户id和bitmap的id比较</li>
-<li>布隆过滤器: 和bitmap类似但效率更高</li>
-<li>实时监控</li>
-<li>对参数做校验</li>
-</ol>
-<br>
-
-<h1 id="缓存击穿"><a href="#缓存击穿" class="headerlink" title="缓存击穿"></a>缓存击穿</h1><p><strong>缓存击穿是指一个Key非常热点，在不停的扛着大并发，大并发集中对这一个点进行访问，当这个Key在失效的瞬间，持续的大并发就穿破缓存，直接请求数据库</strong> <br></p>
-<ol>
-<li>数据库访问压力瞬时增大</li>
-<li>redis key并没有大量过期</li>
-<li>redis正常运行</li>
-</ol>
-<p>解决方案: <br></p>
-<ol>
-<li>预先设置热门数据，实时调整key过期时间</li>
-<li>使用锁: 当缓存失效时只允许一个请求去访问数据库和更新缓存，其它请求等待Redis缓存中的数据。<br></li>
-</ol>
-<br>
-
-<h1 id="缓存雪崩"><a href="#缓存雪崩" class="headerlink" title="缓存雪崩"></a>缓存雪崩</h1><p><strong>在极少时间段，大量key集中过期</strong> <br></p>
-<p>解决方案: <br></p>
-<ol>
-<li>如果Redis是集群部署，将热点数据均匀分布在不同的Redis库中也能避免全部失效的问题 <br></li>
-<li>设置过期标志，当缓存快过期则通知另外的线程在后台更新key的缓存 <br></li>
-<li>将缓存失效时间分散开 <br></li>
-<li>对同一ip做请求频率的限制，例如每一秒限制100个请求，每一分钟限制1000个请求，具体的频率限制根据你的系统业务特点和用户群体而定</li>
-</ol>
+            <h1 id="需求"><a href="#需求" class="headerlink" title="需求"></a>需求</h1><p>实现功能界面 <br><br>信息的可扩展性 <br><br>发送，接收 <br><br>实现群聊 <br><br>高并发 <br></p>
+<h1 id="架构"><a href="#架构" class="headerlink" title="架构"></a>架构</h1><p><img src="https://raw.githubusercontent.com/brucecai-2001/Image/master/20220730205703.png"></p>
+<p>接入层接收前端发送过来的消息 <br></p>
+<p>HTTP提供API服务，websocket提供长连接 <br></p>
+<h1 id="发送流程"><a href="#发送流程" class="headerlink" title="发送流程"></a>发送流程</h1><p>A使用websocket, 路径&#x2F;chat?id&#x3D;xxx&amp;token&#x3D;yyy <br><br>后端鉴权，建立userid  –&gt; websocket的映射 <br> ClientMap[userid]<br>启动携程，通过conn.ReadMessage等待和读取消息 <br><br>A发送Json字符串，携带了目标用户dstid <br><br>如果是群消息，则分解为该群下的用户id <br><br>找到B的conn <br><br>conn.WriteMessage <br></p>
+<h1 id="程序优化"><a href="#程序优化" class="headerlink" title="程序优化"></a>程序优化</h1><p>优化Map，Map使用读写锁，IM系统读多写少<br><br>降低对CPU资源的使用，减少Json编码，一次编码，多次使用 <br><br>合并写数据库操作 <br><br>多使用缓存 <br></p>
 
         </div>
 
@@ -270,7 +237,7 @@
                 
                     <p class="copyright-item">
                         <span>Permalink:</span>
-                        <span><a href="http://example.com/2022/07/29/[Redis]%E9%9D%A2%E8%AF%95/">http://example.com/2022/07/29/[Redis]%E9%9D%A2%E8%AF%95/</a></span>
+                        <span><a href="http://example.com/2022/07/30/[%E9%A1%B9%E7%9B%AE]IM/">http://example.com/2022/07/30/[%E9%A1%B9%E7%9B%AE]IM/</a></span>
                     </p>
                 
                 
@@ -303,8 +270,10 @@
         </section>
         <section class="post-nav">
             
+                <a class="prev" rel="prev" href="/2022/07/31/%5B%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%BD%91%E7%BB%9C%5DCookie&Session/">计算机网络(6)---Cookie & Session & Token</a>
             
-            <a class="next" rel="next" href="/2022/07/29/%5B%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%BD%91%E7%BB%9C%5D%E5%9F%BA%E7%A1%802/">计算机网络---常见问题(2)</a>
+            
+            <a class="next" rel="next" href="/2022/07/30/%5BGolang%5D%E6%A0%87%E5%87%86%E5%BA%93/">Golang---标准库</a>
             
         </section>
 

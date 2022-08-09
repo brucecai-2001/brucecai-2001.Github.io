@@ -217,7 +217,10 @@
         </header>
 
         <div class="post-content">
-            <h1 id="HTTP-请求报文"><a href="#HTTP-请求报文" class="headerlink" title="HTTP 请求报文"></a>HTTP 请求报文</h1><p>一个HTTP请求报文由请求行（request line）、请求头部（header）空行和请求数据4个部分组成</p>
+            <blockquote>
+<p>HTTP 是一个在计算机世界里专门在「两点」之间「传输」文字、图片、音频、视频等「超文本」数据的「约定和规范」。</p>
+</blockquote>
+<h1 id="HTTP-请求报文"><a href="#HTTP-请求报文" class="headerlink" title="HTTP 请求报文"></a>HTTP 请求报文</h1><p>一个HTTP请求报文由请求行（request line）、请求头部（header）空行和请求数据4个部分组成</p>
 <p><img src="https://raw.githubusercontent.com/brucecai-2001/Image/master/20220625021021.png"></p>
 <h1 id="响应报文"><a href="#响应报文" class="headerlink" title="响应报文"></a>响应报文</h1><p><img src="https://raw.githubusercontent.com/brucecai-2001/Image/master/20220625021039.png"></p>
 <br>
@@ -258,16 +261,11 @@
 </blockquote>
 <h1 id="状态行"><a href="#状态行" class="headerlink" title="状态行"></a>状态行</h1><p>HTTP-Version: 表示服务器HTTP协议的版本<br></p>
 <p>Status-Code表示服务器发回的响应状态代码<br></p>
-<h1 id="状态码"><a href="#状态码" class="headerlink" title="状态码"></a>状态码</h1><p>200 请求成功 <br><br>204 请求成功但无内容返回 <br><br>206 部分请求成功 <br></p>
+<h1 id="状态码"><a href="#状态码" class="headerlink" title="状态码"></a>状态码</h1><p><img src="https://raw.githubusercontent.com/brucecai-2001/Image/master/20220729231525.png"></p>
+<p>200 请求成功 <br><br>204 请求成功但无内容返回 <br><br>206 部分请求成功 <br></p>
 <p>301 永久移动。请求的资源已被永久地移动到新 URI，返回信息会包含新的 URI，浏览器会自动定向到新 URI <br><br>304 未修改。如果客户端发送了一个带条件的 GET 请求且该请求已被允许，而文档的内容（自上次访问以来或者根据请求的条件）并没有改变，则服务器应当返回这个状态码<br></p>
 <p>400 语法错误（前端挨打）<br><br>401 需要认证信息 <br><br>403 拒绝访问  <br><br>404 找不到资源 <br></p>
 <p>500 服务器错误（后端挨打）<br><br>501 服务器不支持当前请求所需要的某个功能<br><br>503 由于临时的服务器维护或者过载，服务器当前无法处理请求，一段时间后可能恢复正常（DevOps or IT 挨打）<br></p>
-<h1 id="Keep-Alive-和-非Keep-Alive"><a href="#Keep-Alive-和-非Keep-Alive" class="headerlink" title="Keep-Alive 和 非Keep-Alive"></a>Keep-Alive 和 非Keep-Alive</h1><p><em><strong>非Keep-alive</strong></em>：早期HTTP1.0，浏览器发起http请求需要与服务器建立新的TCP连接，请求处理后连接立即断开，重新请求重新连接。但每一个这样的连接，客户机和服务器都要分配 TCP 的缓冲区和变量，这给服务器带来的严重的负担。</p>
-<p><em><strong>Keep-alive</strong></em>：HTTP1.1默认持久连接，同一客户机可以连续请求通过相同的连接进行传送，一台服务器多个web页面也可通过单个TCP连接传送给同一个客户机。但长时间保持TCP连接会导致系统资源被无效占用。</p>
-<p>需要正确地设置 keep-alive timeout 参数，当 TCP 连接在传送完最后一个 HTTP 响应，该连接会保持 keepalive_timeout 秒，之后就开始关闭这个链接。</p>
-<p>长连接：多用于操作频繁，点对点的通讯，而且客户端连接数目较少的情况。例如即时通讯、网络游戏等。</p>
-<p>短连接：用户数目较多的Web网站的 HTTP 服务一般用短连接。例如京东，淘宝这样的大型网站一般客户端数量达到千万级甚至上亿，若采用长连接势必会使得服务端大量的资源被无效占用，所以一般使用的是短连接。</p>
-<br>
 <br>
 
 <h1 id="HTTP报文长度"><a href="#HTTP报文长度" class="headerlink" title="HTTP报文长度"></a>HTTP报文长度</h1><ol>
@@ -277,7 +275,8 @@
 <br>
 <br>
 
-<h1 id="GET和POST区别"><a href="#GET和POST区别" class="headerlink" title="GET和POST区别"></a>GET和POST区别</h1><ol>
+<h1 id="GET和POST区别"><a href="#GET和POST区别" class="headerlink" title="GET和POST区别"></a>GET和POST区别</h1><p>在 HTTP 协议里，所谓的「安全」是指请求方法不会「破坏」服务器上的资源。<br><br>所谓的「幂等」，意思是多次执行相同的操作，结果都是「相同」的。<br></p>
+<ol>
 <li>get 提交的数据会放在 URL 之后，并且请求参数会被完整的保留在浏览器的记录里，由于参数直接暴露在 URL 中，可能会存在安全问题，因此往往用于获取资源信息。而 post 参数放在请求主体中，并且参数不会被保留，相比 get 方法，Post通过https提交时是ssl加密的，主要用于修改服务器上的资源。</li>
 <li>get 请求只支持 URL 编码，post 请求支持多种编码格式。</li>
 <li>get 只支持 ASCII 字符格式的参数，而 post 方法没有限制。</li>
@@ -293,67 +292,8 @@
 <br>
 <br>
 
-<h1 id="HTTP-流水线"><a href="#HTTP-流水线" class="headerlink" title="HTTP 流水线"></a>HTTP 流水线</h1><p>默认情况下，HTTP 请求是按顺序发出的，下一个请求只有在当前请求收到响应之后才会被发出。由于受到网络延迟和带宽的限制，在下一个请求被发送到服务器之前，可能需要等待很长时间。</p>
-<p>流水线是在同一条长连接上连续发出请求，而不用等待响应返回，这样可以减少延迟。</p>
-<br>
-<br>
-
-
-<h1 id="Cookie"><a href="#Cookie" class="headerlink" title="Cookie"></a>Cookie</h1><p>是服务器发送到用户浏览器并保存在本地的一小块数据，它会在浏览器之后向同一服务器再次发起请求时被携带上，用于告知服务端两个请求是否来自同一浏览器。由于之后每次请求都会需要携带 Cookie 数据，因此会带来额外的性能开销（尤其是在移动环境下）。</p>
-<br>
-<br>
-
 <h1 id="HTTP和HTTPS建立连接的过程"><a href="#HTTP和HTTPS建立连接的过程" class="headerlink" title="HTTP和HTTPS建立连接的过程"></a>HTTP和HTTPS建立连接的过程</h1><h3 id="HTTP"><a href="#HTTP" class="headerlink" title="HTTP"></a>HTTP</h3><p>HTTP（Hyper Text Transfer Protocol: 超文本传输协议） 是一种简单的请求 - 响应协议，被用于在 Web 浏览器和网站服务器之间传递消息。HTTP 使用 TCP（而不是 UDP）作为它的支撑运输层协议。其默认工作在 TCP 协议 80 端口，HTTP 客户机发起一个与服务器的 TCP 连接，一旦连接建立，浏览器和服务器进程就可以通过套接字接口访问 TCP。客户机从套接字接口发送 HTTP 请求报文和接收 HTTP 响应报文。类似地，服务器也是从套接字接口接收 HTTP 请求报文和发送 HTTP 响应报文。其通信内容以明文的方式发送，不通过任何方式的数据加密。当通信结束时，客户端与服务器关闭连接。</p>
 <h3 id="HTTPS"><a href="#HTTPS" class="headerlink" title="HTTPS"></a>HTTPS</h3><p><img src="https://raw.githubusercontent.com/brucecai-2001/Image/master/20220625162520.png"></p>
-<br>
-<br>
-
-<h1 id="HTTP和HTTPs的区别"><a href="#HTTP和HTTPs的区别" class="headerlink" title="HTTP和HTTPs的区别"></a>HTTP和HTTPs的区别</h1><ol>
-<li>HTTP 协议以明文方式发送内容，数据都是未加密的，安全性较差。HTTPS 数据传输过程是加密的，安全性较好。</li>
-<li>HTTP 和 HTTPS 使用的是完全不同的连接方式，用的端口也不一样，前者是 80 端口，后者是 443 端口。</li>
-<li>HTTPS 协议需要到数字认证机构（Certificate Authority, CA）申请证书，一般需要一定的费用。</li>
-<li>HTTP 页面响应比 HTTPS 快，主要因为 HTTP 使用 3 次握手建立连接，客户端和服务器需要握手 3 次，而 HTTPS 除了 TCP 的 3 次握手，还需要经历一个 SSL 协商过程。<br>上一页</li>
-</ol>
-<br>
-<br>
-
-<h1 id="HTTPS-的加密方式"><a href="#HTTPS-的加密方式" class="headerlink" title="HTTPS 的加密方式"></a>HTTPS 的加密方式</h1><p>HTTPS 采用对称加密和非对称加密相结合的方式，首先使用 SSL&#x2F;TLS 协议进行加密传输，为了弥补非对称加密的缺点，HTTPS 采用证书来进一步加强非对称加密的安全性，通过非对称加密，客户端和服务端协商好之后进行通信传输的对称密钥，后续的所有信息都通过该对称秘钥进行加密解密，完成整个 HTTPS 的流程。<br><img src="https://raw.githubusercontent.com/brucecai-2001/Image/master/20220706235248.png"><br><br><br><br></p>
-<h1 id="认证"><a href="#认证" class="headerlink" title="认证"></a>认证</h1><p>通过使用 证书 来对通信方进行认证。</p>
-<p>数字证书认证机构（CA，Certificate Authority）是客户端与服务器双方都可信赖的第三方机构。</p>
-<p>服务器的运营人员向 CA 提出公开密钥的申请，CA 在判明提出申请者的身份之后，会对已申请的公开密钥做数字签名，然后分配这个已签名的公开密钥，并将该公开密钥放入公开密钥证书后绑定在一起。</p>
-<p>进行 HTTPS 通信时，服务器会把证书发送给客户端。客户端取得其中的公开密钥之后，先使用数字签名进行验证，如果验证通过，就可以开始通信了。<br><img src="https://raw.githubusercontent.com/brucecai-2001/Image/master/20220707010353.png"><br><br><br><br></p>
-<h1 id="HTTP-x2F-1-1-vs-HTTP-x2F-1-0"><a href="#HTTP-x2F-1-1-vs-HTTP-x2F-1-0" class="headerlink" title="HTTP&#x2F;1.1 vs HTTP&#x2F;1.0"></a>HTTP&#x2F;1.1 vs HTTP&#x2F;1.0</h1><ol>
-<li><p>长连接：1.0默认浏览器和服务器之间是短连接，服务器发送完之后会直接关闭TCP连接，如果想多个HTTP请求复用TCP连接，需要在头部里增加Connection：Keep-Alive ； 1.1的时候默认使用持久连接，减少了资源消耗</p>
-</li>
-<li><p>缓存处理：1.1请求头中增加了一些和缓存相关的字段，比如If-Match，可以更加灵活地控制缓存策略</p>
-</li>
-</ol>
-<p>访问一个网站的时候，浏览器会向服务器请求很多资源，比如css、js这些静态文件，如果每次请求都要让服务器发送所有资源，请求多了会对服务器造成很大的压力</p>
-<p>HTTP为了解决这个问题，就引入了缓存，缓存有两种策略：</p>
-<p>1、强缓存：每次请求资源的时候会先去缓存里找，如果有就直接用，没有才去向服务器请求资源</p>
-<p>2、对比缓存：每次请求资源的时候先发个消息和服务器确认一下，如果服务器返回304，说明缓存可以用，浏览器就会去缓存里寻找资源</p>
-<ol start="3">
-<li><p>节约带宽：1.0默认把资源相关的整个对象都发给客户端，但是可能客户端不需要所有的信息，这就浪费了带宽资源；1.1的请求头引入了Range头域，可以只请求部分资源，比如断点下载的时候就可以用Range</p>
-</li>
-<li><p>错误通知的管理：1.1增加了一些错误状态响应码（24个），比如410表示请求的资源已经被永久删除</p>
-</li>
-<li><p>Host请求头：1.0的时候每台服务器都绑定唯一的IP地址，后面出现了<strong>虚拟主机</strong>，一个物理服务器可以有多个虚拟主机，一起共享同一个IP地址，所以为了区分不同虚拟主机，1.1添加了host请求头存放主机名</p>
-</li>
-</ol>
-<br>
-<br>
-
-<h1 id="HTTP-x2F-1-x-vs-HTTP-x2F-2-0"><a href="#HTTP-x2F-1-x-vs-HTTP-x2F-2-0" class="headerlink" title="HTTP&#x2F;1.x vs HTTP&#x2F;2.0"></a>HTTP&#x2F;1.x vs HTTP&#x2F;2.0</h1><ol>
-<li>之前版本 数据都是用文本传输，因为文本有多种格式，所以不能很好地适应所有场景； 2.0传送的是二进制，相当于统一了格式</li>
-<li>HTTP&#x2F;2.0 支持多路复用。1.1虽然默认复用TCP连接，但是每个请求是串行执行的，如果前面的请求超时，后面的请求只能等着（也就是线头阻塞）； 2.0的时候每个请求有自己的ID，多个请求可以在同一个TCP连接上并行执行，不会互相影响</li>
-<li>HTTP&#x2F;2.0 头部压缩。每次进行HTTP请求响应的时候，头部里很多的字段都是重复的，在2.0中，将字段记录到一张表中，头部只需要存放字段对应的编号就行，用的时候只需要拿着编号去表里查找就行，减少了传输的数据量</li>
-<li>HTTP&#x2F;2.0 支持服务器推送。 服务器会在客户端没发起请求的时候主动推送一些需要的资源，比如客户端请求一个html文件，服务器发送完之后会把和这个html页面相关的静态文件也发送给客户端，当客户端准备向服务器请求静态文件的时候，就可以直接从缓存中获取，就不需要再发起请求了。</li>
-</ol>
-<br>
-<br>
-
-<h1 id="DNS"><a href="#DNS" class="headerlink" title="DNS"></a>DNS</h1><p>通常我们有两种方式识别主机：通过主机名或者 IP 地址。人们喜欢便于记忆的主机名表示，而路由器则喜欢定长的、有着层次结构的 IP 地址。为了满足这些不同的偏好，我们就需要一种能够进行主机名到 IP 地址转换的目录服务，域名系统作为将域名和 IP 地址相互映射的一个分布式数据库，能够使人更方便地访问互联网。<br><img src="https://raw.githubusercontent.com/brucecai-2001/Image/master/20220702011003.png"><br><img src="https://raw.githubusercontent.com/brucecai-2001/Image/master/20220702011037.png"></p>
-<br>
 <br>
 
 <h1 id="DNS-为什么用-UDP"><a href="#DNS-为什么用-UDP" class="headerlink" title="DNS 为什么用 UDP"></a>DNS 为什么用 UDP</h1><p>当客户端向 DNS 服务器查询域名 ( 域名解析) 的时候，一般返回的内容不会超过 UDP 报文的最大长度，即 512 字节。用 UDP 传输时，不需要经过 TCP 三次握手的过程，从而大大提高了响应速度，但这要求域名解析器和域名服务器都必须自己处理超时和重传从而保证可靠性。</p>
@@ -364,36 +304,94 @@
 <br>
 <br>
 
-<h1 id="套接字有哪些"><a href="#套接字有哪些" class="headerlink" title="套接字有哪些"></a>套接字有哪些</h1><p>套接字（Socket）是对网络中不同主机上的应用进程之间进行双向通信的端点的抽象<br></p>
-<ol>
-<li>流套接字：基于 TCP 传输协议，主要用于提供面向连接、可靠的数据传输服务。</li>
-<li>数据报套接字：基于 UDP 传输协议，对应于无连接的 UDP 服务应用。</li>
-<li>原始套接字：用来传送非传输层数据包（例如 Ping 命令时用的 ICMP 协议数据包）或者遇到操作系统无法处理的数据包。</li>
-</ol>
-<br>
-<br>
-
-<h1 id="URI-vs-URL"><a href="#URI-vs-URL" class="headerlink" title="URI vs URL"></a>URI vs URL</h1><p>URI：资源是什么？<br>URL：资源是什么，如何获取？</p>
-<h1 id="网页解析全过程"><a href="#网页解析全过程" class="headerlink" title="网页解析全过程"></a>网页解析全过程</h1><p><img src="https://raw.githubusercontent.com/brucecai-2001/Image/master/20220702013053.png"></p>
-<ol>
-<li><p>DNS 解析：当用户输入一个网址并按下回车键的时候，浏览器获得一个域名，而在实际通信过程中，我们需要的是一个 IP 地址，因此我们需要先把域名转换成相应 IP 地址</p>
-</li>
-<li><p>TCP 连接：浏览器通过 DNS 获取到 Web 服务器真正的 IP 地址后，便向 Web 服务器发起 TCP 连接请求，通过 TCP 三次握手建立好连接后，浏览器便可以将 HTTP 请求数据发送给服务器了。</p>
-</li>
-<li><p>发送 HTTP 请求：浏览器向 Web 服务器发起一个 HTTP 请求，HTTP 协议是建立在 TCP 协议之上的应用层协议，其本质是在建立起的TCP连接中，按照HTTP协议标准发送一个索要网页的请求。在这一过程中，会涉及到负载均衡等操作。</p>
-</li>
-<li><p>处理请求并返回：服务器获取到客户端的 HTTP 请求后，会根据 HTTP 请求中的内容来决定如何获取相应的文件，并将文件发送给浏览器</p>
-</li>
-<li><p>浏览器渲染：浏览器根据响应开始显示页面，首先解析 HTML 文件构建 DOM 树，然后解析 CSS 文件构建渲染树，等到渲染树构建完成后，浏览器开始布局渲染树并将其绘制到屏幕上。</p>
-</li>
-<li><p>断开连接：客户端和服务器通过四次挥手终止 TCP 连接</p>
-</li>
-</ol>
-<br>
-<br>
-
+<h1 id="URI-vs-URL"><a href="#URI-vs-URL" class="headerlink" title="URI vs URL"></a>URI vs URL</h1><p>URI：资源是什么？<br>URL：资源是什么，如何获取？<br><br></p>
 <h1 id="代理"><a href="#代理" class="headerlink" title="代理"></a>代理</h1><p>使用代理的主要目的是：</p>
 <p>缓存<br><br>负载均衡<br><br>网络访问控制<br><br>访问日志记录<br><br>用户察觉得到正向代理的存在。<br><img src="https://raw.githubusercontent.com/brucecai-2001/Image/master/20220706234308.png"><br><br><br><br><br>反向代理一般位于内部网络中，用户察觉不到。<br><img src="https://raw.githubusercontent.com/brucecai-2001/Image/master/20220706234347.png"></p>
+<br>
+
+<h1 id="HTTP-缓存技术"><a href="#HTTP-缓存技术" class="headerlink" title="HTTP 缓存技术"></a>HTTP 缓存技术</h1><p>HTTP 缓存有两种实现方式，分别是强制缓存和协商缓存。<br></p>
+<p>强缓存: <br><br>只要浏览器判断缓存没有过期，则直接使用浏览器的本地缓存，决定是否使用缓存的主动性在于浏览器这边。<br><br><img src="https://raw.githubusercontent.com/brucecai-2001/Image/master/20220729232150.png"></p>
+<p>强缓存是利用下面这两个 HTTP 响应头部（Response Header）字段实现的，它们都用来表示资源在客户端缓存的有效期：<br></p>
+<p><strong>Cache-Control</strong>， 是一个相对时间；<br><br><strong>Expires</strong>，是一个绝对时间；<br></p>
+<p>如果 HTTP 响应头部同时有 Cache-Control 和 Expires 字段的话，Cache-Control的优先级高于 Expires</p>
+<p>当浏览器第一次请求访问服务器资源时，服务器会在返回这个资源的同时，在 Response 头部加上 Cache-Control，Cache-Control 中设置了过期时间大小；<br><br>浏览器再次请求访问服务器中的该资源时，会先通过请求资源的时间与 Cache-Control 中设置的过期时间大小，来计算出该资源是否过期，如果没有，则使用该缓存，否则重新请求服务器；<br></p>
+<p>协商缓存: <br><br>协商缓存就是与服务端协商之后，通过协商结果来判断是否使用本地缓存。, status code: 304<br><br><img src="https://raw.githubusercontent.com/brucecai-2001/Image/master/20220729232733.png"><br><img src="https://raw.githubusercontent.com/brucecai-2001/Image/master/20220729232742.png"></p>
+<p>协商缓存可以基于两种头部来实现。<br><br>响应头部中 Etag：唯一标识响应资源；<br><br>请求头部中的 If-None-Match：当资源过期时，浏览器发现响应头里有 Etag，则再次向服务器发起请求时，会将请求头If-None-Match 值设置为 Etag 的值。服务器收到请求后进行比对，如果资源没有变化返回 304，如果资源变化了返回 200。</p>
+<p><img src="https://raw.githubusercontent.com/brucecai-2001/Image/master/20220729233225.png"></p>
+<br>
+
+<h1 id="HTTP（1-1）-的优缺点"><a href="#HTTP（1-1）-的优缺点" class="headerlink" title="HTTP（1.1） 的优缺点"></a>HTTP（1.1） 的优缺点</h1><p>优点: <br></p>
+<ol>
+<li>HTTP 基本的报文格式就是 header + body，头部信息也是 key-value 简单文本的形式，易于理解，降低了学习和使用的门槛。</li>
+<li>灵活和易于扩展，HTTP协议里的各类请求方法、URI&#x2F;URL、状态码、头字段等每个组成要求都没有被固定死，都允许开发人员自定义和扩充。</li>
+</ol>
+<p>缺点: <br></p>
+<ol>
+<li><strong>无状态</strong>: 既然服务器没有记忆能力，它在完成有关联性的操作时会非常麻烦。使用cookie</li>
+<li><strong>:明文传输</strong>: HTTP 的所有信息都暴露在了光天化日下，相当于信息裸奔</li>
+</ol>
+<br>
+
+<h1 id="HTTP-x2F-1-1-的性能"><a href="#HTTP-x2F-1-1-的性能" class="headerlink" title="HTTP&#x2F;1.1 的性能"></a>HTTP&#x2F;1.1 的性能</h1><p>HTTP 协议是基于 TCP&#x2F;IP，并且使用了「请求 - 应答」的通信模式，所以性能的关键就在这两点里。<br></p>
+<ol>
+<li>长连接: 早期 HTTP&#x2F;1.0 性能上的一个很大的问题，那就是每发起一个请求，都要新建一次 TCP 连接（三次握手），而且是串行请求，做了无谓的 TCP 连接建立和断开，增加了通信开销。HTTP&#x2F;1.1 提出了长连接的通信方式，也叫持久连接。这种方式的好处在于减少了 TCP 连接的重复建立和断开所造成的额外开销，减轻了服务器端的负载。<br></li>
+</ol>
+<p><img src="https://raw.githubusercontent.com/brucecai-2001/Image/master/20220730002515.png"></p>
+<ol start="2">
+<li>管道网络传输: HTTP&#x2F;1.1 采用了长连接的方式，这使得管道（pipeline）网络传输成为了可能。即可在同一个 TCP 连接里面，客户端可以发起多个请求，只要第一个请求发出去了，不必等其回来，就可以发第二个请求出去，可以减少整体的响应时间。服务器必须按照接收请求的顺序发送对这些管道化请求的响应。如果服务端在处理 A 请求时耗时比较长，那么后续的请求的处理都会被阻塞住，这称为「队头堵塞」<br></li>
+</ol>
+<p><img src="https://raw.githubusercontent.com/brucecai-2001/Image/master/20220730003036.png"></p>
+<br>
+
+<h1 id="HTTP-与-HTTPS-有哪些区别"><a href="#HTTP-与-HTTPS-有哪些区别" class="headerlink" title="HTTP 与 HTTPS 有哪些区别"></a>HTTP 与 HTTPS 有哪些区别</h1><ol>
+<li>HTTP 是超文本传输协议，信息是明文传输，存在安全风险的问题。HTTPS 则解决 HTTP 不安全的缺陷，在 TCP 和 HTTP 网络层之间加入了 SSL&#x2F;TLS 安全协议，使得报文能够加密传输。</li>
+<li>HTTP 连接建立相对简单， TCP 三次握手之后便可进行 HTTP 的报文传输。而 HTTPS 在 TCP 三次握手之后，还需进行 SSL&#x2F;TLS 的握手过程，才可进入加密报文传输。</li>
+<li>HTTP 的端口号是 80，HTTPS 的端口号是 443。</li>
+<li>HTTPS 协议需要向 CA（证书权威机构）申请数字证书，来保证服务器的身份是可信的。</li>
+</ol>
+<br>
+
+<h1 id="HTTPS加密过程"><a href="#HTTPS加密过程" class="headerlink" title="HTTPS加密过程"></a>HTTPS加密过程</h1><p>HTTPS 在 HTTP 与 TCP 层之间加入了 SSL&#x2F;TLS 协议，三个加密: </p>
+<p>信息加密：交互信息无法被窃取，但你的号会因为「自身忘记」账号而没。<br><br>校验机制：无法篡改通信内容，篡改了就不能正常显示 <br><br>身份证书：证明淘宝是真的淘宝网<br></p>
+<p><em><strong>混合加密</strong></em>: <br><br>混合加密的方式可以保证信息的机密性, 在通信建立前采用非对称加密的方式交换「会话秘钥」，后续就不再使用非对称加密。<br>在通信过程中全部使用对称加密的「会话秘钥」的方式加密明文数据。对称加密只使用一个密钥，运算速度快，密钥必须保密，无法做到安全的密钥交换。<br>非对称加密使用两个密钥：公钥和私钥，公钥可以任意分发而私钥保密，解决了密钥交换问题但速度慢。<br></p>
+<p><img src="https://raw.githubusercontent.com/brucecai-2001/Image/master/20220730004026.png"></p>
+<p><em><strong>摘要算法 + 数字签名</strong></em>: <br></p>
+<p><img src="https://raw.githubusercontent.com/brucecai-2001/Image/master/20220730004521.png"></p>
+<p><em><strong>数字证书</strong></em>: <br></p>
+<p><img src="https://raw.githubusercontent.com/brucecai-2001/Image/master/20220730005103.png"> d</p>
+<p>HTTPS建立连接全过程: <br></p>
+<p><img src="https://raw.githubusercontent.com/brucecai-2001/Image/master/20220730005128.png"></p>
+<br>
+
+<h1 id="HTTP-x2F-2-做了什么优化"><a href="#HTTP-x2F-2-做了什么优化" class="headerlink" title="HTTP&#x2F;2 做了什么优化"></a>HTTP&#x2F;2 做了什么优化</h1><ol>
+<li>HTTP&#x2F;2 协议是基于 HTTPS 的，所以 HTTP&#x2F;2 的安全性也是有保障的</li>
+<li>HTTP&#x2F;2 会压缩头（Header）如果你同时发出多个请求，他们的头是一样的或是相似的，那么，协议会帮你消除重复的部分。在客户端和服务器同时维护一张头信息表，所有字段都会存入这个表，生成一个索引号，以后就不发送同样字段了，只发送索引号，这样就提高速度了</li>
+<li>HTTP&#x2F;2 不再像 HTTP&#x2F;1.1 里的纯文本形式的报文，而是全面采用了二进制格式，头信息和数据体都是二进制，并且统称为帧（frame）：头信息帧（Headers Frame）和数据帧（Data Frame）。<br><img src="https://raw.githubusercontent.com/brucecai-2001/Image/master/20220730005742.png"></li>
+<li>HTTP&#x2F;2 的数据包不是按顺序发送的，同一个连接里面连续的数据包，可能属于不同的回应。在 HTTP&#x2F;2 中每个请求或响应的所有数据包，称为一个数据流（Stream）。每个数据流都标记着一个独一无二的编号（Stream ID），不同 Stream 的帧是可以乱序发送的（因此可以并发不同的 Stream ），因为每个帧的头部会携带 Stream ID 信息，所以接收端可以通过 Stream ID 有序组装成 HTTP 消息, 客户端建立的 Stream 必须是奇数号，而服务器建立的 Stream 必须是偶数号。<br></li>
+<li>多路复用: 移除了 HTTP&#x2F;1.1 中的串行请求，不需要排队等待，也就不会再出现「队头阻塞」问题，降低了延迟，大幅度提高了连接的利用率。在一个 TCP 连接里，服务器收到了客户端 A 和 B 的两个请求，如果发现 A 处理过程非常耗时，于是就回应 A 请求已经处理好的部分，接着回应 B 请求，完成后，再回应 A 请求剩下的部分。</li>
+<li>服务器推送: 可以主动向客户端发送消息。比如，客户端通过 HTTP&#x2F;1.1 请求从服务器那获取到了 HTML 文件，而 HTML 可能还需要依赖 CSS 来渲染页面，这时客户端还要再发起获取 CSS 文件的请求，需要两次消息往返</li>
+</ol>
+<br>
+
+<h1 id="HTTP-x2F-2-有什么缺陷"><a href="#HTTP-x2F-2-有什么缺陷" class="headerlink" title="HTTP&#x2F;2 有什么缺陷"></a>HTTP&#x2F;2 有什么缺陷</h1><p>HTTP&#x2F;2 还是存在“队头阻塞”的问题，只不过问题不是在 HTTP 这一层面，而是在 TCP 这一层。HTTP&#x2F;2 是基于 TCP 协议来传输数据的，TCP 是字节流协议，TCP 层必须保证收到的字节数据是完整且连续的，这样内核才会将缓冲区里的数据返回给 HTTP 应用，那么当「前 1 个字节数据」没有到达时，后收到的字节数据只能存放在内核缓冲区里，只有等到这 1 个字节数据到达时，HTTP&#x2F;2 应用层才能从内核中拿到数据，这就是 HTTP&#x2F;2 队头阻塞问题。一旦发生了丢包现象，就会触发 TCP 的重传机制，这样在一个 TCP 连接中的所有的 HTTP 请求都必须等待这个丢了的包被重传回来。</p>
+<br>
+
+<h1 id="HTTP-x2F-3"><a href="#HTTP-x2F-3" class="headerlink" title="HTTP&#x2F;3"></a>HTTP&#x2F;3</h1><p>HTTP&#x2F;3 把 HTTP 下层的 TCP 协议改成了 UDP！</p>
+<p><img src="https://raw.githubusercontent.com/brucecai-2001/Image/master/20220730011229.png"></p>
+<br>
+
+<h1 id="如何避免发送-HTTP-请求？"><a href="#如何避免发送-HTTP-请求？" class="headerlink" title="如何避免发送 HTTP 请求？"></a>如何避免发送 HTTP 请求？</h1><p>对于一些具有重复性的 HTTP 请求，比如每次请求得到的数据都一样的，我们可以把这对「请求-响应」的数据都缓存在本地，那么下次就直接读取本地的数据，不必在通过网络获取服务器的响应了，这样的话 HTTP&#x2F;1.1 的性能肯定肉眼可见的提升。<br></p>
+<br>
+
+<h1 id="如何减少-HTTP-请求次数"><a href="#如何减少-HTTP-请求次数" class="headerlink" title="如何减少 HTTP 请求次数"></a>如何减少 HTTP 请求次数</h1><p><strong>减少重定向请求次数</strong>: 服务器上的一个资源可能由于迁移、维护等原因从 url1 移至 url2 后，而客户端不知情，它还是继续请求 url1，这时服务器不能粗暴地返回错误，而是通过 302 响应码和 Location 头部，告诉客户端该资源已经迁移至 url2 了，于是客户端需要再发送 url2 请求以获得服务器的资源。如果重定向请求越多，那么客户端就要多次发起 HTTP 请求，每一次的 HTTP 请求都得经过网络，这无疑会越降低网络性能。<br></p>
+<p>重定向的工作交由代理服务器完成，就能减少 HTTP 请求次数了，而且当代理服务器知晓了重定向规则后，可以进一步减少消息传递次数</p>
+<p><img src="https://raw.githubusercontent.com/brucecai-2001/Image/master/20220730012644.png"></p>
+<p><strong>合并请求</strong>: 如果把多个访问小文件的请求合并成一个大的请求，虽然传输的总资源还是一样，但是减少请求，也就意味着减少了重复发送的 HTTP 头部。<br></p>
+<p><strong>延迟发送请求</strong>: 请求网页的时候，没必要把全部资源都获取到，而是只获取当前用户所看到的页面资源，当用户向下滑动页面的时候，再向服务器获取接下来的资源，这样就达到了延迟发送请求的效果。<br></p>
+<br>
+
+<h1 id="如何减少-HTTP-响应的数据大小"><a href="#如何减少-HTTP-响应的数据大小" class="headerlink" title="如何减少 HTTP 响应的数据大小"></a>如何减少 HTTP 响应的数据大小</h1><p>无损压缩是指资源经过压缩后，信息不被破坏，还能完全恢复到压缩前的原样，适合用在文本文件、程序可执行文件、程序源代码。 <br></p>
+<br>
 
         </div>
 
@@ -408,7 +406,7 @@
                 
                     <p class="copyright-item">
                         <span>Permalink:</span>
-                        <span><a href="http://example.com/2022/06/25/[%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%BD%91%E7%BB%9C]%E5%BA%94%E7%94%A8%E5%B1%82/">http://example.com/2022/06/25/[%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%BD%91%E7%BB%9C]%E5%BA%94%E7%94%A8%E5%B1%82/</a></span>
+                        <span><a href="http://example.com/2022/06/25/[%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%BD%91%E7%BB%9C]HTTP/">http://example.com/2022/06/25/[%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%BD%91%E7%BB%9C]HTTP/</a></span>
                     </p>
                 
                 

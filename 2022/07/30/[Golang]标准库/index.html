@@ -1,0 +1,339 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+<meta name="viewport"
+      content="width=device-width, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+<meta http-equiv="X-UA-Compatible" content="ie=edge">
+
+    <meta name="author" content="Xinyu">
+
+
+
+
+
+<title>Golang---标准库 | Hexo</title>
+
+
+
+    <link rel="icon" href="/favicon.ico">
+
+
+
+
+    <!-- stylesheets list from _config.yml -->
+    
+    <link rel="stylesheet" href="/css/style.css">
+    
+
+
+
+    <!-- scripts list from _config.yml -->
+    
+    <script src="/js/script.js"></script>
+    
+    <script src="/js/tocbot.min.js"></script>
+    
+
+
+
+    
+    
+        
+    
+
+
+<meta name="generator" content="Hexo 6.2.0"></head>
+
+<body>
+    <script>
+        // this function is used to check current theme before page loaded.
+        (() => {
+            const currentTheme = window.localStorage && window.localStorage.getItem('theme') || '';
+            const isDark = currentTheme === 'dark';
+            const pagebody = document.getElementsByTagName('body')[0]
+            if (isDark) {
+                pagebody.classList.add('dark-theme');
+                // mobile
+                document.getElementById("mobile-toggle-theme").innerText = "· Dark"
+            } else {
+                pagebody.classList.remove('dark-theme');
+                // mobile
+                document.getElementById("mobile-toggle-theme").innerText = "· Light"
+            }
+        })();
+    </script>
+
+    <div class="wrapper">
+        <header>
+    <nav class="navbar">
+        <div class="container">
+            <div class="navbar-header header-logo"><a href="/">Xinyu&#39;s Blog</a></div>
+            <div class="menu navbar-right">
+                
+                    <a class="menu-item" href="/archives">Posts</a>
+                
+                    <a class="menu-item" href="/category">Categories</a>
+                
+                    <a class="menu-item" href="/tag">Tags</a>
+                
+                <input id="switch_default" type="checkbox" class="switch_default">
+                <label for="switch_default" class="toggleBtn"></label>
+            </div>
+        </div>
+    </nav>
+
+    
+    <nav class="navbar-mobile" id="nav-mobile">
+        <div class="container">
+            <div class="navbar-header">
+                <div>
+                    <a href="/">Xinyu&#39;s Blog</a><a id="mobile-toggle-theme">·&nbsp;Light</a>
+                </div>
+                <div class="menu-toggle" onclick="mobileBtn()">&#9776; Menu</div>
+            </div>
+            <div class="menu" id="mobile-menu">
+                
+                    <a class="menu-item" href="/archives">Posts</a>
+                
+                    <a class="menu-item" href="/category">Categories</a>
+                
+                    <a class="menu-item" href="/tag">Tags</a>
+                
+            </div>
+        </div>
+    </nav>
+
+</header>
+<script>
+    var mobileBtn = function f() {
+        var toggleMenu = document.getElementsByClassName("menu-toggle")[0];
+        var mobileMenu = document.getElementById("mobile-menu");
+        if(toggleMenu.classList.contains("active")){
+           toggleMenu.classList.remove("active")
+            mobileMenu.classList.remove("active")
+        }else{
+            toggleMenu.classList.add("active")
+            mobileMenu.classList.add("active")
+        }
+    }
+</script>
+            <div class="main">
+                <div class="container">
+    
+    
+        <div class="post-toc">
+    <div class="tocbot-list">
+    </div>
+    <div class="tocbot-list-menu">
+        <a class="tocbot-toc-expand" onclick="expand_toc()">Expand all</a>
+        <a onclick="go_top()">Back to top</a>
+        <a onclick="go_bottom()">Go to bottom</a>
+    </div>
+</div>
+
+<script>
+    var tocbot_timer;
+    var DEPTH_MAX = 6; // 为 6 时展开所有
+    var tocbot_default_config = {
+        tocSelector: '.tocbot-list',
+        contentSelector: '.post-content',
+        headingSelector: 'h1, h2, h3, h4, h5',
+        orderedList: false,
+        scrollSmooth: true,
+        onClick: extend_click,
+    };
+
+    function extend_click() {
+        clearTimeout(tocbot_timer);
+        tocbot_timer = setTimeout(function() {
+            tocbot.refresh(obj_merge(tocbot_default_config, {
+                hasInnerContainers: true
+            }));
+        }, 420); // 这个值是由 tocbot 源码里定义的 scrollSmoothDuration 得来的
+    }
+
+    document.ready(function() {
+        tocbot.init(obj_merge(tocbot_default_config, {
+            collapseDepth: 1
+        }));
+    });
+
+    function expand_toc() {
+        var b = document.querySelector('.tocbot-toc-expand');
+        var expanded = b.getAttribute('data-expanded');
+        expanded ? b.removeAttribute('data-expanded') : b.setAttribute('data-expanded', true);
+        tocbot.refresh(obj_merge(tocbot_default_config, {
+            collapseDepth: expanded ? 1 : DEPTH_MAX
+        }));
+        b.innerText = expanded ? 'Expand all' : 'Collapse all';
+    }
+
+    function go_top() {
+        window.scrollTo(0, 0);
+    }
+
+    function go_bottom() {
+        window.scrollTo(0, document.body.scrollHeight);
+    }
+
+    function obj_merge(target, source) {
+        for (var item in source) {
+            if (source.hasOwnProperty(item)) {
+                target[item] = source[item];
+            }
+        }
+        return target;
+    }
+</script>
+    
+
+    
+    <article class="post-wrap">
+        <header class="post-header">
+            <h1 class="post-title">Golang---标准库</h1>
+            
+                <div class="post-meta">
+                    
+                        Author: <a itemprop="author" rel="author" href="/">Xinyu</a>
+                    
+
+                    
+                        <span class="post-time">
+                        Date: <a href="#">July 30, 2022&nbsp;&nbsp;16:03:37</a>
+                        </span>
+                    
+                    
+                        <span class="post-category">
+                    Category:
+                            
+                                <a href="/categories/Go/">Go</a>
+                            
+                        </span>
+                    
+                </div>
+            
+        </header>
+
+        <div class="post-content">
+            <h1 id="输入输出处理-—-bufio"><a href="#输入输出处理-—-bufio" class="headerlink" title="输入输出处理 — bufio"></a>输入输出处理 — bufio</h1><p>bufio 包实现了缓存IO。它包装了 io.Reader 和 io.Writer 对象，创建了另外的Reader和Writer对象，它们也实现了 io.Reader 和 io.Writer 接口，不过它们是有缓存的。该包同时为文本I&#x2F;O提供了一些便利操作。<br></p>
+<figure class="highlight golang"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">type</span> Reader <span class="keyword">struct</span> &#123;</span><br><span class="line">       buf          []<span class="type">byte</span>        <span class="comment">// 缓存, 默认缓存大小：defaultBufSize=4096</span></span><br><span class="line">       rd           io.Reader    <span class="comment">// 底层的io.Reader</span></span><br><span class="line">       <span class="comment">// r:从buf中读走的字节（偏移）；w:buf中填充内容的偏移；</span></span><br><span class="line">       <span class="comment">// w - r 是buf中可被读的长度（缓存数据的大小），也是Buffered()方法的返回值</span></span><br><span class="line">       r, w         <span class="type">int</span></span><br><span class="line">       err          <span class="type">error</span>        <span class="comment">// 读过程中遇到的错误</span></span><br><span class="line">       lastByte     <span class="type">int</span>        <span class="comment">// 最后一次读到的字节（ReadByte/UnreadByte)</span></span><br><span class="line">       lastRuneSize <span class="type">int</span>        <span class="comment">// 最后一次读到的Rune的大小 (ReadRune/UnreadRune)</span></span><br><span class="line">   &#125;</span><br></pre></td></tr></table></figure>
+
+<figure class="highlight golang"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">func</span> <span class="params">(b *Reader)</span></span> ReadSlice(delim <span class="type">byte</span>) (line []<span class="type">byte</span>, err <span class="type">error</span>)</span><br></pre></td></tr></table></figure>
+<p>ReadSlice 从输入中读取，直到遇到第一个界定符（delim）为止，返回一个指向缓存中字节的 slice，ReadSlice 返回的 []byte 是指向 Reader 中的 buffer ，而不是 copy 一份返回 <br></p>
+<figure class="highlight golang"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">func</span> <span class="params">(b *Reader)</span></span> ReadBytes(delim <span class="type">byte</span>) (line []<span class="type">byte</span>, err <span class="type">error</span>)</span><br></pre></td></tr></table></figure>
+<p>ReadBytes 从输入中读取直到遇到界定符（delim）为止，返回的 slice 包含了从当前到界定符的内容 （包括界定符）<br></p>
+<figure class="highlight golang"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">func</span> <span class="params">(b *Reader)</span></span> ReadString(delim <span class="type">byte</span>) (line <span class="type">string</span>, err <span class="type">error</span>) &#123;</span><br><span class="line">       bytes, err := b.ReadBytes(delim)</span><br><span class="line">       <span class="keyword">return</span> <span class="type">string</span>(bytes), err</span><br><span class="line">   &#125;</span><br></pre></td></tr></table></figure>
+<p>它调用了 ReadBytes 方法，并将结果的 []byte 转为 string 类型。</p>
+<figure class="highlight golang"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">func</span> <span class="params">(b *Reader)</span></span> ReadLine() (line []<span class="type">byte</span>, isPrefix <span class="type">bool</span>, err <span class="type">error</span>)</span><br></pre></td></tr></table></figure>
+<p>ReadLine 是一个底层的原始行读取命令。许多调用者或许会使用 ReadBytes(‘\n’) 或者 ReadString(‘\n’) 来代替这个方法。ReadLine 尝试返回单独的行，不包括行尾的换行符。</p>
+<figure class="highlight golang"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line">file, err := os.Create(<span class="string">&quot;scanner.txt&quot;</span>)</span><br><span class="line">    <span class="keyword">if</span> err != <span class="literal">nil</span> &#123;</span><br><span class="line">        <span class="built_in">panic</span>(err)</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">defer</span> file.Close()</span><br><span class="line">    file.WriteString(<span class="string">&quot;http://studygolang.com.\nIt is the home of gophers.\nIf you are studying golang, welcome you!&quot;</span>)</span><br><span class="line">    <span class="comment">// 将文件 offset 设置到文件开头</span></span><br><span class="line">    file.Seek(<span class="number">0</span>, os.SEEK_SET)</span><br><span class="line">    scanner := bufio.NewScanner(file)</span><br><span class="line">    <span class="keyword">for</span> scanner.Scan() &#123;</span><br><span class="line">        fmt.Println(scanner.Text())</span><br><span class="line">    &#125;</span><br></pre></td></tr></table></figure>
+
+
+
+
+
+
+
+
+<br>
+
+
+
+
+
+
+
+
+<h1 id="字符串操作-—-strings"><a href="#字符串操作-—-strings" class="headerlink" title="字符串操作 — strings"></a>字符串操作 — strings</h1><figure class="highlight golang"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">//Compare 函数，用于比较两个字符串的大小，如果两个字符串相等，返回为 0。如果 a 小于 b ，返回 -1 ，反之返回 1 </span></span><br><span class="line"><span class="function"><span class="keyword">func</span> <span class="title">Compare</span><span class="params">(a, b <span class="type">string</span>)</span></span> <span class="type">int</span> </span><br></pre></td></tr></table></figure>
+
+<figure class="highlight golang"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">//子串 substr 在 s 中，返回 true</span></span><br><span class="line"><span class="function"><span class="keyword">func</span> <span class="title">Contains</span><span class="params">(s, substr <span class="type">string</span>)</span></span> <span class="type">bool</span></span><br><span class="line"></span><br><span class="line"><span class="comment">// chars 中任何一个 Unicode 代码点在 s 中，返回 true</span></span><br><span class="line"><span class="function"><span class="keyword">func</span> <span class="title">ContainsAny</span><span class="params">(s, chars <span class="type">string</span>)</span></span> <span class="type">bool</span></span><br></pre></td></tr></table></figure>
+<p>它们只是调用了相应的 Index 函数（子串出现的位置），然后和 0 作比较返回 true 或 fale</p>
+<figure class="highlight golang"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">func</span> <span class="title">Split</span><span class="params">(s, sep <span class="type">string</span>)</span></span> []<span class="type">string</span> &#123; <span class="keyword">return</span> genSplit(s, sep, <span class="number">0</span>, <span class="number">-1</span>) &#125;</span><br><span class="line"><span class="function"><span class="keyword">func</span> <span class="title">SplitAfter</span><span class="params">(s, sep <span class="type">string</span>)</span></span> []<span class="type">string</span> &#123; <span class="keyword">return</span> genSplit(s, sep, <span class="built_in">len</span>(sep), <span class="number">-1</span>) &#125;</span><br><span class="line"><span class="function"><span class="keyword">func</span> <span class="title">SplitN</span><span class="params">(s, sep <span class="type">string</span>, n <span class="type">int</span>)</span></span> []<span class="type">string</span> &#123; <span class="keyword">return</span> genSplit(s, sep, <span class="number">0</span>, n) &#125;</span><br><span class="line"><span class="function"><span class="keyword">func</span> <span class="title">SplitAfterN</span><span class="params">(s, sep <span class="type">string</span>, n <span class="type">int</span>)</span></span> []<span class="type">string</span> &#123; <span class="keyword">return</span> genSplit(s, sep, <span class="built_in">len</span>(sep), n) &#125;</span><br></pre></td></tr></table></figure>
+<p>这四个函数都是通过 sep 进行分割，返回[]string。如果 sep 为空，相当于分成一个个的 UTF-8 字符，如 Split(“abc”,””)，得到的是[a b c]。<br><br>Split 会将 s 中的 sep 去掉，而 SplitAfter 会保留 sep<br></p>
+<figure class="highlight golang"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// 在 s 中查找 sep 的第一次出现，返回第一次出现的索引</span></span><br><span class="line"><span class="function"><span class="keyword">func</span> <span class="title">Index</span><span class="params">(s, sep <span class="type">string</span>)</span></span> <span class="type">int</span></span><br></pre></td></tr></table></figure>
+
+<figure class="highlight golang"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">//将字符串数组（或 slice）连接起来可以通过 Join 实现</span></span><br><span class="line"><span class="function"><span class="keyword">func</span> <span class="title">Join</span><span class="params">(a []<span class="type">string</span>, sep <span class="type">string</span>)</span></span> <span class="type">string</span></span><br></pre></td></tr></table></figure>
+
+<figure class="highlight golang"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// 大小写转换</span></span><br><span class="line"><span class="function"><span class="keyword">func</span> <span class="title">ToLower</span><span class="params">(s <span class="type">string</span>)</span></span> <span class="type">string</span></span><br><span class="line"><span class="function"><span class="keyword">func</span> <span class="title">ToUpper</span><span class="params">(s <span class="type">string</span>)</span></span> <span class="type">string</span></span><br></pre></td></tr></table></figure>
+
+<figure class="highlight golang"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// 将 s 左侧和右侧中匹配 cutset 中的任一字符的字符去掉</span></span><br><span class="line"><span class="function"><span class="keyword">func</span> <span class="title">Trim</span><span class="params">(s <span class="type">string</span>, cutset <span class="type">string</span>)</span></span> <span class="type">string</span></span><br><span class="line"><span class="comment">// 将 s 左侧的匹配 cutset 中的任一字符的字符去掉</span></span><br><span class="line"><span class="function"><span class="keyword">func</span> <span class="title">TrimLeft</span><span class="params">(s <span class="type">string</span>, cutset <span class="type">string</span>)</span></span> <span class="type">string</span></span><br><span class="line"><span class="comment">// 将 s 右侧的匹配 cutset 中的任一字符的字符去掉</span></span><br><span class="line"><span class="function"><span class="keyword">func</span> <span class="title">TrimRight</span><span class="params">(s <span class="type">string</span>, cutset <span class="type">string</span>)</span></span> <span class="type">string</span></span><br><span class="line"><span class="comment">// 如果 s 的前缀为 prefix 则返回去掉前缀后的 string , 否则 s 没有变化。</span></span><br><span class="line"><span class="function"><span class="keyword">func</span> <span class="title">TrimPrefix</span><span class="params">(s, prefix <span class="type">string</span>)</span></span> <span class="type">string</span></span><br><span class="line"><span class="comment">// 如果 s 的后缀为 suffix 则返回去掉后缀后的 string , 否则 s 没有变化。</span></span><br><span class="line"><span class="function"><span class="keyword">func</span> <span class="title">TrimSuffix</span><span class="params">(s, suffix <span class="type">string</span>)</span></span> <span class="type">string</span></span><br><span class="line"><span class="comment">// 将 s 左侧和右侧的间隔符去掉。常见间隔符包括：&#x27;\t&#x27;, &#x27;\n&#x27;, &#x27;\v&#x27;, &#x27;\f&#x27;, &#x27;\r&#x27;, &#x27; &#x27;, U+0085 (NEL)</span></span><br><span class="line"><span class="function"><span class="keyword">func</span> <span class="title">TrimSpace</span><span class="params">(s <span class="type">string</span>)</span></span> <span class="type">string</span></span><br><span class="line"><span class="comment">// 将 s 左侧和右侧的匹配 f 的字符去掉</span></span><br><span class="line"><span class="function"><span class="keyword">func</span> <span class="title">TrimFunc</span><span class="params">(s <span class="type">string</span>, f <span class="keyword">func</span>(<span class="type">rune</span>)</span></span> <span class="type">bool</span>) <span class="type">string</span></span><br><span class="line"><span class="comment">// 将 s 左侧的匹配 f 的字符去掉</span></span><br><span class="line"><span class="function"><span class="keyword">func</span> <span class="title">TrimLeftFunc</span><span class="params">(s <span class="type">string</span>, f <span class="keyword">func</span>(<span class="type">rune</span>)</span></span> <span class="type">bool</span>) <span class="type">string</span></span><br><span class="line"><span class="comment">// 将 s 右侧的匹配 f 的字符去掉</span></span><br><span class="line"><span class="function"><span class="keyword">func</span> <span class="title">TrimRightFunc</span><span class="params">(s <span class="type">string</span>, f <span class="keyword">func</span>(<span class="type">rune</span>)</span></span> <span class="type">bool</span>) <span class="type">string</span></span><br></pre></td></tr></table></figure>
+
+
+
+
+<br>
+
+
+
+<h1 id="fmt"><a href="#fmt" class="headerlink" title="fmt"></a>fmt</h1><p>Scan 从标准输入扫描文本，读取由空白符分隔的值保存到传递给本函数的参数中，换行符视为空白符。</p>
+<figure class="highlight golang"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">func</span> <span class="title">Scan</span><span class="params">(a ...<span class="keyword">interface</span>&#123;&#125;)</span></span> (n <span class="type">int</span>, err <span class="type">error</span>)</span><br></pre></td></tr></table></figure>
+        </div>
+
+        
+            <section class="post-copyright">
+                
+                    <p class="copyright-item">
+                        <span>Author:</span>
+                        <span>Xinyu</span>
+                    </p>
+                
+                
+                    <p class="copyright-item">
+                        <span>Permalink:</span>
+                        <span><a href="http://example.com/2022/07/30/[Golang]%E6%A0%87%E5%87%86%E5%BA%93/">http://example.com/2022/07/30/[Golang]%E6%A0%87%E5%87%86%E5%BA%93/</a></span>
+                    </p>
+                
+                
+                    <p class="copyright-item">
+                        <span>License:</span>
+                        <span>Copyright (c) 2019 <a target="_blank" rel="noopener" href="http://creativecommons.org/licenses/by-nc/4.0/">CC-BY-NC-4.0</a> LICENSE</span>
+                    </p>
+                
+                
+                     <p class="copyright-item">
+                         <span>Slogan:</span>
+                         <span>Coffee or Tea</span>
+                     </p>
+                
+
+            </section>
+        
+        <section class="post-tags">
+            <div>
+                <span>Tag(s):</span>
+                <span class="tag">
+                    
+                </span>
+            </div>
+            <div>
+                <a href="javascript:window.history.back();">back</a>
+                <span>· </span>
+                <a href="/">home</a>
+            </div>
+        </section>
+        <section class="post-nav">
+            
+                <a class="prev" rel="prev" href="/2022/07/30/%5B%E9%A1%B9%E7%9B%AE%5DIM/">IM即时通讯系统</a>
+            
+            
+            <a class="next" rel="next" href="/2022/07/29/%5BRedis%5D%E5%BA%94%E7%94%A8/">Redis---应用常见问题</a>
+            
+        </section>
+
+
+    </article>
+</div>
+
+            </div>
+            <footer id="footer" class="footer">
+    <div class="copyright">
+        <span>© Xinyu | Powered by <a href="https://hexo.io" target="_blank">Hexo</a> & <a href="https://github.com/Siricee/hexo-theme-Chic" target="_blank">Chic</a></span>
+    </div>
+</footer>
+
+    </div>
+</body>
+
+</html>
