@@ -1,0 +1,267 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+<meta name="viewport"
+      content="width=device-width, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+<meta http-equiv="X-UA-Compatible" content="ie=edge">
+
+    <meta name="author" content="Xinyu">
+
+
+
+
+
+<title>Golang---Runtime，编译，运行，OOP | Hexo</title>
+
+
+
+    <link rel="icon" href="/favicon.ico">
+
+
+
+
+    <!-- stylesheets list from _config.yml -->
+    
+    <link rel="stylesheet" href="/css/style.css">
+    
+
+
+
+    <!-- scripts list from _config.yml -->
+    
+    <script src="/js/script.js"></script>
+    
+    <script src="/js/tocbot.min.js"></script>
+    
+
+
+
+    
+    
+        
+    
+
+
+<meta name="generator" content="Hexo 6.2.0"></head>
+
+<body>
+    <script>
+        // this function is used to check current theme before page loaded.
+        (() => {
+            const currentTheme = window.localStorage && window.localStorage.getItem('theme') || '';
+            const isDark = currentTheme === 'dark';
+            const pagebody = document.getElementsByTagName('body')[0]
+            if (isDark) {
+                pagebody.classList.add('dark-theme');
+                // mobile
+                document.getElementById("mobile-toggle-theme").innerText = "· Dark"
+            } else {
+                pagebody.classList.remove('dark-theme');
+                // mobile
+                document.getElementById("mobile-toggle-theme").innerText = "· Light"
+            }
+        })();
+    </script>
+
+    <div class="wrapper">
+        <header>
+    <nav class="navbar">
+        <div class="container">
+            <div class="navbar-header header-logo"><a href="/">Xinyu&#39;s Blog</a></div>
+            <div class="menu navbar-right">
+                
+                    <a class="menu-item" href="/archives">Posts</a>
+                
+                    <a class="menu-item" href="/category">Categories</a>
+                
+                    <a class="menu-item" href="/tag">Tags</a>
+                
+                <input id="switch_default" type="checkbox" class="switch_default">
+                <label for="switch_default" class="toggleBtn"></label>
+            </div>
+        </div>
+    </nav>
+
+    
+    <nav class="navbar-mobile" id="nav-mobile">
+        <div class="container">
+            <div class="navbar-header">
+                <div>
+                    <a href="/">Xinyu&#39;s Blog</a><a id="mobile-toggle-theme">·&nbsp;Light</a>
+                </div>
+                <div class="menu-toggle" onclick="mobileBtn()">&#9776; Menu</div>
+            </div>
+            <div class="menu" id="mobile-menu">
+                
+                    <a class="menu-item" href="/archives">Posts</a>
+                
+                    <a class="menu-item" href="/category">Categories</a>
+                
+                    <a class="menu-item" href="/tag">Tags</a>
+                
+            </div>
+        </div>
+    </nav>
+
+</header>
+<script>
+    var mobileBtn = function f() {
+        var toggleMenu = document.getElementsByClassName("menu-toggle")[0];
+        var mobileMenu = document.getElementById("mobile-menu");
+        if(toggleMenu.classList.contains("active")){
+           toggleMenu.classList.remove("active")
+            mobileMenu.classList.remove("active")
+        }else{
+            toggleMenu.classList.add("active")
+            mobileMenu.classList.add("active")
+        }
+    }
+</script>
+            <div class="main">
+                <div class="container">
+    
+    
+
+    
+    <article class="post-wrap">
+        <header class="post-header">
+            <h1 class="post-title">Golang---Runtime，编译，运行，OOP</h1>
+            
+                <div class="post-meta">
+                    
+                        Author: <a itemprop="author" rel="author" href="/">Xinyu</a>
+                    
+
+                    
+                        <span class="post-time">
+                        Date: <a href="#">August 17, 2022&nbsp;&nbsp;1:28:55</a>
+                        </span>
+                    
+                    
+                        <span class="post-category">
+                    Category:
+                            
+                                <a href="/categories/Go/">Go</a>
+                            
+                        </span>
+                    
+                </div>
+            
+        </header>
+
+        <div class="post-content">
+            <p>Golang Runtime: <br><br><strong>runtime 是一个通用抽象的术语，指的是计算机程序运行的时候所需要的一切代码库，框架，平台等。</strong>在 Go 中， 有一个 runtime 库，其实现了垃圾回收，并发控制， 栈管理以及其他一些 Go 语言的关键特性。 runtime 库是每个 Go 程序的一部分，也就是说编译 Go 代码为机器代码时也会将其也编译进来。<br></p>
+<br>
+<br>
+<br>
+
+<p>查看编译过程: <br><br><strong>go build -n</strong></p>
+<p>引入runtime <br><br>调用compile.exe 生成go程序的 .a 静态链接库文件<br><br>调用 link.exe 将多个.a文件结合生成 main.exe <br></p>
+<p><img src="https://raw.githubusercontent.com/brucecai-2001/Image/master/20220817014131.png"></p>
+<p>中间码生成(SSA)： 平台无关的汇编指令，可被翻译为各个平台的二进制文件。GOSSAFUNC &#x3D; main<br><br>机器码生成: 生成Plan9汇编，最后编译为机器码 .a 文件 <br></p>
+<br>
+<br>
+<br>
+
+<p>Go程序的启动: <br></p>
+<ol>
+<li>runtime&#x2F;rt0_amd64.s 将argc和argv放入栈中</li>
+<li>调用runtime.rt0.go初始化g0执行栈，g0是为了调度协程而产生的协程</li>
+<li>调用runtime.check()，执行运行时检测，类型长度，指针操作，CAS操作</li>
+<li>runtime.args()，将参数数量赋值给argc，将参数值赋给argv **byte</li>
+<li>runtime.osinit()，查看CPU核数</li>
+<li>runtime.shedinit()，调度器初始化，栈空间分配，堆空间初始化，算法初始化，设置Process数量</li>
+<li>runtime.mainPC，找到runtime的main方法地址</li>
+<li>runtime.newproc，启动runtime的main方法</li>
+<li>runtime.mstart() 创建M<br><strong>到此为止有两个协程，g0，runtime.main()</strong> <br></li>
+<li>runtime.main()，执行runtime的init方法，启动GC，执行用户包依赖的init方法，执行main_main()用户代码<br><strong>main.main()也是在协程中运行的</strong> <br></li>
+</ol>
+<br>
+<br>
+<br>
+
+<p>Golang面向对象: <br></p>
+<p>封装：声明一个结构体<br></p>
+<p>继承：把一个结构体组合进另一个结构体 <br></p>
+<figure class="highlight golang"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">type</span> People <span class="keyword">struct</span> &#123;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">func</span> <span class="params">(rev People)</span></span>Walk()&#123;</span><br><span class="line">    fmt.Println(<span class="string">&quot;Walking&quot;</span>)</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="keyword">type</span> Man <span class="keyword">struct</span> &#123;</span><br><span class="line">    People</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">m:=Man&#123;&#125;</span><br><span class="line">m.Walk() <span class="comment">//等于 m.People.Walk()，People成了匿名字段</span></span><br></pre></td></tr></table></figure>
+
+<p>多态：通过接口来隐式实现 <br></p>
+<figure class="highlight golang"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">type</span> creature <span class="keyword">interface</span> &#123;</span><br><span class="line">    Walk()</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="keyword">type</span> (p People)Walk()&#123; <span class="comment">//People实现了creatur接口</span></span><br><span class="line"></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<br>
+<br>
+<br>
+
+<p>Go Mod: <br></p>
+<p>Go module将每个包视为一个git项目 <br></p>
+<figure class="highlight golang"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">go</span> mod init github.com/xxx</span><br><span class="line">git init</span><br><span class="line">git remote add origin git@github.com:deja-ve/gotools.git</span><br><span class="line">git add .</span><br><span class="line">git commit -m <span class="string">&quot;feat: caahe db by sqlite, not used cgo&quot;</span></span><br><span class="line">git push origin master</span><br><span class="line">git tag v0<span class="number">.0</span><span class="number">.1</span></span><br><span class="line">git push origin --tag</span><br></pre></td></tr></table></figure>
+        </div>
+
+        
+            <section class="post-copyright">
+                
+                    <p class="copyright-item">
+                        <span>Author:</span>
+                        <span>Xinyu</span>
+                    </p>
+                
+                
+                    <p class="copyright-item">
+                        <span>Permalink:</span>
+                        <span><a href="http://example.com/2022/08/17/[Golang]%E7%BC%96%E8%AF%91/">http://example.com/2022/08/17/[Golang]%E7%BC%96%E8%AF%91/</a></span>
+                    </p>
+                
+                
+                    <p class="copyright-item">
+                        <span>License:</span>
+                        <span>Copyright (c) 2019 <a target="_blank" rel="noopener" href="http://creativecommons.org/licenses/by-nc/4.0/">CC-BY-NC-4.0</a> LICENSE</span>
+                    </p>
+                
+                
+                     <p class="copyright-item">
+                         <span>Slogan:</span>
+                         <span>Coffee or Tea</span>
+                     </p>
+                
+
+            </section>
+        
+        <section class="post-tags">
+            <div>
+                <span>Tag(s):</span>
+                <span class="tag">
+                    
+                </span>
+            </div>
+            <div>
+                <a href="javascript:window.history.back();">back</a>
+                <span>· </span>
+                <a href="/">home</a>
+            </div>
+        </section>
+        <section class="post-nav">
+            
+                <a class="prev" rel="prev" href="/2022/08/18/%5BMySQL%5D%E6%97%A5%E5%BF%97/">MySQL---日志</a>
+            
+            
+            <a class="next" rel="next" href="/2022/08/16/%5BMySQL%5D%E4%BA%8B%E5%8A%A1/">MySQL---事务</a>
+            
+        </section>
+
+
+    </article>
+</div>
+
+            </div>
+            <footer id="footer" class="footer">
+    <div class="copyright">
+        <span>© Xinyu | Powered by <a href="https://hexo.io" target="_blank">Hexo</a> & <a href="https://github.com/Siricee/hexo-theme-Chic" target="_blank">Chic</a></span>
+    </div>
+</footer>
+
+    </div>
+</body>
+
+</html>

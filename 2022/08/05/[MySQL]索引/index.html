@@ -217,41 +217,68 @@
         </header>
 
         <div class="post-content">
-            <h1 id="索引的常见模型"><a href="#索引的常见模型" class="headerlink" title="索引的常见模型"></a>索引的常见模型</h1><p><strong>哈希</strong>: <br><br>多个 key 值经过哈希函数的换算，会出现同一个值的情况。处理这种情况的一种方法是，拉出一个链表。查 ID_card_n2 对应的名字是什么，处理步骤就是：首先，将 ID_card_n2 通过哈希函数算出 N；然后，按顺序遍历，找到 User2。<br><br><img src="https://raw.githubusercontent.com/brucecai-2001/Image/master/20220805165746.png"></p>
-<p>四个 ID_card_n 的值并不是递增的，这样做的好处是增加新的 User 时速度会很快，只需要往后追加。但缺点是，因为不是有序的，所以哈希索引做区间查询的速度是很慢的。<em><strong>哈希表这种结构适用于只有等值查询的场景。</strong></em><br></p>
-<p><strong>有序数组</strong>:<br><br>在等值查询和范围查询场景中的性能就都非常优秀。<br><br><img src="https://raw.githubusercontent.com/brucecai-2001/Image/master/20220805170416.png"></p>
-<p>这时候如果你要查 ID_card_n2 对应的名字，用二分法就可以快速得到，这个时间复杂度是 O(log(N))。**这个索引结构支持范围查询。你要查身份证号在[ID_card_X, ID_card_Y]区间的 User，可以先用二分法找到 ID_card_X（如果不存在 ID_card_X，就找到大于 ID_card_X 的第一个 User），然后向右遍历，直到查到第一个大于 ID_card_Y 的身份证号，退出循环。<br></p>
-<p><em><strong>在需要更新数据的时候就麻烦了，你往中间插入一个记录就必须得挪动后面所有的记录，成本太高。有序数组索引只适用于静态存储引擎</strong></em><br></p>
-<p><strong>二叉搜索树</strong>: <br><br><img src="https://raw.githubusercontent.com/brucecai-2001/Image/master/20220805170912.png"><br>二叉搜索树的特点是：父节点左子树所有结点的值小于父节点的值，右子树所有结点的值大于父节点的值。为了维持 O(log(N)) 的查询复杂度，你就需要保持这棵树是平衡二叉树。实际上大多数的数据库存储却并不使用二叉树。其原因是，索引不止存在内存中，还要写到磁盘上。<br></p>
-<p>一棵 100 万节点的平衡二叉树，树高 20。一次查询可能需要访问 20 个数据块。在机械硬盘时代，从磁盘随机读一个数据块需要 10 ms 左右的寻址时间。也就是说，对于一个 100 万行的表，如果使用二叉树来存储，单独访问一个行可能需要 20 个 10 ms 的时间 <br></p>
-<p><strong>N 叉”树</strong>: <br><br>以 InnoDB 的一个整数字段索引为例，这个 N 差不多是 1200。这棵树高是 4 的时候，就可以存 1200 的 3 次方个值，这已经 17 亿了。考虑到树根的数据块总是在内存中的，一个 10 亿行的表上一个整数字段的索引，查找一个值最多只需要访问 3 次磁盘。其实，树的第二层也有很大概率在内存中，那么访问磁盘的平均次数就更少了。<br></p>
-<p><em><strong>在 MySQL 中，索引是在存储引擎层实现的，所以并没有统一的索引标准，即不同存储引擎的索引的工作方式并不一样。而即使多个存储引擎支持同一种类型的索引，其底层的实现也可能不同。</strong></em></p>
-<h1 id="InnoDB-的索引模型"><a href="#InnoDB-的索引模型" class="headerlink" title="InnoDB 的索引模型"></a>InnoDB 的索引模型</h1><p>在 InnoDB 中，表都是根据主键顺序以索引的形式存放的，这种存储方式的表称为索引组织表。又因为前面我们提到的，InnoDB 使用了 B+ 树索引模型，所以数据都是存储在 B+ 树(<a target="_blank" rel="noopener" href="https://zhuanlan.zhihu.com/p/54102723)%E4%B8%AD%E7%9A%84%E3%80%82**%E6%AF%8F%E4%B8%80%E4%B8%AA%E7%B4%A2%E5%BC%95%E5%9C%A8">https://zhuanlan.zhihu.com/p/54102723)中的。**每一个索引在</a> InnoDB 里面对应一棵 B+ 树。** <br></p>
-<p>有一个主键列为 ID 的表，表中有字段 k，并且在 k 上有索引。<br></p>
-<figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">mysql<span class="operator">&gt;</span> <span class="keyword">create</span> <span class="keyword">table</span> T(</span><br><span class="line">id <span class="type">int</span> <span class="keyword">primary</span> key, </span><br><span class="line">k <span class="type">int</span> <span class="keyword">not</span> <span class="keyword">null</span>, </span><br><span class="line">name <span class="type">varchar</span>(<span class="number">16</span>),</span><br><span class="line">index (k))engine<span class="operator">=</span>InnoDB;</span><br></pre></td></tr></table></figure>
-
-<p><img src="https://raw.githubusercontent.com/brucecai-2001/Image/master/20220805180448.png"></p>
-<p>叶子节点的内容，索引类型分为主键索引和非主键索引。主键索引的叶子节点存的是整行数据。在 InnoDB 里，主键索引也被称为<strong>聚簇索引（clustered index）</strong>。非主键索引的叶子节点内容是主键的值。在 InnoDB 里，非主键索引也被称为<strong>二级索引（secondary index）。</strong></p>
-<p>主键索引和普通索引的查询有什么区别: <br></p>
-<p>如果语句是 select * from T where ID&#x3D;500，即主键查询方式，则只需要搜索 ID 这棵 B+ 树；<br><br>如果语句是 select * from T where k&#x3D;5，即普通索引查询方式，则需要先搜索 k 索引树，得到 ID 的值为 500，再到 ID 索引树搜索一次。这个过程称为回表。<br></p>
-<p><strong>基于非主键索引的查询需要多扫描一棵索引树。因此，我们在应用中应该尽量使用主键查询。</strong></p>
+            <blockquote>
+<p>所谓的存储引擎，说白了就是如何存储数据、如何为存储的数据建立索引和如何更新、查询数据等技术的实现方法。<br></p>
+</blockquote>
+<h1 id="索引的分类"><a href="#索引的分类" class="headerlink" title="索引的分类"></a>索引的分类</h1><p>按「数据结构」分类：B+tree索引、Hash索引、Full-text索引。 <br><br>按「物理存储」分类：聚簇索引（主键索引）、二级索引（辅助索引）。<br><br>按「字段特性」分类：主键索引、唯一索引、普通索引、前缀索引。<br><br>按「字段个数」分类：单列索引、联合索引。<br></p>
 <br>
 
-<h1 id="索引维护"><a href="#索引维护" class="headerlink" title="索引维护"></a>索引维护</h1><p>B+ 树为了维护索引有序性，在插入新值的时候需要做必要的维护。以上面这个图为例，如果插入新的行 ID 值为 700，则只需要在 R5 的记录后面插入一个新记录。如果新插入的 ID 值为 400，就相对麻烦了，需要逻辑上挪动后面的数据，空出位置。而更糟的情况是，如果 R5 所在的数据页已经满了，根据 B+ 树的算法，这时候需要申请一个新的数据页，然后挪动部分数据过去。这个过程称为<strong>页分裂</strong>。在这种情况下，性能自然会受影响。除了性能外，页分裂操作还影响数据页的利用率。原本放在一个页的数据，现在分到两个页中，整体空间利用率降低大约 50%。<br></p>
-<h2 id="哪些场景下应该使用自增主键，而哪些场景下不应该。"><a href="#哪些场景下应该使用自增主键，而哪些场景下不应该。" class="headerlink" title="哪些场景下应该使用自增主键，而哪些场景下不应该。"></a>哪些场景下应该使用自增主键，而哪些场景下不应该。</h2><p>自增主键是指自增列上定义的主键，在建表语句中一般是这么定义的： NOT NULL PRIMARY KEY AUTO_INCREMENT。插入新记录的时候可以不指定 ID 的值，系统会获取当前 ID 最大值加 1 作为下一条记录的 ID 值。自增主键的插入数据模式，正符合了我们前面提到的递增插入的场景。每次插入一条新记录，都是追加操作，都不涉及到挪动其他记录，也不会触发叶子节点的分裂。<em><strong>主键长度越小，普通索引的叶子节点就越小，普通索引占用的空间也就越小。</strong></em><br></p>
+<h1 id="B-数"><a href="#B-数" class="headerlink" title="B+数"></a>B+数</h1><p>在创建表时，InnoDB 存储引擎会根据不同的场景选择不同的列作为索引：<br></p>
+<p>如果有主键，默认会使用主键作为聚簇索引的索引键（key）；<br><br>如果没有主键，就选择第一个不包含 NULL 值的唯一列作为聚簇索引的索引键（key）；<br><br>在上面两个都没有的情况下，InnoDB 将自动生成一个隐式自增 id 列作为聚簇索引的索引键（key）；<br></p>
+<p>B+Tree 是一种多叉树，叶子节点才存放数据，非叶子节点只存放索引，而且每个节点里的数据是按主键顺序存放的。每一层父节点的索引值都会出现在下层子节点的索引值中，因此在叶子节点中，包括了所有的索引值信息，并且每一个叶子节点都指向下一个叶子节点，形成一个链表。<br></p>
+<p><img src="https://raw.githubusercontent.com/brucecai-2001/Image/master/20220814021508.png"></p>
+<p><strong>B+Tree 存储千万级的数据只需要 3-4 层高度就可以满足，这意味着从千万级的表查询目标数据最多需要 3-4 次磁盘 I&#x2F;O，所以B+Tree 相比于 B 树和二叉树来说，最大的优势在于查询效率很高，因为即使在数据量很大的情况，查询一个数据的磁盘 I&#x2F;O 依然维持在 3-4次。</strong></p>
 <br>
 
-<h1 id="覆盖索引"><a href="#覆盖索引" class="headerlink" title="覆盖索引"></a>覆盖索引</h1><p>如果执行的语句是 select ID from T where k between 3 and 5，这时只需要查 ID 的值，而 ID 的值已经在 k 索引树上了，因此可以直接提供查询结果，不需要回表。也就是说，在这个查询里面，索引 k 已经“覆盖了”我们的查询需求，我们称为覆盖索引。<strong>由于覆盖索引可以减少树的搜索次数，显著提升查询性能，所以使用覆盖索引是一个常用的性能优化手段。</strong>s<br></p>
+<h1 id="主键索引的-B-Tree-和二级索引的-B-Tree-区别"><a href="#主键索引的-B-Tree-和二级索引的-B-Tree-区别" class="headerlink" title="主键索引的 B+Tree 和二级索引的 B+Tree 区别"></a>主键索引的 B+Tree 和二级索引的 B+Tree 区别</h1><p>主键索引的 B+Tree 的叶子节点存放的是实际数据，所有完整的用户记录都存放在主键索引的 B+Tree 的叶子节点里；<br><br>二级索引的 B+Tree 的叶子节点存放的是主键值，而不是实际数据。<br></p>
+<p><img src="https://raw.githubusercontent.com/brucecai-2001/Image/master/20220814022203.png"></p>
+<p>非叶子的 key 值是 product_no（图中橙色部分），叶子节点存储的数据是主键值（图中绿色部分）。<strong>这个过程叫「回表」，也就是说要查两个 B+Tree 才能查到数据</strong><br></p>
+<p>不过，当查询的数据是能在二级索引的 B+Tree 的叶子节点里查询到，这时就不用再查主键索引查,这种在二级索引的 B+Tree 就能查询到结果的过程就叫作「覆盖索引」，也就是只需要查一个 B+Tree 就能找到数据。 比如: <br></p>
+<figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">select</span> id <span class="keyword">from</span> product <span class="keyword">where</span> product_no <span class="operator">=</span> <span class="string">&#x27;0002&#x27;</span>;</span><br></pre></td></tr></table></figure>
+
 <br>
 
-<h1 id="最左前缀原则"><a href="#最左前缀原则" class="headerlink" title="最左前缀原则"></a>最左前缀原则</h1><p>MySQL中的索引可以以一定顺序引用多列，这种索引叫作联合索引。如User表的name和city加联合索引就是(name,city)，而最左前缀原则指的是，如果查询的时候查询条件精确匹配索引的左边连续一列或几列，则此列就可以被用到 <br></p>
-<figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">select</span> <span class="operator">*</span> <span class="keyword">from</span> <span class="keyword">user</span> <span class="keyword">where</span> name<span class="operator">=</span>xx <span class="keyword">and</span> city<span class="operator">=</span>xx ; ／／可以命中索引</span><br><span class="line"><span class="keyword">select</span> <span class="operator">*</span> <span class="keyword">from</span> <span class="keyword">user</span> <span class="keyword">where</span> name<span class="operator">=</span>xx ; <span class="operator">/</span><span class="operator">/</span> 可以命中索引</span><br><span class="line"><span class="keyword">select</span> <span class="operator">*</span> <span class="keyword">from</span> <span class="keyword">user</span> <span class="keyword">where</span> city<span class="operator">=</span>xx ; <span class="operator">/</span><span class="operator">/</span> 无法命中索引            </span><br></pre></td></tr></table></figure>
-<p> 查询的时候如果两个条件都用上了，但是顺序不同，如 city&#x3D; xx and name ＝xx，那么现在的查询引擎会自动优化为匹配联合索引的顺序，这样是能够命中索引的。<br></p>
-<p><img src="https://raw.githubusercontent.com/brucecai-2001/Image/master/20220805231931.png"><br>a在等值的情况下，b值又是按顺序排列的，但是这种顺序是相对的。这是因为MySQL创建联合索引的规则是首先会对联合索引的最左边第一个字段排序，在第一个字段的排序基础上，然后在对第二个字段进行排序。所以b&#x3D;2这种查询条件没有办法利用索引。<br></p>
+<h1 id="为什么-MySQL-InnoDB-选择-B-tree-作为索引的数据结构"><a href="#为什么-MySQL-InnoDB-选择-B-tree-作为索引的数据结构" class="headerlink" title="为什么 MySQL InnoDB 选择 B+tree 作为索引的数据结构"></a>为什么 MySQL InnoDB 选择 B+tree 作为索引的数据结构</h1><p>VS B Tree: B+Tree 只在叶子节点存储数据，而 B 树 的非叶子节点也要存储数据，所以 B+Tree 的单个节点的数据量更小，在相同的磁盘 I&#x2F;O 次数下，就能查询更多的节点。另外，B+Tree 叶子节点采用的是双链表连接，适合 MySQL 中常见的基于范围的顺序查找，而 B 树无法做到这一点。<br></p>
+<p>VS 二叉树: 而二叉树的每个父节点的儿子节点个数只能是 2 个，意味着其搜索复杂度为 O(logN)，这已经比 B+Tree 高出不少，因此二叉树检索到目标数据所经历的磁盘 I&#x2F;O 次数要更多。<br></p>
+<p>VS Hash:  Hash 表不适合做范围查询，它更适合做等值的查询，这也是 B+Tree 索引要比 Hash 表索引有着更广泛的适用场景的原因。<br></p>
 <br>
 
-<h1 id="索引下推"><a href="#索引下推" class="headerlink" title="索引下推"></a>索引下推</h1><p>在索引遍历过程中，对索引中包含的字段先做判断，直接过滤掉不满足条件的记录，减少回表次数。<br><img src="https://raw.githubusercontent.com/brucecai-2001/Image/master/20220805232537.png"></p>
-<p>InnoDB 在 (name,age) 索引内部就判断了 age 是否等于 10，对于不等于 10 的记录，直接判断并跳过。在我们的这个例子中，只需要对 ID4、ID5 这两条记录回表取数据判断，就只需要回表 2 次</p>
+<h1 id="联合索引"><a href="#联合索引" class="headerlink" title="联合索引"></a>联合索引</h1><p>通过将多个字段组合成一个索引，该索引就被称为联合索引。<br></p>
+<p><img src="https://raw.githubusercontent.com/brucecai-2001/Image/master/20220814024304.png"></p>
+<p>当在联合索引查询数据时，先按 product_no 字段比较，在 product_no 相同的情况下再按 name 字段比较。也就是说，联合索引查询的 B+Tree 是先按 product_no 进行排序，然后再 product_no 相同的情况再按 name 字段排序。因此，使用联合索引时，存在最左匹配原则，也就是按照<strong>最左优先</strong>的方式进行索引的匹配。<br></p>
+<p>如果创建了一个 (a, b, c) 联合索引，如果查询条件是以下这几种，就可以匹配上联合索引，先按 a 排序，在 a 相同的情况再按 b 排序，在 b 相同的情况再按 c 排序。：<br><br>where a&#x3D;1；<br><br>where a&#x3D;1 and b&#x3D;2 and c&#x3D;3；<br><br>where a&#x3D;1 and b&#x3D;2；<br></p>
+<p>但是，联合索引的最左匹配原则，在遇到范围查询（&gt;、&lt;、between、like 包括like ‘林%’这种）的时候，就会停止匹配，也就是范围列可以用到联合索引，但是范围列后面的列无法用到联合索引。<br></p>
+<p>MySQL 5.6 引入的**索引下推优化（index condition pushdown)**， 可以在联合索引遍历过程中，对联合索引中包含的字段先做判断，直接过滤掉不满足条件的记录，减少回表次数。<br></p>
+<p>建立联合索引时的字段顺序，对索引效率也有很大影响。越靠前的字段被用于索引过滤的概率越高，实际开发工作中建立联合索引时，要把区分度大的字段排在前面，(<strong>区分度就是某个字段 column 不同值的个数「除以」表的总行数</strong>)这样区分度大的字段越有可能被更多的 SQL 使用到。比如，性别的区分度就很小，不适合建立索引或不适合排在联合索引列的靠前的位置，而 UUID 这类字段就比较适合做索引或排在联合索引列的靠前的位置。MySQL 还有一个查询优化器，查询优化器发现某个值出现在表的数据行中的百分比（惯用的百分比界线是”30%”）很高的时候，它一般会忽略索引，进行全表扫描。<br></p>
+<p>针对需要排序的情况: <br></p>
+<figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">select</span> <span class="operator">*</span> <span class="keyword">from</span> <span class="keyword">order</span> <span class="keyword">where</span> status <span class="operator">=</span> <span class="number">1</span> <span class="keyword">order</span> <span class="keyword">by</span> create_time <span class="keyword">asc</span></span><br></pre></td></tr></table></figure>
+<p>给 status 和 create_time 列建立一个联合索引，因为在查询时，如果只用到 status 的索引，但是这条语句还要对 create_time 排序，这时就要用文件排序 filesort，也就是在 SQL 执行计划中，Extra 列会出现 Using filesort。要利用索引的有序性，在 status 和 create_time 列建立联合索引，这样根据 status 筛选后的数据就是按照 create_time 排好序的，避免在文件排序，提高了查询效率。<br></p>
+<br>
+
+<h1 id="InnoDB-是如何存储数据的"><a href="#InnoDB-是如何存储数据的" class="headerlink" title="InnoDB 是如何存储数据的"></a>InnoDB 是如何存储数据的</h1><p>记录是按照行来存储的，但是数据库的读取并不以「行」为单位，否则一次读取（也就是一次 I&#x2F;O 操作）只能处理一行数据，效率会非常低。因此，<strong>InnoDB 的数据是按「数据页」为单位来读写的</strong>，也就是说，当需要读一条记录的时候，并不是将这个记录本身从磁盘读出来，而是以页为单位，将其整体读入内存。<br></p>
+<p>数据库的 I&#x2F;O 操作的最小单位是页，<strong>InnoDB 数据页的默认大小是 16KB</strong>，意味着数据库每次读写都是以 16KB 为单位的，一次最少从磁盘中读取 16K 的内容到内存中，一次最少把内存中的 16K 内容刷新到磁盘中。<br></p>
+<p><img src="https://raw.githubusercontent.com/brucecai-2001/Image/master/20220815015557.png"></p>
+<p>数据页中的记录按照「主键」顺序组成单向链表，单向链表的特点就是插入、删除非常方便，但是检索效率不高，最差的情况下需要遍历链表上的所有节点才能完成检索。因此，数据页中有一个页目录，起到记录的索引作用，就像我们书那样，针对书中内容的每个章节设立了一个目录，想看某个章节的时候，可以查看目录，快速找到对应的章节的页数，而数据页中的页目录就是为了能快速找到记录。<br></p>
+<p><img src="https://raw.githubusercontent.com/brucecai-2001/Image/master/20220815020728.png"></p>
+<p>页目录就是由多个槽组成的，槽相当于分组记录的索引。然后，因为记录是按照「主键值」从小到大排序的，所以我们通过槽查找记录时，可以使用二分法快速定位要查询的记录在哪个槽（哪个记录分组），定位到槽后，再遍历槽内的所有记录，找到对应的记录，无需从最小记录开始遍历整个页中的记录链表。以上面那张图举个例子，5 个槽的编号分别为 0，1，2，3，4<br></p>
+<p>当我们需要存储大量的记录时，就需要多个数据页，这时我们就需要考虑如何建立合适的索引，才能方便定位记录所在的页。为了解决这个问题，InnoDB 采用了 B+ 树作为索引。InnoDB 里的 B+ 树中的每个节点都是一个数据页。<br></p>
+<p><img src="https://raw.githubusercontent.com/brucecai-2001/Image/master/20220815022809.png"></p>
+<p>如何实现快速查找主键为 6<br></p>
+<p>从根节点开始，通过二分法快速定位到符合页内范围包含查询值的页，因为查询的主键值为 6，在[1, 7)范围之间，所以到页 30 中查找更详细的目录项；<br><br>在非叶子节点（页30）中，继续通过二分法快速定位到符合页内范围包含查询值的页，主键值大于 5，所以就到叶子节点（页16）查找记录；<br><br>接着，在叶子节点（页16）中，通过槽查找记录时，使用二分法快速定位要查询的记录在哪个槽（哪个记录分组），定位到槽后，再遍历槽内的所有记录，找到主键为 6 的记录。<br></p>
+<br>
+
+<h1 id="索引失效"><a href="#索引失效" class="headerlink" title="索引失效"></a>索引失效</h1><p>左或者左右模糊匹配的时候，也就是 like %xx 或者 like %xx% 这两种方式都会造成索引失效。如果是查询 name 前缀为林的用户，那么就会走索引扫描，执行计划中的 type&#x3D;range 表示走索引扫描，key&#x3D;index_name 看到实际走了 index_name 索引 <br></p>
+<p><strong>因为索引 B+ 树是按照「索引值」有序排列存储的，只能根据前缀进行比较。</strong>如果使用 name like ‘%林’ 方式来查询，因为查询的结果可能是「陈林、张林、周林」等之类的，所以不知道从哪个索引值开始比较，于是就只能通过全表扫描的方式来查询。</p>
+<p>对索引使用函数，因为索引保存的是索引字段的原始值，而不是经过函数计算后的值，自然就没办法走索引了。<br></p>
+<p>在查询条件中对索引进行表达式计算，也是无法走索引的。 id + 1 &#x3D; 10 <br></p>
+<p>如果索引字段是字符串类型，但是在条件查询中，输入的参数是整型的话，你会在执行计划的结果发现这条语句会走全表扫描。但是如果索引字段是整型类型，查询条件中的输入参数即使字符串，是不会导致索引失效，还是可以走索引扫描。<strong>MySQL 在遇到字符串和数字比较的时候，会自动把字符串转为数字，然后再进行比较。</strong> <br></p>
+<p>联合索引要能正确使用需要遵循最左匹配原则，也就是按照最左优先的方式进行索引的匹配。索引下推功能，可以在索引遍历过程中，对索引中包含的字段先做判断，直接过滤掉不满足条件的记录，减少回表次数。<br></p>
+<p>在 WHERE 子句中，如果在 OR 前的条件列是索引列，而在 OR 后的条件列不是索引列，那么索引会失效。<br></p>
+<br>
+
+<h1 id="count-主键字段-执行过程是怎样的？"><a href="#count-主键字段-执行过程是怎样的？" class="headerlink" title="count(主键字段) 执行过程是怎样的？"></a>count(主键字段) 执行过程是怎样的？</h1><p>在通过 count 函数统计有多少个记录时，MySQL 的 server 层会维护一个名叫 count 的变量。server 层会循环向 InnoDB 读取一条记录，如果 count 函数指定的参数不为 NULL，那么就会将变量 count 加 1，直到符合查询的全部记录被读完，就退出循环。最后将 count 变量的值发送给客户端。<br></p>
+<p>如果表里只有主键索引，没有二级索引时，那么，InnoDB 循环遍历聚簇索引，将读取到的记录返回给 server 层，然后读取记录中的 id 值，就会 id 值判断是否为 NULL，如果不为 NULL，就将 count 变量加 1。<br></p>
+<p>但是，如果表里有二级索引时，InnoDB 循环遍历的对象就不是聚簇索引，而是二级索引。这是因为相同数量的二级索引记录可以比聚簇索引记录占用更少的存储空间，所以二级索引树比聚簇索引树小，这样遍历二级索引的 I&#x2F;O 成本比遍历聚簇索引的 I&#x2F;O 成本小，因此「优化器」优先选择的是二级索引。<br></p>
 
         </div>
 

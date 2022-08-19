@@ -1,0 +1,434 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+<meta name="viewport"
+      content="width=device-width, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+<meta http-equiv="X-UA-Compatible" content="ie=edge">
+
+    <meta name="author" content="Xinyu">
+
+
+
+
+
+<title>计算机网络---TCP3 | Hexo</title>
+
+
+
+    <link rel="icon" href="/favicon.ico">
+
+
+
+
+    <!-- stylesheets list from _config.yml -->
+    
+    <link rel="stylesheet" href="/css/style.css">
+    
+
+
+
+    <!-- scripts list from _config.yml -->
+    
+    <script src="/js/script.js"></script>
+    
+    <script src="/js/tocbot.min.js"></script>
+    
+
+
+
+    
+    
+        
+    
+
+
+<meta name="generator" content="Hexo 6.2.0"></head>
+
+<body>
+    <script>
+        // this function is used to check current theme before page loaded.
+        (() => {
+            const currentTheme = window.localStorage && window.localStorage.getItem('theme') || '';
+            const isDark = currentTheme === 'dark';
+            const pagebody = document.getElementsByTagName('body')[0]
+            if (isDark) {
+                pagebody.classList.add('dark-theme');
+                // mobile
+                document.getElementById("mobile-toggle-theme").innerText = "· Dark"
+            } else {
+                pagebody.classList.remove('dark-theme');
+                // mobile
+                document.getElementById("mobile-toggle-theme").innerText = "· Light"
+            }
+        })();
+    </script>
+
+    <div class="wrapper">
+        <header>
+    <nav class="navbar">
+        <div class="container">
+            <div class="navbar-header header-logo"><a href="/">Xinyu&#39;s Blog</a></div>
+            <div class="menu navbar-right">
+                
+                    <a class="menu-item" href="/archives">Posts</a>
+                
+                    <a class="menu-item" href="/category">Categories</a>
+                
+                    <a class="menu-item" href="/tag">Tags</a>
+                
+                <input id="switch_default" type="checkbox" class="switch_default">
+                <label for="switch_default" class="toggleBtn"></label>
+            </div>
+        </div>
+    </nav>
+
+    
+    <nav class="navbar-mobile" id="nav-mobile">
+        <div class="container">
+            <div class="navbar-header">
+                <div>
+                    <a href="/">Xinyu&#39;s Blog</a><a id="mobile-toggle-theme">·&nbsp;Light</a>
+                </div>
+                <div class="menu-toggle" onclick="mobileBtn()">&#9776; Menu</div>
+            </div>
+            <div class="menu" id="mobile-menu">
+                
+                    <a class="menu-item" href="/archives">Posts</a>
+                
+                    <a class="menu-item" href="/category">Categories</a>
+                
+                    <a class="menu-item" href="/tag">Tags</a>
+                
+            </div>
+        </div>
+    </nav>
+
+</header>
+<script>
+    var mobileBtn = function f() {
+        var toggleMenu = document.getElementsByClassName("menu-toggle")[0];
+        var mobileMenu = document.getElementById("mobile-menu");
+        if(toggleMenu.classList.contains("active")){
+           toggleMenu.classList.remove("active")
+            mobileMenu.classList.remove("active")
+        }else{
+            toggleMenu.classList.add("active")
+            mobileMenu.classList.add("active")
+        }
+    }
+</script>
+            <div class="main">
+                <div class="container">
+    
+    
+        <div class="post-toc">
+    <div class="tocbot-list">
+    </div>
+    <div class="tocbot-list-menu">
+        <a class="tocbot-toc-expand" onclick="expand_toc()">Expand all</a>
+        <a onclick="go_top()">Back to top</a>
+        <a onclick="go_bottom()">Go to bottom</a>
+    </div>
+</div>
+
+<script>
+    var tocbot_timer;
+    var DEPTH_MAX = 6; // 为 6 时展开所有
+    var tocbot_default_config = {
+        tocSelector: '.tocbot-list',
+        contentSelector: '.post-content',
+        headingSelector: 'h1, h2, h3, h4, h5',
+        orderedList: false,
+        scrollSmooth: true,
+        onClick: extend_click,
+    };
+
+    function extend_click() {
+        clearTimeout(tocbot_timer);
+        tocbot_timer = setTimeout(function() {
+            tocbot.refresh(obj_merge(tocbot_default_config, {
+                hasInnerContainers: true
+            }));
+        }, 420); // 这个值是由 tocbot 源码里定义的 scrollSmoothDuration 得来的
+    }
+
+    document.ready(function() {
+        tocbot.init(obj_merge(tocbot_default_config, {
+            collapseDepth: 1
+        }));
+    });
+
+    function expand_toc() {
+        var b = document.querySelector('.tocbot-toc-expand');
+        var expanded = b.getAttribute('data-expanded');
+        expanded ? b.removeAttribute('data-expanded') : b.setAttribute('data-expanded', true);
+        tocbot.refresh(obj_merge(tocbot_default_config, {
+            collapseDepth: expanded ? 1 : DEPTH_MAX
+        }));
+        b.innerText = expanded ? 'Expand all' : 'Collapse all';
+    }
+
+    function go_top() {
+        window.scrollTo(0, 0);
+    }
+
+    function go_bottom() {
+        window.scrollTo(0, document.body.scrollHeight);
+    }
+
+    function obj_merge(target, source) {
+        for (var item in source) {
+            if (source.hasOwnProperty(item)) {
+                target[item] = source[item];
+            }
+        }
+        return target;
+    }
+</script>
+    
+
+    
+    <article class="post-wrap">
+        <header class="post-header">
+            <h1 class="post-title">计算机网络---TCP3</h1>
+            
+                <div class="post-meta">
+                    
+                        Author: <a itemprop="author" rel="author" href="/">Xinyu</a>
+                    
+
+                    
+                        <span class="post-time">
+                        Date: <a href="#">August 12, 2022&nbsp;&nbsp;16:18:10</a>
+                        </span>
+                    
+                    
+                        <span class="post-category">
+                    Category:
+                            
+                                <a href="/categories/%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%BD%91%E7%BB%9C/">计算机网络</a>
+                            
+                        </span>
+                    
+                </div>
+            
+        </header>
+
+        <div class="post-content">
+            <h1 id="TCP-三次握手的性能提升"><a href="#TCP-三次握手的性能提升" class="headerlink" title="TCP 三次握手的性能提升"></a>TCP 三次握手的性能提升</h1><p>客户端优化: <br></p>
+<p>建立三次握手时，客户端在等待服务端回复的 ACK 报文，正常情况下，服务器会在几毫秒内返回 SYN+ACK ，但如果客户端长时间没有收到 SYN+ACK 报文，则会重发 SYN 包 。 每次超时的时间是上一次的 2 倍<br></p>
+<p><strong>你可以根据网络的稳定性和目标服务器的繁忙程度修改 SYN 的重传次数，调整客户端的三次握手时间上限。比如内网中通讯时，就可以适当调低重试次数，尽快把错误暴露给应用程序。</strong> <br></p>
+<p>服务端优化: <br></p>
+<p><strong>增大半连接队列</strong>, 不能只单纯增大 tcp_max_syn_backlog 的值，还需一同增大 somaxconn 和 backlog，也就是增大 accept 队列。否则，只单纯增大 tcp_max_syn_backlog 是无效的。<br></p>
+<p><strong>开启 syncookies</strong>功能就可以在不使用 SYN 半连接队列的情况下成功建立连接。服务器根据当前状态计算出一个值，放在己方发出的 SYN+ACK 报文中发出，当客户端返回 ACK 报文时，取出该值验证，如果合法，就认为连接建立成功 <br><br><img src="https://raw.githubusercontent.com/brucecai-2001/Image/master/20220812163922.png"></p>
+<p>如果服务器没有收到 ACK，就会重发 SYN+ACK 报文，同时一直处于 SYN_RCV 状态。当网络繁忙、不稳定时，报文丢失就会变严重，此时应该调大重发次数。反之则可以调小重发次数。修改重发次数的方法是，<strong>调整 tcp_synack_retries 参数</strong><br><br></p>
+<p>如果进程不能及时地调用 accept 函数，就会造成 accept 队列（也称全连接队列）溢出，最终导致建立好的 TCP 连接被丢弃。丢弃连接只是 Linux 的默认行为，我们还可以选择向客户端发送 RST 复位报文，告诉客户端连接已经建立失败。打开这一功能需要将 tcp_abort_on_overflow 参数设置为 1。<br></p>
+<p>tcp_abort_on_overflow 共有两个值分别是 0 和 1，其分别表示：<br></p>
+<p>0 ：如果 accept 队列满了，那么 server 扔掉 client 发过来的 ack ；<br><br>1 ：如果 accept 队列满了，server 发送一个 RST 包给 client，表示废掉这个握手过程和这个连接；<br></p>
+<p><strong>通常情况下，应当把 tcp_abort_on_overflow 设置为 0，因为这样更有利于应对突发流量</strong>。当 accept 队列满导致服务器丢掉了 ACK，与此同时，客户端的连接状态却是 ESTABLISHED，客户端进程就在建立好的连接上发送请求。只要服务器没有为请求回复 ACK，客户端的请求就会被多次「重发」。如果服务器上的进程只是短暂的繁忙造成 accept 队列满，那么当 accept 队列有空位时，再次接收到的请求报文由于含有 ACK，仍然会触发服务器端成功建立连接。<br><br><img src="https://raw.githubusercontent.com/brucecai-2001/Image/master/20220812164823.png"></p>
+<br>
+
+<h1 id="如何绕过三次握手？"><a href="#如何绕过三次握手？" class="headerlink" title="如何绕过三次握手？"></a>如何绕过三次握手？</h1><p>三次握手建立连接造成的后果就是，HTTP 请求必须在一个 RTT（从客户端到服务器一个往返的时间，前两次握手）后才能发送。<br></p>
+<p>在 Linux 3.7 内核版本之后，提供了 TCP Fast Open 功能，这个功能可以减少 TCP 连接建立的时延。在 Linux 系统中，可以通过设置 tcp_fastopn 内核参数，来打开 Fast Open 功能：<br></p>
+<p><img src="https://raw.githubusercontent.com/brucecai-2001/Image/master/20220812165453.png"></p>
+<br>
+
+<h1 id="TCP-四次挥手的性能提升"><a href="#TCP-四次挥手的性能提升" class="headerlink" title="TCP 四次挥手的性能提升"></a>TCP 四次挥手的性能提升</h1><p>关闭连接的方式通常有两种，分别是 RST 报文关闭和 FIN 报文关闭。如果进程收到 RST 报文，就直接关闭连接了，不需要走四次挥手流程，是一个暴力关闭连接的方式。安全关闭连接的方式必须通过四次挥手，它由进程调用 close 和 shutdown 函数发起 FIN 报文（shutdown 参数须传入 SHUT_WR 或者 SHUT_RDWR 才会发送 FIN）。<br></p>
+<p>调用了 close 函数意味着完全断开连接，完全断开不仅指无法传输数据，而且也不能发送数据。 此时，调用了 close 函数的一方的连接叫做「孤儿连接」, 使用 close 函数关闭连接是不优雅的。于是，就出现了一种优雅关闭连接的 shutdown 函数，它可以控制只关闭一个方向的连接<br></p>
+<p>主动方发送 FIN 报文后，连接就处于 FIN_WAIT1 状态，正常情况下，如果能及时收到被动方的 ACK，则会很快变为 FIN_WAIT2 状态。但是当迟迟收不到对方返回的 ACK 时，连接就会一直处于 FIN_WAIT1 状态。此时，<strong>内核会定时重发 FIN 报文，其中重发次数由 tcp_orphan_retries 参数控制</strong><br></p>
+<p><strong>调整 tcp_max_orphans 参数，它定义了「孤儿连接」的最大数量：</strong>如果孤儿连接数量大于它，新增的孤儿连接将不再走四次挥手，而是直接发送 RST 复位报文强制关闭。<br></p>
+<p>当主动方收到 ACK 报文后，会处于 FIN_WAIT2 状态，就表示主动方的发送通道已经关闭，接下来将等待对方发送 FIN 报文，关闭对方的发送通道。这时，如果连接是用 shutdown 函数关闭的，连接可以一直处于 FIN_WAIT2 状态，因为它可能还可以发送或接收数据。但对于 close 函数关闭的孤儿连接，由于无法再发送和接收数据，所以这个状态不可以持续太久，而 tcp_fin_timeout 控制了这个状态下连接的持续时长 <br></p>
+<p>当收到被动方发来的 FIN 报文后，主动方会立刻回复 ACK，表示确认对方的发送通道已经关闭，接着就处于 TIME_WAIT 状态。在 Linux 系统，TIME_WAIT 状态会持续 60 秒后才会进入关闭状态。<strong>Linux 提供了 tcp_max_tw_buckets 参数，当 TIME_WAIT 的连接数量超过该参数时，新关闭的连接就不再经历 TIME_WAIT 而直接关闭：</strong><br></p>
+<p><img src="https://raw.githubusercontent.com/brucecai-2001/Image/master/20220812170933.png"></p>
+<br>
+
+
+<h1 id="如何理解字节流"><a href="#如何理解字节流" class="headerlink" title="如何理解字节流"></a>如何理解字节流</h1><p>之所以会说 TCP 是面向字节流的协议，UDP 是面向报文的协议，是因为操作系统对 TCP 和 UDP 协议的发送方的机制不同，也就是问题原因在发送方。<br></p>
+<h2 id="UDP"><a href="#UDP" class="headerlink" title="UDP"></a>UDP</h2><p>当用户消息通过 UDP 协议传输时，操作系统不会对消息进行拆分，在组装好 UDP 头部后就交给网络层来处理，所以发出去的 UDP 报文中的数据部分就是完整的用户消息，也就是<strong>每个 UDP 报文就是一个用户消息的边界，这样接收方在接收到 UDP 报文后，读一个 UDP 报文就能读取到完整的用户消息</strong>。<br></p>
+<p>操作系统在收到 UDP 报文后，会将其插入到队列里，队列里的每一个元素就是一个 UDP 报文，这样当用户调用 recvfrom() 系统调用读数据的时候，就会从队列里取出一个数据，然后从内核里拷贝给用户缓冲区。<br></p>
+<p><img src="https://raw.githubusercontent.com/brucecai-2001/Image/master/20220812180009.png"></p>
+<h2 id="TCP"><a href="#TCP" class="headerlink" title="TCP"></a>TCP</h2><p>当用户消息通过 TCP 协议传输时，消息可能会被操作系统分组成多个的 TCP 报文，也就是一个完整的用户消息被拆分成多个 TCP 报文进行传输。这时，接收方的程序如果不知道发送方发送的消息的长度，也就是不知道消息的边界时，是无法读出一个有效的用户消息的，因为用户消息被拆分成多个 TCP 报文后，并不能像 UDP 那样，一个 UDP 报文就能代表一个完整的用户消息。<br></p>
+<p>在发送端，<strong>当我们调用 send 函数完成数据“发送”以后，数据并没有被真正从网络上发送出去，只是从应用程序拷贝到了操作系统内核协议栈中</strong>。至于什么时候真正被发送，取决于发送窗口、拥塞窗口以及当前发送缓冲区的大小等条件。也就是说，我们不能认为每次 send 调用发送的数据，都会作为一个整体完整地消息被发送出去。<br></p>
+<p><strong>我们不能认为一个用户消息对应一个 TCP 报文，正因为这样，所以 TCP 是面向字节流的协议。</strong></p>
+<br>
+
+<h1 id="如何解决粘包"><a href="#如何解决粘包" class="headerlink" title="如何解决粘包"></a>如何解决粘包</h1><p>粘包的问题出现是因为不知道一个用户消息的边界在哪，如果知道了边界在哪，接收方就可以通过边界来划分出有效的用户消息。<br></p>
+<p>固定长度的消息: 每个用户消息都是固定长度的，比如规定一个消息的长度是 64 个字节，当接收方接满 64 个字节，就认为这个内容是一个完整且有效的消息。<br></p>
+<p>特殊字符作为边界: 我们可以在两个用户消息之间插入一个特殊的字符串，这样接收方在接收数据时，读到了这个特殊字符，就把认为已经读完一个完整的消息。如果刚好消息内容里有这个特殊字符，我们要对这个字符转义，避免被接收方当作消息的边界点而解析到无效的数据<br><br>e.g: HTTP 通过设置回车符、换行符作为 HTTP 报文协议的边界。<br></p>
+<p>自定义消息结构: 我们可以自定义一个消息结构，由包头和数据组成，其中包头包是固定大小的，而且包头里有一个字段来说明紧随其后的数据有多大。当接收方接收到包头的大小（比如 4 个字节）后，就解析包头的内容，于是就可以知道数据的长度，然后接下来就继续读取数据，直到读满数据的长度，就可以组装成一个完整到用户消息来处理了。<br></p>
+<br>
+
+<h1 id="为什么-TCP-每次建立连接时，初始化序列号都要不一样呢？"><a href="#为什么-TCP-每次建立连接时，初始化序列号都要不一样呢？" class="headerlink" title="为什么 TCP 每次建立连接时，初始化序列号都要不一样呢？"></a>为什么 TCP 每次建立连接时，初始化序列号都要不一样呢？</h1><p><strong>主要原因是为了防止历史报文被下一个相同四元组的连接接收。</strong> <br></p>
+<p><img src="https://raw.githubusercontent.com/brucecai-2001/Image/master/20220812182623.png"></p>
+<p>客户端和服务端建立一个 TCP 连接，<strong>在客户端发送数据包被网络阻塞了</strong>，然后超时重传了这个数据包，而此时<strong>服务端设备断电重启了</strong>，之前与客户端建立的连接就消失了，于是在收到客户端的数据包的时候就会发送 RST 报文。<strong>在新连接建立完成后，上一个连接中被网络阻塞的数据包正好抵达了服务端</strong>，刚好该数据包的序列号正好是在服务端的接收窗口内，所以该数据包会被服务端正常接收，就会造成数据错乱。</p>
+<p><strong>历史报文能否被对方接收，还要看该历史报文的序列号是否正好在对方接收窗口内，如果不在就会丢弃，如果在才会接收。</strong><br><img src="https://raw.githubusercontent.com/brucecai-2001/Image/master/20220812183055.png"></p>
+<br>
+
+<h1 id="SYN-报文什么时候情况下会被丢弃？"><a href="#SYN-报文什么时候情况下会被丢弃？" class="headerlink" title="SYN 报文什么时候情况下会被丢弃？"></a>SYN 报文什么时候情况下会被丢弃？</h1><p><strong>开启 tcp_tw_recycle 参数，并且在 NAT 环境下，造成 SYN 报文被丢弃</strong> <br><br>在 Linux 操作系统下，TIME_WAIT 状态的持续时间是 60 秒，这意味着这 60 秒内，客户端一直会占用着这个端口。要知道，端口资源也是有限的，一般可以开启的端口为 32768~61000。如果客户端（发起连接方）的 TIME_WAIT 状态过多，占满了所有端口资源，那么就无法对「目的 IP+ 目的 PORT」都一样的服务器发起连接了<br></p>
+<p>net.ipv4.tcp_tw_recycle，如果开启该选项的话，允许处于 TIME_WAIT 状态的连接被快速回收；要使得这选项生效，有一个前提条件，就是要打开 TCP 时间戳，即 net.ipv4.tcp_timestamps&#x3D;1（默认即为 1)）。对于服务器来说，如果同时开启了recycle 和 timestamps 选项，则会开启一种称之为「 per-host 的 PAWS 机制」。<br></p>
+<p>正常来说每个 TCP 包都会有自己唯一的 SEQ，出现 TCP 数据包重传的时候会复用 SEQ 号，这样接收方能通过 SEQ 号来判断数据包的唯一性，也能在重复收到某个数据包的时候判断数据是不是重传的。但是 TCP 这个 SEQ 号是有限的，一共 32 bit，SEQ 开始是递增，溢出之后从 0 开始再次依次递增。<br></p>
+<p>PAWS 就是为了避免这个问题而产生的，在开启 tcp_timestamps 选项情况下，一台机器发的所有 TCP 包都会带上发送时的时间戳，PAWS 要求连接双方维护最近一次收到的数据包的时间戳（Recent TSval），每收到一个新数据包都会读取数据包中的时间戳值跟 Recent TSval 值做比较，如果发现收到的数据包中时间戳不是递增的，则表示该数据包是过期的，就会直接丢弃这个数据包。<strong>er-host 是对「对端 IP 做 PAWS 检查」，而非对「IP + 端口」四元组做 PAWS 检查。</strong><br></p>
+<p><strong>但是如果客户端网络环境是用了 NAT 网关，那么客户端环境的每一台机器通过 NAT 网关后，都会是相同的 IP 地址，在服务端看来，就好像只是在跟一个客户端打交道一样，无法区分出来。</strong> <br></p>
+<p>accpet 队列满了: 当服务器造成syn攻击，就有可能导致 TCP 半连接队列满了，这时后面来的 syn 包都会被丢弃。<br></p>
+<br>
+
+<h1 id="已建立连接的TCP，收到SYN会发生什么？"><a href="#已建立连接的TCP，收到SYN会发生什么？" class="headerlink" title="已建立连接的TCP，收到SYN会发生什么？"></a>已建立连接的TCP，收到SYN会发生什么？</h1><p><strong>如果客户端宕机恢复后发送的 SYN 报文中的源端口号跟上一次连接的源端口号不一样</strong>，此时服务端会认为是新的连接要建立，于是就会通过三次握手来建立新的连接。如果服务端发送了数据包给客户端，由于客户端的连接已经被关闭了，此时客户的内核就会回 RST 报文，服务端收到后就会释放连接。<br></p>
+<p><strong>客户端的 SYN 报文里的端口号与历史连接相同</strong> 如果客户端恢复后，发送的 SYN 报文中的源端口号跟上一次连接的源端口号一样，也就是处于 establish 状态的服务端收到了这个 SYN 报文。<br><img src="https://raw.githubusercontent.com/brucecai-2001/Image/master/20220813165753.png"></p>
+<p>处于 establish 状态的服务端如果收到了客户端的 SYN 报文（注意此时的 SYN 报文其实是乱序的，因为 SYN 报文的初始化序列号其实是一个随机数），会回复一个携带了正确序列号和确认号的 ACK 报文，这个 ACK 被称之为 Challenge ACK。<br></p>
+<br>
+
+<h1 id="如何关闭一个-TCP-连接？"><a href="#如何关闭一个-TCP-连接？" class="headerlink" title="如何关闭一个 TCP 连接？"></a>如何关闭一个 TCP 连接？</h1><p>伪造一个四元组相同的 SYN 报文，来拿到“合法”的序列号！处于 establish 状态的服务端，收到四元组相同的 SYN 报文后，会回复一个 Challenge ACK，这个 ACK 报文里的「确认号」，正好是服务端下一次想要接收的序列号，说白了，就是可以通过这一步拿到服务端下一次预期接收的序列号。然后用这个确认号作为 RST 报文的序列号，发送给服务端，此时服务端会认为这个 RST 报文里的序列号是合法的，于是就会释放连接！</p>
+<br>
+
+<h1 id="四次挥手中收到乱序的-FIN-包会如何处理？"><a href="#四次挥手中收到乱序的-FIN-包会如何处理？" class="headerlink" title="四次挥手中收到乱序的 FIN 包会如何处理？"></a>四次挥手中收到乱序的 FIN 包会如何处理？</h1><p><img src="https://raw.githubusercontent.com/brucecai-2001/Image/master/20220813170853.png"></p>
+<p><strong>在 FIN_WAIT_2 状态时，如果收到乱序的 FIN 报文，那么就被会加入到「乱序队列」，并不会进入到 TIME_WAIT 状态。</strong>等再次收到前面被网络延迟的数据包时，会判断乱序队列有没有数据，然后会检测乱序队列中是否有可用的数据，如果能在乱序队列中找到与当前报文的序列号保持的顺序的报文，就会看该报文是否有 FIN 标志，如果发现有 FIN 标志，这时才会进入 TIME_WAIT 状态。</p>
+<br>
+
+<h1 id="在-TIME-WAIT-状态的-TCP-连接，收到-SYN-后会发生什么？"><a href="#在-TIME-WAIT-状态的-TCP-连接，收到-SYN-后会发生什么？" class="headerlink" title="在 TIME_WAIT 状态的 TCP 连接，收到 SYN 后会发生什么？"></a>在 TIME_WAIT 状态的 TCP 连接，收到 SYN 后会发生什么？</h1><p>要看 SYN 的「序列号和时间戳」是否合法，因为处于 TIME_WAIT 状态的连接收到 SYN 后，会判断 SYN 的「序列号和时间戳」是否合法(客户端的 SYN 的「序列号」比服务端「期望下一个收到的序列号」要大，并且 SYN 的「时间戳」比服务端「最后收到的报文的时间戳」要大)，然后根据判断结果的不同做不同的处理。<br></p>
+<p>如果处于 TIME_WAIT 状态的连接收到「合法的 SYN 」后，就会重用此四元组连接，跳过 2MSL 而转变为 SYN_RECV 状态，接着就能进行建立连接过程。<br></p>
+<p>如果处于 TIME_WAIT 状态的连接收到「非法的 SYN 」后，就会再回复一个第四次挥手的 ACK 报文，客户端收到后，发现并不是自己期望收到确认号（ack num），就回 RST 报文给服务端。<br></p>
+<br>
+
+<h1 id="TCP-连接，一端断电和进程崩溃有什么区别？"><a href="#TCP-连接，一端断电和进程崩溃有什么区别？" class="headerlink" title="TCP 连接，一端断电和进程崩溃有什么区别？"></a>TCP 连接，一端断电和进程崩溃有什么区别？</h1><p>客户端主机崩溃了，服务端是无法感知到的，在加上服务端没有开启 TCP keepalive，又没有数据交互的情况下，服务端的 TCP 连接将会一直处于 ESTABLISHED 连接状态，直到服务端重启进程。<br></p>
+<p>进程崩溃下，服务端会发送 FIN 报文，与客户端进行四次挥手。</p>
+<br>
+
+<h1 id="客户端主机宕机，又迅速重启，会发生什么？"><a href="#客户端主机宕机，又迅速重启，会发生什么？" class="headerlink" title="客户端主机宕机，又迅速重启，会发生什么？"></a>客户端主机宕机，又迅速重启，会发生什么？</h1><p>在客户端主机宕机后，服务端向客户端发送的报文会得不到任何的响应，在一定时长后，服务端就会触发超时重传机制，重传未得到响应的报文。<br></p>
+<p>如果客户端主机上没有进程监听该 TCP 报文的目标端口号，那么客户端内核就会*<em>回复 RST 报文，重置该 TCP 连接</em>；<br>如果客户端主机上有进程监听该 TCP 报文的目标端口号，由于客户端主机重启后，之前的 TCP 连接的数据结构已经丢失了，客户端内核里协议栈会发现找不到该 TCP 连接的 socket 结构体，于是就会回复 RST 报文，重置该 TCP 连接。<br></p>
+<h1 id="客户端主机宕机，一直没有重启"><a href="#客户端主机宕机，一直没有重启" class="headerlink" title="客户端主机宕机，一直没有重启"></a>客户端主机宕机，一直没有重启</h1><p>这种情况，服务端超时重传报文的次数达到一定阈值后，内核就会判定出该 TCP 有问题，然后通过 Socket 接口告诉应用程序该 TCP 连接出问题了，一般就是 ETIMEOUT 状态码。<br></p>
+<p>在 Linux 系统中，提供一个叫 tcp_retries2 配置项，默认值是 15, 每一轮的超时时间都是倍数增长的 <br></p>
+<br>
+
+
+<h1 id="拔掉网线几秒，再插回去，原本的-TCP-连接还存在吗"><a href="#拔掉网线几秒，再插回去，原本的-TCP-连接还存在吗" class="headerlink" title="拔掉网线几秒，再插回去，原本的 TCP 连接还存在吗"></a>拔掉网线几秒，再插回去，原本的 TCP 连接还存在吗</h1><p>实际上，TCP 连接在 Linux 内核中是一个名为 struct socket 的结构体，该结构体的内容包含 TCP 连接的状态等信息。当拔掉网线的时候，操作系统并不会变更该结构体的任何内容，所以 TCP 连接的状态也不会发生改变。<br></p>
+<p>拔掉网线后，有数据传输: 在客户端拔掉网线后，服务端向客户端发送的数据报文会得不到任何的响应，在等待一定时长后，服务端就会触发超时重传机制，重传未得到响应的数据报文。如果在服务端重传报文的过程中，客户端刚好把网线插回去了，由于拔掉网线并不会改变客户端的 TCP 连接状态，并且还是处于 ESTABLISHED 状态，所以这时客户端是可以正常接收服务端发来的数据报文的，然后客户端就会回 ACK 响应报文。此时，客户端和服务端的 TCP 连接依然存在的，就感觉什么事情都没有发生。<br></p>
+<p>拔掉网线后，没有数据传输: 针对拔掉网线后，没有数据传输的场景，还得看是否开启了 TCP keepalive 机制 （TCP 保活机制）。如果没有开启 TCP keepalive 机制，在客户端拔掉网线后，并且双方都没有进行数据传输，那么客户端和服务端的 TCP 连接将会一直保持存在。而如果开启了 TCP keepalive 机制，在客户端拔掉网线后，即使双方都没有进行数据传输，在持续一段时间后，TCP 就会发送探测报文：</p>
+<br>
+
+<h1 id="MSL-与-TTL-的区别"><a href="#MSL-与-TTL-的区别" class="headerlink" title="MSL 与 TTL 的区别"></a>MSL 与 TTL 的区别</h1><p>MSL 的单位是时间，而 TTL 是经过路由跳数。所以 MSL 应该要大于等于 TTL 消耗为 0 的时间，以确保报文已被自然消亡。<br></p>
+<br>
+
+<h1 id="为什么-tcp-tw-reuse-默认是关闭的？"><a href="#为什么-tcp-tw-reuse-默认是关闭的？" class="headerlink" title="为什么 tcp_tw_reuse 默认是关闭的？"></a>为什么 tcp_tw_reuse 默认是关闭的？</h1><p><strong>tcp_tw_reuse 的作用是让客户端快速复用处于 TIME_WAIT 状态的端口，相当于跳过了 TIME_WAIT 状态</strong><br></p>
+<p>RST 报文的时间戳即使过期了，只要 RST 报文的序列号在对方的接收窗口内，也是能被接受的。<br></p>
+<p>因为快速复用 TIME_WAIT 状态的端口，导致新连接可能被回绕序列号的 RST 报文断开了，而如果不跳过 TIME_WAIT 状态，而是停留 2MSL 时长，那么这个 RST 报文就不会出现下一个新的连接。<br></p>
+<p>开启 tcp_tw_reuse 来快速复用 TIME_WAIT 状态的连接，如果第四次挥手的 ACK 报文丢失了，有可能会导致被动关闭连接的一方不能被正常的关闭<br></p>
+<p><img src="https://raw.githubusercontent.com/brucecai-2001/Image/master/20220813183329.png"></p>
+<br>
+
+<h1 id="HTTPS-中-TLS-和-TCP-能同时握手吗"><a href="#HTTPS-中-TLS-和-TCP-能同时握手吗" class="headerlink" title="HTTPS 中 TLS 和 TCP 能同时握手吗"></a>HTTPS 中 TLS 和 TCP 能同时握手吗</h1><p>HTTPS 建立连接的过程，先进行 TCP 三次握手，再进行 TLS 四次握手 <br></p>
+<p>除非开启Fast Open <br></p>
+<br>
+
+<h1 id="TCP-Keepalive-和-HTTP-Keep-Alive-是一个东西吗？"><a href="#TCP-Keepalive-和-HTTP-Keep-Alive-是一个东西吗？" class="headerlink" title="TCP Keepalive 和 HTTP Keep-Alive 是一个东西吗？"></a>TCP Keepalive 和 HTTP Keep-Alive 是一个东西吗？</h1><p>HTTP 的 Keep-Alive: 可以使用同一个 TCP 连接来发送和接收多个 HTTP 请求&#x2F;应答，避免了连接建立和释放的开销，这个方法称为 HTTP 长连接。HTTP 长连接的特点是，只要任意一端没有明确提出断开连接，则保持 TCP 连接状态。为了避免资源浪费的情况，web 服务软件一般都会提供 keepalive_timeout 参数，用来指定 HTTP 长连接的超时时间。<br></p>
+<p>TCP 的 Keepalive: TCP 的 Keepalive 这东西其实就是 TCP 的保活机制。如果两端的 TCP 连接一直没有数据交互，达到了触发 TCP 保活机制的条件，那么内核里的 TCP 协议栈就会发送探测报文。<br></p>
+<br>
+
+<h1 id="TCP-和-UDP-可以使用同一个端口吗"><a href="#TCP-和-UDP-可以使用同一个端口吗" class="headerlink" title="TCP 和 UDP 可以使用同一个端口吗"></a>TCP 和 UDP 可以使用同一个端口吗</h1><p>传输层的「端口号」的作用，是为了区分同一个主机上不同应用程序的数据包。<br></p>
+<p>传输层有两个传输协议分别是 TCP 和 UDP，在内核中是两个完全独立的软件模块。<br></p>
+<p>当主机收到数据包后，可以在 IP 包头的「协议号」字段知道该数据包是 TCP&#x2F;UDP，所以可以根据这个信息确定送给哪个模块（TCP&#x2F;UDP）处理，送给 TCP&#x2F;UDP 模块的报文根据「端口号」确定送给哪个应用程序处理。<br></p>
+<p><img src="https://raw.githubusercontent.com/brucecai-2001/Image/master/20220814231630.png"></p>
+<br>
+
+<h1 id="多个-TCP-服务进程可以绑定同一个端口吗？"><a href="#多个-TCP-服务进程可以绑定同一个端口吗？" class="headerlink" title="多个 TCP 服务进程可以绑定同一个端口吗？"></a>多个 TCP 服务进程可以绑定同一个端口吗？</h1><p>如果两个 TCP 服务进程同时绑定的 IP 地址和端口都相同，那么执行 bind() 时候就会出错，错误是“Address already in use”。<br></p>
+<br>
+
+<h1 id="客户端的端口可以重复使用吗？"><a href="#客户端的端口可以重复使用吗？" class="headerlink" title="客户端的端口可以重复使用吗？"></a>客户端的端口可以重复使用吗？</h1><p>客户端的端口选择的发生在 connect 函数，内核在选择端口的时候，会从 net.ipv4.ip_local_port_range 这个内核参数指定的范围来选取一个端口作为客户端端口。然后向服务端发起 SYN 报文，然后与服务端进行三次握手。<br></p>
+<p><strong>TCP 连接是由四元组（源IP地址，源端口，目的IP地址，目的端口）唯一确认的</strong>，那么只要四元组中其中一个元素发生了变化，那么就表示不同的 TCP 连接的。所以<strong>如果客户端已使用端口 64992 与服务端 A 建立了连接，那么客户端要与服务端 B 建立连接，还是可以使用端口 64992 的，因为内核是通过四元祖信息来定位一个 TCP 连接的</strong>，并不会因为客户端的端口号相同，而导致连接冲突的问题。<br></p>
+<br>
+
+<h1 id="如何解决客户端-TCP-连接-TIME-WAIT-过多，导致无法与同一个服务器建立连接的问题？"><a href="#如何解决客户端-TCP-连接-TIME-WAIT-过多，导致无法与同一个服务器建立连接的问题？" class="headerlink" title="如何解决客户端 TCP 连接 TIME_WAIT 过多，导致无法与同一个服务器建立连接的问题？"></a>如何解决客户端 TCP 连接 TIME_WAIT 过多，导致无法与同一个服务器建立连接的问题？</h1><p>如果客户端 TIME_WAIT 状态的连接过多，当端口资源被耗尽，就无法与这个服务器再建立连接了。<strong>打开 net.ipv4.tcp_tw_reuse 这个内核参数</strong>。因为开启了这个内核参数后，客户端调用 connect 函数时，如果选择到的端口，已经被相同四元组的连接占用的时候，就会判断该连接是否处于 TIME_WAIT 状态，如果该连接处于 TIME_WAIT 状态并且 TIME_WAIT 状态持续的时间超过了 1 秒，那么就会重用这个连接，然后就可以正常使用该端口了。</p>
+<p><img src="https://raw.githubusercontent.com/brucecai-2001/Image/master/20220814234401.png"></p>
+<br>
+
+<h1 id="服务端没有-listen，客户端发起连接建立，会发生什么？"><a href="#服务端没有-listen，客户端发起连接建立，会发生什么？" class="headerlink" title="服务端没有 listen，客户端发起连接建立，会发生什么？"></a>服务端没有 listen，客户端发起连接建立，会发生什么？</h1><p>服务端如果只 bind 了 IP 地址和端口，而没有调用 listen 的话，然后客户端对服务端发起了连接建立，服务端会回 RST 报文。<br></p>
+<p>Linux 内核处理收到 TCP 报文的入口函数是 tcp_v4_rcv, 在收到 TCP 报文后，会调用 __inet_lookup_skb 函数找到 TCP 报文所属 socket 。__inet_lookup_skb 函数首先查找连接建立状态的sock（__inet_lookup_established），在没有命中的情况下，才会查找监听套接口（__inet_lookup_listener）。<br></p>
+<br>
+
+<h1 id="没有-accept，能建立-TCP-连接吗"><a href="#没有-accept，能建立-TCP-连接吗" class="headerlink" title="没有 accept，能建立 TCP 连接吗"></a>没有 accept，能建立 TCP 连接吗</h1><p>每一个socket执行listen时，内核都会自动创建一个半连接队列和全连接队列。第三次握手前，TCP连接会放在半连接队列中，直到第三次握手到来，才会被放到全连接队列中。accept方法只是为了从全连接队列中拿出一条连接，本身跟三次握手几乎毫无关系。<br></p>
+<br>
+
+<h1 id="全连接队列满了会怎么样？"><a href="#全连接队列满了会怎么样？" class="headerlink" title="全连接队列满了会怎么样？"></a>全连接队列满了会怎么样？</h1><p>如果队列满了，服务端还收到客户端的第三次握手ACK，默认当然会丢弃这个ACK。但除了丢弃之外，还有一些附带行为，这会受 tcp_abort_on_overflow 参数的影响。<br></p>
+<p>0: 全连接队列满了之后，会丢弃这个第三次握手ACK包，并且开启定时器，重传第二次握手的SYN+ACK，如果重传超过一定限制次数，还会把对应的半连接队列里的连接给删掉。<br><br>1: 全连接队列满了之后，就直接发RST给客户端，效果上看就是连接断了。<br></p>
+<br>
+
+<h1 id="半连接队列要是满了会怎么样"><a href="#半连接队列要是满了会怎么样" class="headerlink" title="半连接队列要是满了会怎么样"></a>半连接队列要是满了会怎么样</h1><p>一般是丢弃，但这个行为可以通过 tcp_syncookies 参数去控制。<br></p>
+<p>当它被设置为1的时候，客户端发来第一次握手SYN时，服务端不会将其放入半连接队列中，而是直接生成一个cookies，这个cookies会跟着第二次握手，发回客户端。客户端在发第三次握手的时候带上这个cookies，服务端验证到它就是当初发出去的那个，就会建立连接并放入到全连接队列中。可以看出整个过程不再需要半连接队列的参与。<br></p>
+<br>
+
+<h1 id="没有listen，为什么还能建立连接"><a href="#没有listen，为什么还能建立连接" class="headerlink" title="没有listen，为什么还能建立连接"></a>没有listen，为什么还能建立连接</h1><p>执行listen方法时，会创建半连接队列和全连接队列。三次握手的过程中会在这两个队列中暂存连接信息。因为客户端没有执行listen，因为半连接队列和全连接队列都是在执行listen方法时，内核自动创建的。但内核还有个全局hash表，可以用于存放sock连接的信息。在TCP自连接的情况中(源ip和源端口通目的ip和目的端口完全相同的情况)，客户端在connect方法时，最后会将自己的连接信息放入到这个全局hash表中，然后将信息发出，消息在经过回环地址重新回到TCP传输层的时候，就会根据IP端口信息，再一次从这个全局hash中取出信息。于是握手包一来一回，最后成功建立连接。</p>
+<br>
+
+<h1 id="两端通信的时候也能对账，为什么还要引入第三端服务器？"><a href="#两端通信的时候也能对账，为什么还要引入第三端服务器？" class="headerlink" title="两端通信的时候也能对账，为什么还要引入第三端服务器？"></a>两端通信的时候也能对账，为什么还要引入第三端服务器？</h1><p>如果是两端通信，你聊天软件里有1000个好友，你就得建立1000个连接。但如果引入服务端，你只需要跟服务器建立1个连接就够了，聊天软件消耗的资源越少，手机就越省电。<br></p>
+<p>安全问题，如果还是两端通信，随便一个人找你对账一下，你就把聊天记录给同步过去了，这并不合适吧。如果对方别有用心，信息就泄露了。引入第<br></p>
+<p>软件版本问题。软件装到用户手机之后，软件更不更新就是由用户说了算了。如果还是两端通信，且两端的软件版本跨度太大，很容易产生各种兼容性问题，但引入第三端服务器，就可以强制部分过低版本升级，否则不能使用软件。<br></p>
+
+        </div>
+
+        
+            <section class="post-copyright">
+                
+                    <p class="copyright-item">
+                        <span>Author:</span>
+                        <span>Xinyu</span>
+                    </p>
+                
+                
+                    <p class="copyright-item">
+                        <span>Permalink:</span>
+                        <span><a href="http://example.com/2022/08/12/[%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%BD%91%E7%BB%9C]TCP(3)/">http://example.com/2022/08/12/[%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%BD%91%E7%BB%9C]TCP(3)/</a></span>
+                    </p>
+                
+                
+                    <p class="copyright-item">
+                        <span>License:</span>
+                        <span>Copyright (c) 2019 <a target="_blank" rel="noopener" href="http://creativecommons.org/licenses/by-nc/4.0/">CC-BY-NC-4.0</a> LICENSE</span>
+                    </p>
+                
+                
+                     <p class="copyright-item">
+                         <span>Slogan:</span>
+                         <span>Coffee or Tea</span>
+                     </p>
+                
+
+            </section>
+        
+        <section class="post-tags">
+            <div>
+                <span>Tag(s):</span>
+                <span class="tag">
+                    
+                </span>
+            </div>
+            <div>
+                <a href="javascript:window.history.back();">back</a>
+                <span>· </span>
+                <a href="/">home</a>
+            </div>
+        </section>
+        <section class="post-nav">
+            
+                <a class="prev" rel="prev" href="/2022/08/15/%5B%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%BD%91%E7%BB%9C%5DIP/">计算机网络---IP</a>
+            
+            
+            <a class="next" rel="next" href="/2022/08/09/%5B%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%BD%91%E7%BB%9C%5DTCP(2)/">计算机网络---TCP2</a>
+            
+        </section>
+
+
+    </article>
+</div>
+
+            </div>
+            <footer id="footer" class="footer">
+    <div class="copyright">
+        <span>© Xinyu | Powered by <a href="https://hexo.io" target="_blank">Hexo</a> & <a href="https://github.com/Siricee/hexo-theme-Chic" target="_blank">Chic</a></span>
+    </div>
+</footer>
+
+    </div>
+</body>
+
+</html>

@@ -1,0 +1,318 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+<meta name="viewport"
+      content="width=device-width, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+<meta http-equiv="X-UA-Compatible" content="ie=edge">
+
+    <meta name="author" content="Xinyu">
+
+
+
+
+
+<title>Golang---数据结构 | Hexo</title>
+
+
+
+    <link rel="icon" href="/favicon.ico">
+
+
+
+
+    <!-- stylesheets list from _config.yml -->
+    
+    <link rel="stylesheet" href="/css/style.css">
+    
+
+
+
+    <!-- scripts list from _config.yml -->
+    
+    <script src="/js/script.js"></script>
+    
+    <script src="/js/tocbot.min.js"></script>
+    
+
+
+
+    
+    
+        
+    
+
+
+<meta name="generator" content="Hexo 6.2.0"></head>
+
+<body>
+    <script>
+        // this function is used to check current theme before page loaded.
+        (() => {
+            const currentTheme = window.localStorage && window.localStorage.getItem('theme') || '';
+            const isDark = currentTheme === 'dark';
+            const pagebody = document.getElementsByTagName('body')[0]
+            if (isDark) {
+                pagebody.classList.add('dark-theme');
+                // mobile
+                document.getElementById("mobile-toggle-theme").innerText = "· Dark"
+            } else {
+                pagebody.classList.remove('dark-theme');
+                // mobile
+                document.getElementById("mobile-toggle-theme").innerText = "· Light"
+            }
+        })();
+    </script>
+
+    <div class="wrapper">
+        <header>
+    <nav class="navbar">
+        <div class="container">
+            <div class="navbar-header header-logo"><a href="/">Xinyu&#39;s Blog</a></div>
+            <div class="menu navbar-right">
+                
+                    <a class="menu-item" href="/archives">Posts</a>
+                
+                    <a class="menu-item" href="/category">Categories</a>
+                
+                    <a class="menu-item" href="/tag">Tags</a>
+                
+                <input id="switch_default" type="checkbox" class="switch_default">
+                <label for="switch_default" class="toggleBtn"></label>
+            </div>
+        </div>
+    </nav>
+
+    
+    <nav class="navbar-mobile" id="nav-mobile">
+        <div class="container">
+            <div class="navbar-header">
+                <div>
+                    <a href="/">Xinyu&#39;s Blog</a><a id="mobile-toggle-theme">·&nbsp;Light</a>
+                </div>
+                <div class="menu-toggle" onclick="mobileBtn()">&#9776; Menu</div>
+            </div>
+            <div class="menu" id="mobile-menu">
+                
+                    <a class="menu-item" href="/archives">Posts</a>
+                
+                    <a class="menu-item" href="/category">Categories</a>
+                
+                    <a class="menu-item" href="/tag">Tags</a>
+                
+            </div>
+        </div>
+    </nav>
+
+</header>
+<script>
+    var mobileBtn = function f() {
+        var toggleMenu = document.getElementsByClassName("menu-toggle")[0];
+        var mobileMenu = document.getElementById("mobile-menu");
+        if(toggleMenu.classList.contains("active")){
+           toggleMenu.classList.remove("active")
+            mobileMenu.classList.remove("active")
+        }else{
+            toggleMenu.classList.add("active")
+            mobileMenu.classList.add("active")
+        }
+    }
+</script>
+            <div class="main">
+                <div class="container">
+    
+    
+        <div class="post-toc">
+    <div class="tocbot-list">
+    </div>
+    <div class="tocbot-list-menu">
+        <a class="tocbot-toc-expand" onclick="expand_toc()">Expand all</a>
+        <a onclick="go_top()">Back to top</a>
+        <a onclick="go_bottom()">Go to bottom</a>
+    </div>
+</div>
+
+<script>
+    var tocbot_timer;
+    var DEPTH_MAX = 6; // 为 6 时展开所有
+    var tocbot_default_config = {
+        tocSelector: '.tocbot-list',
+        contentSelector: '.post-content',
+        headingSelector: 'h1, h2, h3, h4, h5',
+        orderedList: false,
+        scrollSmooth: true,
+        onClick: extend_click,
+    };
+
+    function extend_click() {
+        clearTimeout(tocbot_timer);
+        tocbot_timer = setTimeout(function() {
+            tocbot.refresh(obj_merge(tocbot_default_config, {
+                hasInnerContainers: true
+            }));
+        }, 420); // 这个值是由 tocbot 源码里定义的 scrollSmoothDuration 得来的
+    }
+
+    document.ready(function() {
+        tocbot.init(obj_merge(tocbot_default_config, {
+            collapseDepth: 1
+        }));
+    });
+
+    function expand_toc() {
+        var b = document.querySelector('.tocbot-toc-expand');
+        var expanded = b.getAttribute('data-expanded');
+        expanded ? b.removeAttribute('data-expanded') : b.setAttribute('data-expanded', true);
+        tocbot.refresh(obj_merge(tocbot_default_config, {
+            collapseDepth: expanded ? 1 : DEPTH_MAX
+        }));
+        b.innerText = expanded ? 'Expand all' : 'Collapse all';
+    }
+
+    function go_top() {
+        window.scrollTo(0, 0);
+    }
+
+    function go_bottom() {
+        window.scrollTo(0, document.body.scrollHeight);
+    }
+
+    function obj_merge(target, source) {
+        for (var item in source) {
+            if (source.hasOwnProperty(item)) {
+                target[item] = source[item];
+            }
+        }
+        return target;
+    }
+</script>
+    
+
+    
+    <article class="post-wrap">
+        <header class="post-header">
+            <h1 class="post-title">Golang---数据结构</h1>
+            
+                <div class="post-meta">
+                    
+                        Author: <a itemprop="author" rel="author" href="/">Xinyu</a>
+                    
+
+                    
+                        <span class="post-time">
+                        Date: <a href="#">August 18, 2022&nbsp;&nbsp;20:43:07</a>
+                        </span>
+                    
+                    
+                        <span class="post-category">
+                    Category:
+                            
+                                <a href="/categories/Go/">Go</a>
+                            
+                        </span>
+                    
+                </div>
+            
+        </header>
+
+        <div class="post-content">
+            <h1 id="空结构体"><a href="#空结构体" class="headerlink" title="空结构体"></a>空结构体</h1><p>int&#x2F;int32&#x2F;uint: 随系统字长变化，32位系统(地址，数据总线长度，寻址能力)就是4个字节   <br><br>指针: 底层是一个uint <br><br>空结构体: 大小是0，所有空结构体都指向一个地址 zerobase，可以用来<strong>节约内存</strong><br></p>
+<figure class="highlight golang"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">m := <span class="keyword">map</span>[<span class="type">string</span>]<span class="keyword">struct</span>&#123;&#125;&#123;&#125; <span class="comment">//利用空结构体构建哈希合集</span></span><br><span class="line">m[<span class="string">&quot;a&quot;</span>] = <span class="keyword">struct</span>&#123;&#125;&#123;&#125;</span><br><span class="line"></span><br><span class="line">c := <span class="built_in">make</span>(<span class="keyword">chan</span>, <span class="keyword">struct</span>&#123;&#125;) <span class="comment">//传递空结构体，不携带任何消息的channel</span></span><br></pre></td></tr></table></figure>
+
+
+<h1 id="字符串"><a href="#字符串" class="headerlink" title="字符串"></a>字符串</h1><p>runtime下字符串是一个 stringStruct 结构体，全都是16个字节长度</p>
+<figure class="highlight golang"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">type</span> stringStruct <span class="keyword">struct</span> &#123;</span><br><span class="line">    str unsafe.Pointer <span class="comment">//指向一个底层byte数组, 8bytes</span></span><br><span class="line">    <span class="built_in">len</span> <span class="type">int</span> <span class="comment">// Byte数组长度, 8bytes</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>Unicode 字符集(14w个字符，最多每个字符3个字节) + utf8编码(Unicode的一种可变长格式，每个字符占用的字节数量是不一样的，US-ASCII一个字节) <br></p>
+<p>如何判断多个字节是一个汉字或多个字母?: runtime.encoderune() &#x2F; decoderune(). rune是int32 <br><br>汉字字符串取其中几个字符 <br></p>
+<figure class="highlight golang"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">s := <span class="string">&quot;汉字abc&quot;</span></span><br><span class="line">s = <span class="type">string</span>([]<span class="type">rune</span>(s)[:<span class="number">2</span>]) <span class="comment">//先转rune数组再切片</span></span><br></pre></td></tr></table></figure>
+
+<br>
+
+<h1 id="切片"><a href="#切片" class="headerlink" title="切片"></a>切片</h1><p>每个切片的长度都是24个字节 <br><br>切片的本质是对数组的应用 <br></p>
+<figure class="highlight golang"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">type</span> slice <span class="keyword">struct</span> &#123;</span><br><span class="line">    array unsafe.Pointer <span class="comment">//指向底层byte数组</span></span><br><span class="line">    <span class="built_in">len</span> <span class="type">int</span> <span class="comment">//切片引用的长度</span></span><br><span class="line">    <span class="built_in">cap</span> <span class="type">int</span> <span class="comment">//数组容量</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>数组的创建: <br></p>
+<figure class="highlight golang"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">arr := [<span class="number">5</span>]<span class="type">int</span>&#123;<span class="number">0</span>,<span class="number">1</span>,<span class="number">2</span>,<span class="number">3</span>,<span class="number">4</span>&#125;</span><br><span class="line">slice := array[<span class="number">1</span>:<span class="number">4</span>] <span class="comment">//1,2,3</span></span><br></pre></td></tr></table></figure>
+
+<p>切片的扩容: <br><br>不扩容时，只调整len <br><br>扩容时，调用runtime.growslice()，废弃原来的数组，开辟一片新的内存 <br><br><strong>当需要的容量超过原切片容量的两倍时，会使用需要的容量作为新容量。当原切片长度小于1024时，新切片的容量会直接翻倍。而当原切片的容量大于等于1024时，会反复地增加25%，直到新容量超过所需要的容量。</strong><br><br><strong>切片的扩容是并发不安全的，扩容需要加锁</strong> <br></p>
+<br>
+
+<h1 id="Map"><a href="#Map" class="headerlink" title="Map"></a>Map</h1><p>底层是HashMap，基本的方法是开发寻址法或拉链法，Go使用了拉链法，相同Key的元素组成一个链表<br></p>
+<figure class="highlight golang"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">type</span> hmap <span class="keyword">struct</span> &#123;</span><br><span class="line">    count <span class="type">int</span>                   <span class="comment">// K:V对数</span></span><br><span class="line">    buckets unsafe.Pointer      <span class="comment">// 桶</span></span><br><span class="line">    B <span class="type">uint8</span>                     <span class="comment">//log_2 of buckets</span></span><br><span class="line">    hash0 <span class="type">uint32</span>                <span class="comment">//哈希seed</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>buckets指向了一个由很多bmap所组成的数组 <br></p>
+<figure class="highlight golang"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">//a bucket for a map</span></span><br><span class="line"><span class="keyword">type</span> bmap <span class="keyword">struct</span> &#123;</span><br><span class="line">    topbits []<span class="type">uint8</span> <span class="comment">//长度为8的数组,元素为key获取的hash的高8位</span></span><br><span class="line">    keys []keytype <span class="comment">//长度为8的数组</span></span><br><span class="line">    elems []elemtype <span class="comment">//长度为8的数组</span></span><br><span class="line">    overflow <span class="comment">//指向的hmap.extra.overflow溢出桶里的bmap</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p><img src="https://raw.githubusercontent.com/brucecai-2001/Image/master/20220818223058.png"></p>
+<p>map访问: <br></p>
+<ol>
+<li>计算桶号<br><img src="https://raw.githubusercontent.com/brucecai-2001/Image/master/IMG_6458C27C4F56-1.jpeg"></li>
+<li>计算tophash<br><img src="https://raw.githubusercontent.com/brucecai-2001/Image/master/IMG_8DC6EB800AB8-1.jpeg"></li>
+</ol>
+
+        </div>
+
+        
+            <section class="post-copyright">
+                
+                    <p class="copyright-item">
+                        <span>Author:</span>
+                        <span>Xinyu</span>
+                    </p>
+                
+                
+                    <p class="copyright-item">
+                        <span>Permalink:</span>
+                        <span><a href="http://example.com/2022/08/18/[Golang]%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84/">http://example.com/2022/08/18/[Golang]%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84/</a></span>
+                    </p>
+                
+                
+                    <p class="copyright-item">
+                        <span>License:</span>
+                        <span>Copyright (c) 2019 <a target="_blank" rel="noopener" href="http://creativecommons.org/licenses/by-nc/4.0/">CC-BY-NC-4.0</a> LICENSE</span>
+                    </p>
+                
+                
+                     <p class="copyright-item">
+                         <span>Slogan:</span>
+                         <span>Coffee or Tea</span>
+                     </p>
+                
+
+            </section>
+        
+        <section class="post-tags">
+            <div>
+                <span>Tag(s):</span>
+                <span class="tag">
+                    
+                </span>
+            </div>
+            <div>
+                <a href="javascript:window.history.back();">back</a>
+                <span>· </span>
+                <a href="/">home</a>
+            </div>
+        </section>
+        <section class="post-nav">
+            
+            
+            <a class="next" rel="next" href="/2022/08/18/%5BMySQL%5D%E6%97%A5%E5%BF%97/">MySQL---日志</a>
+            
+        </section>
+
+
+    </article>
+</div>
+
+            </div>
+            <footer id="footer" class="footer">
+    <div class="copyright">
+        <span>© Xinyu | Powered by <a href="https://hexo.io" target="_blank">Hexo</a> & <a href="https://github.com/Siricee/hexo-theme-Chic" target="_blank">Chic</a></span>
+    </div>
+</footer>
+
+    </div>
+</body>
+
+</html>
