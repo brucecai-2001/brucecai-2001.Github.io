@@ -1,0 +1,291 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+<meta name="viewport"
+      content="width=device-width, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+<meta http-equiv="X-UA-Compatible" content="ie=edge">
+
+    <meta name="author" content="Xinyu">
+
+
+
+
+
+<title>概述 | Hexo</title>
+
+
+
+    <link rel="icon" href="/favicon.ico">
+
+
+
+
+    <!-- stylesheets list from _config.yml -->
+    
+    <link rel="stylesheet" href="/css/style.css">
+    
+
+
+
+    <!-- scripts list from _config.yml -->
+    
+    <script src="/js/script.js"></script>
+    
+    <script src="/js/tocbot.min.js"></script>
+    
+
+
+
+    
+    
+        
+    
+
+
+<meta name="generator" content="Hexo 6.2.0"></head>
+
+<body>
+    <script>
+        // this function is used to check current theme before page loaded.
+        (() => {
+            const currentTheme = window.localStorage && window.localStorage.getItem('theme') || '';
+            const isDark = currentTheme === 'dark';
+            const pagebody = document.getElementsByTagName('body')[0]
+            if (isDark) {
+                pagebody.classList.add('dark-theme');
+                // mobile
+                document.getElementById("mobile-toggle-theme").innerText = "· Dark"
+            } else {
+                pagebody.classList.remove('dark-theme');
+                // mobile
+                document.getElementById("mobile-toggle-theme").innerText = "· Light"
+            }
+        })();
+    </script>
+
+    <div class="wrapper">
+        <header>
+    <nav class="navbar">
+        <div class="container">
+            <div class="navbar-header header-logo"><a href="/">Xinyu&#39;s Blog</a></div>
+            <div class="menu navbar-right">
+                
+                    <a class="menu-item" href="/archives">Posts</a>
+                
+                    <a class="menu-item" href="/category">Categories</a>
+                
+                    <a class="menu-item" href="/tag">Tags</a>
+                
+                <input id="switch_default" type="checkbox" class="switch_default">
+                <label for="switch_default" class="toggleBtn"></label>
+            </div>
+        </div>
+    </nav>
+
+    
+    <nav class="navbar-mobile" id="nav-mobile">
+        <div class="container">
+            <div class="navbar-header">
+                <div>
+                    <a href="/">Xinyu&#39;s Blog</a><a id="mobile-toggle-theme">·&nbsp;Light</a>
+                </div>
+                <div class="menu-toggle" onclick="mobileBtn()">&#9776; Menu</div>
+            </div>
+            <div class="menu" id="mobile-menu">
+                
+                    <a class="menu-item" href="/archives">Posts</a>
+                
+                    <a class="menu-item" href="/category">Categories</a>
+                
+                    <a class="menu-item" href="/tag">Tags</a>
+                
+            </div>
+        </div>
+    </nav>
+
+</header>
+<script>
+    var mobileBtn = function f() {
+        var toggleMenu = document.getElementsByClassName("menu-toggle")[0];
+        var mobileMenu = document.getElementById("mobile-menu");
+        if(toggleMenu.classList.contains("active")){
+           toggleMenu.classList.remove("active")
+            mobileMenu.classList.remove("active")
+        }else{
+            toggleMenu.classList.add("active")
+            mobileMenu.classList.add("active")
+        }
+    }
+</script>
+            <div class="main">
+                <div class="container">
+    
+    
+
+    
+    <article class="post-wrap">
+        <header class="post-header">
+            <h1 class="post-title">概述</h1>
+            
+                <div class="post-meta">
+                    
+                        Author: <a itemprop="author" rel="author" href="/">Xinyu</a>
+                    
+
+                    
+                        <span class="post-time">
+                        Date: <a href="#">September 7, 2022&nbsp;&nbsp;22:06:57</a>
+                        </span>
+                    
+                    
+                        <span class="post-category">
+                    Category:
+                            
+                                <a href="/categories/Robotics/">Robotics</a>
+                            
+                        </span>
+                    
+                </div>
+            
+        </header>
+
+        <div class="post-content">
+            <blockquote>
+<p>ROS &#x3D; 通讯机制+开发工具+应用功能+生态系统。提高机器人开发的软件复用率 <br></p>
+</blockquote>
+<p><img src="https://raw.githubusercontent.com/brucecai-2001/Image/master/IMG_1405CDF9FC26-1.jpeg"></p>
+<p>Node: <br><br>相当于一个进程，完成一个具体任务的可执行文件。<br><br>可以使用不同的编程语，可分布式运行在不同的主机上 <br><br>节点的名称是唯一的 <br></p>
+<br>
+
+<p>Node Master: <br><br>所有节点的管理者，为节点提供命名和注册服务。帮助节点之间建立连接，提供参数服务器相当于一个全局字典 <br></p>
+<br>
+![](https://raw.githubusercontent.com/brucecai-2001/Image/master/IMG_FC76B54BF033-1.jpeg)
+话题：异步通信机制<br>
+节点之间用来传输数据的重要总线，使用 **发布/订阅** 总线 <br>
+
+<p>消息：话题的数据<br><br>可以使用ROS自己或自定义的数据结构，使用了编程语言无关的.msg文件，编译过程中生成对应的代码文件 <br></p>
+<br>
+![](https://raw.githubusercontent.com/brucecai-2001/Image/master/IMG_759B9F7EF73F-1.jpeg)
+服务: 同步通信机制 <br>
+
+<p><img src="https://raw.githubusercontent.com/brucecai-2001/Image/master/IMG_E8DFFD50767B-1.jpeg"></p>
+<br>
+
+<p>参数: 全局共享的字典 <br><br>可通过网络访问，设置，节点使用此服务器来存储和检索运行时的参数。不适合存储动态参数 <br></p>
+<br>
+
+<p>功能包：节点源码，配置文件，数据定义<br><br>多个功能包组成一个源功能包 <br></p>
+<br>
+<br>
+<br>
+
+<p>启动Node Master: roscore <br><br>运行某个功能包的某一个节点: rosrun package_name node_name <br></p>
+<br>
+
+<p>rqt_graph: 用来显示系统通信机制 <br><br>rosnode list: 显示当前节点 <br><br>rosnode info node_name: 显示某一个节点的信息 <br><br>rostopic list: 显示当前所有的话题列表 <br><br>rostopic pub topic_name&#x2F;msg_type&#x2F;msg_body: 发布一个topic下的消息，pub -r可以设置发送的频率(Hz)<br><br>rosmsg show msg_type: 显示一个数据结构 <br><br>rosservice list: 显示所有服务 <br><br>rosservice call service_name&#x2F;parameters: 使用一个服务 <br></p>
+<p>记录指令和数据: rosbag record -a -o bag_name <br><br>复现: rosbag play bag_name <br></p>
+<br>
+
+<p>工作空间: 一个存放工程开发相关文件的文件夹 <br><br>src: 功能包 <br><br>build: 编译的中间文件<br><br>devel: 脚本，编译生成的文件 <br><br>install: install安装文件的位置 <br></p>
+<p><img src="https://raw.githubusercontent.com/brucecai-2001/Image/master/IMG_BEEEEB7E4C92-1.jpeg"></p>
+<br>
+
+<p>创建一个发布者: <br><br><img src="https://raw.githubusercontent.com/brucecai-2001/Image/master/IMG_A7D5E5BEFB77-1.jpeg"></p>
+<p>创建一个订阅者: <br><br><img src="https://raw.githubusercontent.com/brucecai-2001/Image/master/IMG_93779743F8BB-1.jpeg"></p>
+<br>
+
+<p>自定义话题：<br></p>
+<ol>
+<li>定义msg文件 </li>
+<li>在package.xml中添加功能包依赖</li>
+<li>CMakeLists.txt添加编译选项</li>
+<li>编译生成语言相关文件</li>
+</ol>
+<br>
+
+<p>创建一个Client: <br><br><img src="https://raw.githubusercontent.com/brucecai-2001/Image/master/IMG_B71F8C5CC447-1.jpeg"></p>
+<p>创建一个Server: <br><br><img src="https://raw.githubusercontent.com/brucecai-2001/Image/master/IMG_0AC4DE707A4D-1.jpeg"></p>
+<p>服务的数据定义: <br><br><img src="https://raw.githubusercontent.com/brucecai-2001/Image/master/IMG_B1085BCAB387-1.jpeg"></p>
+<p>以—区分request和response <br></p>
+<br>
+
+<p>参数命令: <br><br>rosparam list：查询所有参数 <br><br>rosparam get: 获取一个参数的值 <br><br>rosparam set: 设置一个参数 <br></p>
+<p>参数的值保存在param.yaml中<br></p>
+<br>
+
+<p>坐标系管理系统:<br></p>
+<p>查看所有坐标系之间的关系: rosrun tf view_frames <br><br>查询两个坐标系的关系: rosrun tf tf_echo node1 node2 <br></p>
+<br>
+
+<p>Launch文件: 一个XML文件，相当于脚本，可实现多节点配置和启动 <br></p>
+<figure class="highlight xml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">根元素: <span class="tag">&lt;<span class="name">launch</span>&gt;</span><span class="tag">&lt;/<span class="name">launch</span>&gt;</span> <span class="tag">&lt;<span class="name">br</span>&gt;</span></span><br><span class="line">启动一个节点: <span class="tag">&lt;<span class="name">node</span> <span class="attr">pkg</span> <span class="attr">node_name</span> <span class="attr">executable_name</span> /&gt;</span> <span class="tag">&lt;<span class="name">br</span>&gt;</span></span><br><span class="line">设置参数: <span class="tag">&lt;<span class="name">param</span> <span class="attr">name</span>= <span class="string">value</span>= <span class="string">/</span>&gt;</span>  <span class="tag">&lt;<span class="name">rosparam</span> <span class="attr">file</span>= <span class="string">command</span>= <span class="string">ns</span>= <span class="string">/</span>&gt;</span> <span class="tag">&lt;<span class="name">br</span>&gt;</span></span><br><span class="line">局部参数: <span class="tag">&lt;<span class="name">arg</span>&gt;</span> <span class="tag">&lt;<span class="name">br</span>&gt;</span></span><br><span class="line"></span><br><span class="line">roslaunch pkg launch_name <span class="tag">&lt;<span class="name">br</span>&gt;</span></span><br></pre></td></tr></table></figure>
+        </div>
+
+        
+            <section class="post-copyright">
+                
+                    <p class="copyright-item">
+                        <span>Author:</span>
+                        <span>Xinyu</span>
+                    </p>
+                
+                
+                    <p class="copyright-item">
+                        <span>Permalink:</span>
+                        <span><a href="http://example.com/2022/09/07/[ROS]%E6%A6%82%E8%BF%B0/">http://example.com/2022/09/07/[ROS]%E6%A6%82%E8%BF%B0/</a></span>
+                    </p>
+                
+                
+                    <p class="copyright-item">
+                        <span>License:</span>
+                        <span>Copyright (c) 2019 <a target="_blank" rel="noopener" href="http://creativecommons.org/licenses/by-nc/4.0/">CC-BY-NC-4.0</a> LICENSE</span>
+                    </p>
+                
+                
+                     <p class="copyright-item">
+                         <span>Slogan:</span>
+                         <span>Coffee or Tea</span>
+                     </p>
+                
+
+            </section>
+        
+        <section class="post-tags">
+            <div>
+                <span>Tag(s):</span>
+                <span class="tag">
+                    
+                </span>
+            </div>
+            <div>
+                <a href="javascript:window.history.back();">back</a>
+                <span>· </span>
+                <a href="/">home</a>
+            </div>
+        </section>
+        <section class="post-nav">
+            
+                <a class="prev" rel="prev" href="/2022/09/10/%5B%E7%AE%97%E6%B3%95%5DACM/">ACM</a>
+            
+            
+            <a class="next" rel="next" href="/2022/09/06/%5B%E9%A1%B9%E7%9B%AE%5DRedis/">Redis</a>
+            
+        </section>
+
+
+    </article>
+</div>
+
+            </div>
+            <footer id="footer" class="footer">
+    <div class="copyright">
+        <span>© Xinyu | Powered by <a href="https://hexo.io" target="_blank">Hexo</a> & <a href="https://github.com/Siricee/hexo-theme-Chic" target="_blank">Chic</a></span>
+    </div>
+</footer>
+
+    </div>
+</body>
+
+</html>

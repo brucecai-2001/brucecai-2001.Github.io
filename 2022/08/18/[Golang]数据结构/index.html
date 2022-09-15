@@ -249,6 +249,53 @@
 <li>计算桶号<br><img src="https://raw.githubusercontent.com/brucecai-2001/Image/master/IMG_6458C27C4F56-1.jpeg"></li>
 <li>计算tophash<br><img src="https://raw.githubusercontent.com/brucecai-2001/Image/master/IMG_8DC6EB800AB8-1.jpeg"></li>
 </ol>
+<p>map溢出桶太多时会导致严重的性能下降 <br></p>
+<p>扩容步骤: <br></p>
+<ol>
+<li>创建一组新桶</li>
+<li>oldbucket指向现在的桶</li>
+<li>buckets指向新的桶</li>
+<li>渐进迁移数据</li>
+</ol>
+<br>
+
+<p>map的并发问题: <br></p>
+<ol>
+<li>A协程读取了老桶，B协程要修改老桶，驱逐了新桶<br>给map加锁(有性能损失), 可以使用 sync.map <br><figure class="highlight golang"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">type</span> Map <span class="keyword">struct</span> &#123;</span><br><span class="line">    mu Mutex</span><br><span class="line">    read atomic.Value <span class="comment">//readOnly</span></span><br><span class="line">    dirty <span class="keyword">map</span>[<span class="keyword">interface</span>&#123;&#125;]*entry</span><br><span class="line">    misses <span class="type">int</span></span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="keyword">type</span> readOnly <span class="keyword">struct</span> &#123;</span><br><span class="line">    m <span class="keyword">map</span>[<span class="keyword">interface</span>&#123;&#125;]*entry <span class="comment">// *entry指向一个unsafe.Pointer</span></span><br><span class="line">    amended <span class="type">bool</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<img src="https://raw.githubusercontent.com/brucecai-2001/Image/master/IMG_4B10BDDC3D77-1.jpeg"><br><strong>追加map导致并发问题。读写和追加问题，读写走上面，追加加锁走下面。</strong></li>
+</ol>
+<br>
+
+<h1 id="接口"><a href="#接口" class="headerlink" title="接口"></a>接口</h1><p>接口对象: </p>
+<figure class="highlight golang"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">type</span> iface <span class="keyword">struct</span> &#123;</span><br><span class="line">    tab *itab               </span><br><span class="line">    data unsafe.Pointer     <span class="comment">//构造接口的对象地址</span></span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="keyword">type</span> itab <span class="keyword">struct</span> &#123;</span><br><span class="line">    inter *interfacetype    <span class="comment">//Car</span></span><br><span class="line">    _type *_type            <span class="comment">//Trunk</span></span><br><span class="line">    fun [<span class="number">1</span>]<span class="type">uintptr</span>          <span class="comment">//Trunk实现了哪些方法，Drive</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>类型断言: 转换类型<br></p>
+<figure class="highlight golang"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">var</span> c Car = Trunk&#123;&#125;</span><br><span class="line">t := c.(Trunk)</span><br></pre></td></tr></table></figure>
+
+<p>结构体实体一个接口方法，结构体指针也可以使用，反过来不行 <br></p>
+<p>空接口可以承载任何的类型 <br></p>
+<figure class="highlight golang"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">type</span> eface <span class="keyword">struct</span> &#123;</span><br><span class="line">    <span class="comment">//省略了interface类型, _type可以是任意类型</span></span><br><span class="line">    _type *_type</span><br><span class="line">    data unsafe.Pointer</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<br>
+
+<h1 id="nil"><a href="#nil" class="headerlink" title="nil"></a>nil</h1><p>nil：指针，channel，func，interface，map，slice的零值 <br><br>一个结构体永远不可能是nil <br><br>类型不一样 &#x3D;&#x3D; 会报错，指针nil不可以和map nil相比较<br></p>
+<br>
+
+<h1 id="空结构体-1"><a href="#空结构体-1" class="headerlink" title="空结构体"></a>空结构体</h1><figure class="highlight golang"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">type</span> A <span class="keyword">struct</span> &#123;&#125;</span><br></pre></td></tr></table></figure>
+<p>空结构体指针 &#x3D; zerobase <br></p>
+<br>
+
+<h1 id="空接口"><a href="#空接口" class="headerlink" title="空接口"></a>空接口</h1><p>接口底层是一个eface结构体包含 type和data两个字段，必须两个字段都没有值才是nil</p>
+<br>
+
+<h1 id="内存对齐"><a href="#内存对齐" class="headerlink" title="内存对齐"></a>内存对齐</h1><p>计算机按照字长访问内存的，没有内存对齐时，一个变量的内存不规律排布，CPU需要多次访问内存 <br></p>
+<p><img src="https://raw.githubusercontent.com/brucecai-2001/Image/master/IMG_F004318275A0-1.jpeg"></p>
+<p>Go提供了内存对齐系数 unsafe.Alinof(): 变量的内存地址必须被对齐系数整除 <br></p>
+<p>基础类型的大小和对齐系数是一样的 <br></p>
+<p><img src="https://raw.githubusercontent.com/brucecai-2001/Image/master/IMG_C31E1C39F535-1.jpeg"></p>
+<p>结构体内部每个成员的偏移量时自身大小与其对齐系数较小值的倍数, 偏移量是指与头成员保持的距离，内存中的顺序与定义时的顺序一致，需要调整顺序来节约空间<br></p>
+<p><img src="https://raw.githubusercontent.com/brucecai-2001/Image/master/IMG_F04A849DEF59-1.jpeg"></p>
+<p>空结构体跟随前一个成员，不要放最后，不然下一个和这个结构体没关系的变量会和空结构体撞车 <br></p>
 
         </div>
 
@@ -295,6 +342,8 @@
             </div>
         </section>
         <section class="post-nav">
+            
+                <a class="prev" rel="prev" href="/2022/08/20/%5B%E9%A1%B9%E7%9B%AE%5DWeb%E6%9C%8D%E5%8A%A1%E5%99%A8/">Web服务器</a>
             
             
             <a class="next" rel="next" href="/2022/08/18/%5BMySQL%5D%E6%97%A5%E5%BF%97/">MySQL---日志</a>

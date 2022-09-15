@@ -13,7 +13,7 @@
 
 
 
-<title>分布式计算---Actor | Hexo</title>
+<title>操作系统---设备 | Hexo</title>
 
 
 
@@ -192,7 +192,7 @@
     
     <article class="post-wrap">
         <header class="post-header">
-            <h1 class="post-title">分布式计算---Actor</h1>
+            <h1 class="post-title">操作系统---设备</h1>
             
                 <div class="post-meta">
                     
@@ -201,14 +201,14 @@
 
                     
                         <span class="post-time">
-                        Date: <a href="#">July 23, 2022&nbsp;&nbsp;1:48:30</a>
+                        Date: <a href="#">September 14, 2022&nbsp;&nbsp;20:57:21</a>
                         </span>
                     
                     
                         <span class="post-category">
                     Category:
                             
-                                <a href="/categories/%E5%88%86%E5%B8%83%E5%BC%8F%E8%AE%A1%E7%AE%97/">分布式计算</a>
+                                <a href="/categories/%E6%93%8D%E4%BD%9C%E7%B3%BB%E7%BB%9F/">操作系统</a>
                             
                         </span>
                     
@@ -217,14 +217,29 @@
         </header>
 
         <div class="post-content">
-            <p>Actor 模型，代表一种分布式并行计算模型。这种模型有自己的一套规则，规定了 Actor 的内部计算逻辑，以及多个 Actor 之间的通信规则。在 Actor 模型里，每个 Actor 相当于系统中的一个组件，都是基本的计算单元 <br></p>
-<p>对于 Actor 模式，对象 A、B 和 C 对应着 Actor A、Actor B 和 Actor C，当 Actor A 和 Actor B 需要执行 Actor C 中的 Function 逻辑时，Actor A 和 Actor B 会将消息发送给 Actor C， Actor C 的消息队列存储着 Actor A 和 Actor B 的消息，然后根据消息的先后顺序，执行 Function 即可。<br></p>
-<h1 id="Actor-计算模式"><a href="#Actor-计算模式" class="headerlink" title="Actor 计算模式"></a>Actor 计算模式</h1><p><img src="https://raw.githubusercontent.com/brucecai-2001/Image/master/20220723015712.png"></p>
-<p><strong>Actor 模型的三要素是状态、行为和消息</strong></p>
-<p>状态（State）。Actor 的状态指的是，Actor 组件本身的信息，相当于 OOP 对象中的属性。Actor 的状态会受 Actor 自身行为的影响，且只能被自己修改。<br></p>
-<p>行为（Behavior）。Actor 的行为指的是，Actor 的计算处理操作，相当于 OOP 对象中的成员函数。Actor 之间不能直接调用其他 Actor 的计算逻辑。Actor 只有收到消息才会触发自身的计算行为。<br></p>
-<p>消息（Mail）。Actor 的消息以邮件形式在多个 Actor 之间通信传递，每个 Actor 会有一个自己的邮箱（MailBox），用于接收来自其他 Actor 的消息，因此 Actor 模型中的消息也称为邮件。一般情况下，对于邮箱里面的消息，Actor 是按照消息达到的先后顺序（FIFO）进行读取和处理的。<br></p>
+            <p>为了屏蔽设备之间的差异，每个设备都有一个叫设备控制器（Device Control） 的组件，比如硬盘有硬盘控制器、显示器有视频控制器等。设备控制器里有芯片，它可执行自己的逻辑，也有自己的寄存器，用来与 CPU 进行通信<br></p>
+<p><img src="https://raw.githubusercontent.com/brucecai-2001/Image/master/20220914205806.png"></p>
+<p>控制器是有三类寄存器，它们分别是状态寄存器（Status Register）、 命令寄存器（Command Register）以及数据寄存器（Data Register）<br></p>
+<p><img src="https://raw.githubusercontent.com/brucecai-2001/Image/master/20220914205904.png"></p>
+<p>数据寄存器，CPU 向 I&#x2F;O 设备写入需要传输的数据，比如要打印的内容是「Hello」，CPU 就要先发送一个 H 字符给到对应的 I&#x2F;O 设备。<br><br>命令寄存器，CPU 发送一个命令，告诉 I&#x2F;O 设备，要进行输入&#x2F;输出操作，于是就会交给 I&#x2F;O 设备去工作，任务完成后，会把状态寄存器里面的状态标记为完成。<br><br>状态寄存器，目的是告诉 CPU ，现在已经在工作或工作已经完成，如果已经在工作状态，CPU 再发送数据或者命令过来，都是没有用的，直到前面的工作已经完成，状态寄存标记成已完成，CPU 才能发送下一个字符和命令。<br></p>
+<p>DMA（Direct Memory Access） 功能，它可以使得设备在 CPU 不参与的情况下，能够自行完成把设备 I&#x2F;O 数据放入到内存。那要实现 DMA 功能要有 「DMA 控制器」硬件的支持。<br></p>
+<p><img src="https://raw.githubusercontent.com/brucecai-2001/Image/master/20220914210943.png"></p>
+<p>CPU 需对 DMA 控制器下发指令，告诉它想读取多少数据，读完的数据放在内存的某个地方就可以了；接下来，DMA 控制器会向磁盘控制器发出指令，通知它从磁盘读数据到其内部的缓冲区中，接着磁盘控制器将缓冲区的数据传输到内存；当磁盘控制器把数据传输到内存的操作完成后，磁盘控制器在总线上发出一个确认成功的信号到 DMA 控制器；DMA 控制器收到信号后，DMA 控制器发中断通知 CPU 指令完成，CPU 就可以直接用内存里面现成的数据了；<br></p>
 <br>
+
+<h1 id="I-x2F-O-控制方式"><a href="#I-x2F-O-控制方式" class="headerlink" title="I&#x2F;O 控制方式"></a>I&#x2F;O 控制方式</h1><p>轮询等待的方法，让 CPU 一直查寄存器的状态，直到状态标记为完成，很明显，这种方式非常的傻瓜，它会占用 CPU 的全部时间。<br></p>
+<p>中断，通知操作系统数据已经准备好了。我们一般会有一个硬件的中断控制器，当设备完成任务后触发中断到中断控制器，中断控制器就通知 CPU，一个中断产生了，CPU 需要停下当前手里的事情来处理中断。<br></p>
+<ol>
+<li>在 I&#x2F;O 时，设备控制器如果已经准备好数据，则会通过中断控制器向 CPU 发送中断请求；</li>
+<li>保护被中断进程的 CPU 上下文；</li>
+<li>转入相应的设备中断处理函数；</li>
+<li>进行中断处理；</li>
+<li>恢复被中断进程的上下文；</li>
+</ol>
+<br>
+
+<h1 id="设备驱动程序"><a href="#设备驱动程序" class="headerlink" title="设备驱动程序"></a>设备驱动程序</h1><p>设备控制器不属于操作系统范畴，它是属于硬件，而设备驱动程序属于操作系统的一部分，操作系统的内核代码可以像本地调用代码一样使用设备驱动程序的接口，而设备驱动程序是面向设备控制器的代码，它发出操控设备控制器的指令后，才可以操作设备控制器。</p>
+<p><img src="https://raw.githubusercontent.com/brucecai-2001/Image/master/20220914211540.png"></p>
 
         </div>
 
@@ -239,7 +254,7 @@
                 
                     <p class="copyright-item">
                         <span>Permalink:</span>
-                        <span><a href="http://example.com/2022/07/23/[%E5%88%86%E5%B8%83%E5%BC%8F%E7%B3%BB%E7%BB%9F]Actor/">http://example.com/2022/07/23/[%E5%88%86%E5%B8%83%E5%BC%8F%E7%B3%BB%E7%BB%9F]Actor/</a></span>
+                        <span><a href="http://example.com/2022/09/14/[%E6%93%8D%E4%BD%9C%E7%B3%BB%E7%BB%9F]%E8%AE%BE%E5%A4%87/">http://example.com/2022/09/14/[%E6%93%8D%E4%BD%9C%E7%B3%BB%E7%BB%9F]%E8%AE%BE%E5%A4%87/</a></span>
                     </p>
                 
                 
@@ -272,10 +287,10 @@
         </section>
         <section class="post-nav">
             
-                <a class="prev" rel="prev" href="/2022/07/23/%5B%E5%88%86%E5%B8%83%E5%BC%8F%E7%B3%BB%E7%BB%9F%5D%E8%BF%9C%E7%A8%8B%E8%B0%83%E7%94%A8/">分布式通信---远程调用</a>
+                <a class="prev" rel="prev" href="/2022/09/14/%5B%E6%93%8D%E4%BD%9C%E7%B3%BB%E7%BB%9F%5D%E7%BD%91%E7%BB%9C/">操作系统---网络</a>
             
             
-            <a class="next" rel="next" href="/2022/07/23/%5B%E5%88%86%E5%B8%83%E5%BC%8F%E7%B3%BB%E7%BB%9F%5DStream/">分布式计算---Stream</a>
+            <a class="next" rel="next" href="/2022/09/14/%5B%E6%93%8D%E4%BD%9C%E7%B3%BB%E7%BB%9F%5D%E6%96%87%E4%BB%B6%E7%B3%BB%E7%BB%9F/">操作系统---文件系统</a>
             
         </section>
 

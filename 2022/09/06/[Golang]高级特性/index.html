@@ -13,7 +13,7 @@
 
 
 
-<title>操作系统(5)---内存 | Hexo</title>
+<title>Golang---高级特性 | Hexo</title>
 
 
 
@@ -192,7 +192,7 @@
     
     <article class="post-wrap">
         <header class="post-header">
-            <h1 class="post-title">操作系统(5)---内存</h1>
+            <h1 class="post-title">Golang---高级特性</h1>
             
                 <div class="post-meta">
                     
@@ -201,14 +201,14 @@
 
                     
                         <span class="post-time">
-                        Date: <a href="#">July 17, 2022&nbsp;&nbsp;1:59:02</a>
+                        Date: <a href="#">September 6, 2022&nbsp;&nbsp;2:08:31</a>
                         </span>
                     
                     
                         <span class="post-category">
                     Category:
                             
-                                <a href="/categories/%E6%93%8D%E4%BD%9C%E7%B3%BB%E7%BB%9F/">操作系统</a>
+                                <a href="/categories/Go/">Go</a>
                             
                         </span>
                     
@@ -217,20 +217,18 @@
         </header>
 
         <div class="post-content">
-            <h1 id="虚拟内存"><a href="#虚拟内存" class="headerlink" title="虚拟内存"></a>虚拟内存</h1><p>虚拟内存的目的是为了让物理内存扩充成更大的逻辑内存，从而让程序获得更多的可用内存。<br></p>
-<p>为了更好的管理内存，操作系统将内存抽象成地址空间。每个程序拥有自己的地址空间，这个地址空间被分割成多个块，每一块称为一页。这些页被映射到物理内存，但不需要映射到连续的物理内存，也不需要所有页都必须在物理内存中。当程序引用到不在物理内存中的页时，由硬件执行必要的映射，将缺失的部分装入物理内存并重新执行失败的指令。<br></p>
-<p>虚拟内存允许程序不用将地址空间中的每一页都映射到物理内存，也就是说一个程序不需要全部调入内存就可以运行，这使得有限的内存运行大程序成为可能<br></p>
+            <h1 id="panic"><a href="#panic" class="headerlink" title="panic"></a>panic</h1><p>panic直接退出协程，启动它的协程也会退出 <br></p>
+<p>panic在退出协程之前会执行本协程所有已经注册的defer <br><br>在defer中调用recover()，恢复上一级协程 <br></p>
 <br>
 
-<h1 id="分页系统地址映射"><a href="#分页系统地址映射" class="headerlink" title="分页系统地址映射"></a>分页系统地址映射</h1><p>内存管理单元（MMU）管理着地址空间和物理内存的转换，其中的页表（Page table）存储着页（程序地址空间）和页框（物理内存空间）的映射表。<br></p>
-<p>一个虚拟地址分成两个部分，一部分存储页面号，一部分存储偏移量。<br></p>
-<p><img src="https://raw.githubusercontent.com/brucecai-2001/Image/master/20220717022741.png"></p>
-<br>
-
-<h1 id="页面置换算法"><a href="#页面置换算法" class="headerlink" title="页面置换算法"></a>页面置换算法</h1><p>在程序运行过程中，如果要访问的页面不在内存中，就发生缺页中断从而将该页调入内存中。此时如果内存已无空闲空间，系统必须从内存中调出一个页面到磁盘对换区中来腾出空间。<br></p>
-<p>Optimal replacement algorithm: 所选择的被换出的页面将是最长时间内不再被访问，通常可以保证获得最低的缺页率。<br></p>
-<p>最近最久未使用: 虽然无法知道将来要使用的页面情况，但是可以知道过去使用页面的情况。LRU 将最近最久未使用的页面换出。<br></p>
-<p>为了实现 LRU，需要在内存中维护一个所有页面的链表。当一个页面被访问时，将这个页面移到链表表头。这样就能保证链表表尾的页面是最近最久未访问的。<br></p>
+<h1 id="反射"><a href="#反射" class="headerlink" title="反射"></a>反射</h1><p>反射可以: <br></p>
+<ol>
+<li>动态获取对象类型</li>
+<li>对任意类型变量赋值</li>
+<li>调用任意方法</li>
+</ol>
+<p>获取数据的元数据也就是数据的属性，例如类型，值 <br><br>类型为reflect.Typeof(var interface{}) <br><br>值为reflect.Valueof(var interface{}) <br></p>
+<p><strong>还原数据: var :&#x3D; Value.Interface().(Type)</strong> <br></p>
 
         </div>
 
@@ -245,7 +243,7 @@
                 
                     <p class="copyright-item">
                         <span>Permalink:</span>
-                        <span><a href="http://example.com/2022/07/17/[%E6%93%8D%E4%BD%9C%E7%B3%BB%E7%BB%9F]%E5%86%85%E5%AD%98/">http://example.com/2022/07/17/[%E6%93%8D%E4%BD%9C%E7%B3%BB%E7%BB%9F]%E5%86%85%E5%AD%98/</a></span>
+                        <span><a href="http://example.com/2022/09/06/[Golang]%E9%AB%98%E7%BA%A7%E7%89%B9%E6%80%A7/">http://example.com/2022/09/06/[Golang]%E9%AB%98%E7%BA%A7%E7%89%B9%E6%80%A7/</a></span>
                     </p>
                 
                 
@@ -278,10 +276,10 @@
         </section>
         <section class="post-nav">
             
-                <a class="prev" rel="prev" href="/2022/07/17/%5BGolang%5D%E8%AE%A4%E8%AF%81%E4%B8%8E%E6%9D%83%E9%99%90/">Golang---认证与权限</a>
+                <a class="prev" rel="prev" href="/2022/09/06/%5B%E9%A1%B9%E7%9B%AE%5DRedis/">Redis</a>
             
             
-            <a class="next" rel="next" href="/2022/07/17/%5B%E6%93%8D%E4%BD%9C%E7%B3%BB%E7%BB%9F%5D%E6%AD%BB%E9%94%81/">操作系统(4)---死锁</a>
+            <a class="next" rel="next" href="/2022/09/05/%5B%E6%93%8D%E4%BD%9C%E7%B3%BB%E7%BB%9F%5D%E8%84%9A%E6%9C%AC/">操作系统---脚本</a>
             
         </section>
 

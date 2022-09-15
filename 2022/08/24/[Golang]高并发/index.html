@@ -1,0 +1,404 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+<meta name="viewport"
+      content="width=device-width, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+<meta http-equiv="X-UA-Compatible" content="ie=edge">
+
+    <meta name="author" content="Xinyu">
+
+
+
+
+
+<title>Golang---高并发 | Hexo</title>
+
+
+
+    <link rel="icon" href="/favicon.ico">
+
+
+
+
+    <!-- stylesheets list from _config.yml -->
+    
+    <link rel="stylesheet" href="/css/style.css">
+    
+
+
+
+    <!-- scripts list from _config.yml -->
+    
+    <script src="/js/script.js"></script>
+    
+    <script src="/js/tocbot.min.js"></script>
+    
+
+
+
+    
+    
+        
+    
+
+
+<meta name="generator" content="Hexo 6.2.0"></head>
+
+<body>
+    <script>
+        // this function is used to check current theme before page loaded.
+        (() => {
+            const currentTheme = window.localStorage && window.localStorage.getItem('theme') || '';
+            const isDark = currentTheme === 'dark';
+            const pagebody = document.getElementsByTagName('body')[0]
+            if (isDark) {
+                pagebody.classList.add('dark-theme');
+                // mobile
+                document.getElementById("mobile-toggle-theme").innerText = "· Dark"
+            } else {
+                pagebody.classList.remove('dark-theme');
+                // mobile
+                document.getElementById("mobile-toggle-theme").innerText = "· Light"
+            }
+        })();
+    </script>
+
+    <div class="wrapper">
+        <header>
+    <nav class="navbar">
+        <div class="container">
+            <div class="navbar-header header-logo"><a href="/">Xinyu&#39;s Blog</a></div>
+            <div class="menu navbar-right">
+                
+                    <a class="menu-item" href="/archives">Posts</a>
+                
+                    <a class="menu-item" href="/category">Categories</a>
+                
+                    <a class="menu-item" href="/tag">Tags</a>
+                
+                <input id="switch_default" type="checkbox" class="switch_default">
+                <label for="switch_default" class="toggleBtn"></label>
+            </div>
+        </div>
+    </nav>
+
+    
+    <nav class="navbar-mobile" id="nav-mobile">
+        <div class="container">
+            <div class="navbar-header">
+                <div>
+                    <a href="/">Xinyu&#39;s Blog</a><a id="mobile-toggle-theme">·&nbsp;Light</a>
+                </div>
+                <div class="menu-toggle" onclick="mobileBtn()">&#9776; Menu</div>
+            </div>
+            <div class="menu" id="mobile-menu">
+                
+                    <a class="menu-item" href="/archives">Posts</a>
+                
+                    <a class="menu-item" href="/category">Categories</a>
+                
+                    <a class="menu-item" href="/tag">Tags</a>
+                
+            </div>
+        </div>
+    </nav>
+
+</header>
+<script>
+    var mobileBtn = function f() {
+        var toggleMenu = document.getElementsByClassName("menu-toggle")[0];
+        var mobileMenu = document.getElementById("mobile-menu");
+        if(toggleMenu.classList.contains("active")){
+           toggleMenu.classList.remove("active")
+            mobileMenu.classList.remove("active")
+        }else{
+            toggleMenu.classList.add("active")
+            mobileMenu.classList.add("active")
+        }
+    }
+</script>
+            <div class="main">
+                <div class="container">
+    
+    
+        <div class="post-toc">
+    <div class="tocbot-list">
+    </div>
+    <div class="tocbot-list-menu">
+        <a class="tocbot-toc-expand" onclick="expand_toc()">Expand all</a>
+        <a onclick="go_top()">Back to top</a>
+        <a onclick="go_bottom()">Go to bottom</a>
+    </div>
+</div>
+
+<script>
+    var tocbot_timer;
+    var DEPTH_MAX = 6; // 为 6 时展开所有
+    var tocbot_default_config = {
+        tocSelector: '.tocbot-list',
+        contentSelector: '.post-content',
+        headingSelector: 'h1, h2, h3, h4, h5',
+        orderedList: false,
+        scrollSmooth: true,
+        onClick: extend_click,
+    };
+
+    function extend_click() {
+        clearTimeout(tocbot_timer);
+        tocbot_timer = setTimeout(function() {
+            tocbot.refresh(obj_merge(tocbot_default_config, {
+                hasInnerContainers: true
+            }));
+        }, 420); // 这个值是由 tocbot 源码里定义的 scrollSmoothDuration 得来的
+    }
+
+    document.ready(function() {
+        tocbot.init(obj_merge(tocbot_default_config, {
+            collapseDepth: 1
+        }));
+    });
+
+    function expand_toc() {
+        var b = document.querySelector('.tocbot-toc-expand');
+        var expanded = b.getAttribute('data-expanded');
+        expanded ? b.removeAttribute('data-expanded') : b.setAttribute('data-expanded', true);
+        tocbot.refresh(obj_merge(tocbot_default_config, {
+            collapseDepth: expanded ? 1 : DEPTH_MAX
+        }));
+        b.innerText = expanded ? 'Expand all' : 'Collapse all';
+    }
+
+    function go_top() {
+        window.scrollTo(0, 0);
+    }
+
+    function go_bottom() {
+        window.scrollTo(0, document.body.scrollHeight);
+    }
+
+    function obj_merge(target, source) {
+        for (var item in source) {
+            if (source.hasOwnProperty(item)) {
+                target[item] = source[item];
+            }
+        }
+        return target;
+    }
+</script>
+    
+
+    
+    <article class="post-wrap">
+        <header class="post-header">
+            <h1 class="post-title">Golang---高并发</h1>
+            
+                <div class="post-meta">
+                    
+                        Author: <a itemprop="author" rel="author" href="/">Xinyu</a>
+                    
+
+                    
+                        <span class="post-time">
+                        Date: <a href="#">August 24, 2022&nbsp;&nbsp;0:55:17</a>
+                        </span>
+                    
+                    
+                        <span class="post-category">
+                    Category:
+                            
+                                <a href="/categories/Go/">Go</a>
+                            
+                        </span>
+                    
+                </div>
+            
+        </header>
+
+        <div class="post-content">
+            <h1 id="线程的问题"><a href="#线程的问题" class="headerlink" title="线程的问题"></a>线程的问题</h1><p>线程本身占用的空间大。线程的操作开销大。线程切换开销大。<br></p>
+<br>
+
+<h1 id="协程"><a href="#协程" class="headerlink" title="协程"></a>协程</h1><ol>
+<li>将一段程序的运行状态打包，可以在线程之间调度。</li>
+<li>将生产流程打包，使得流程不固定在生产线上。</li>
+<li>协程并不取代线程，协程也要在线程上运行。</li>
+<li>线程是协程的资源</li>
+</ol>
+<p>高资源利用，快速调度，高并发 <br></p>
+<p>协程在Go内部: </p>
+<figure class="highlight golang"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">//执行了哪行代码，执行得怎么样了</span></span><br><span class="line"><span class="keyword">type</span> g <span class="keyword">struct</span> &#123;</span><br><span class="line">    stack stack <span class="comment">// 协程的栈 lo, hi address</span></span><br><span class="line">    sche gobuf  <span class="comment">// 协程运行现场 栈指针，程序计数器 </span></span><br><span class="line">    atomicstatus <span class="comment">// 协程状态</span></span><br><span class="line">    goid        <span class="comment">//  协程id</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p><img src="https://raw.githubusercontent.com/brucecai-2001/Image/master/IMG_97C72D41A241-1.jpeg"></p>
+<p>Golang中操作系统线程的抽象: </p>
+<figure class="highlight golang"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">type</span> m <span class="keyword">struct</span> &#123;</span><br><span class="line">    g0 *g       <span class="comment">//go启动时的第一个协程，操作调度器</span></span><br><span class="line">    curg *g     <span class="comment">//这个线程现在在运行哪一个协程</span></span><br><span class="line">    mOS         <span class="comment">// 操作系统信息</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<br>
+
+<h1 id="Golang单线程循环-0-X"><a href="#Golang单线程循环-0-X" class="headerlink" title="Golang单线程循环(0.X)"></a>Golang单线程循环(0.X)</h1><p><img src="https://raw.githubusercontent.com/brucecai-2001/Image/master/IMG_026436EEBC03-1.jpeg"></p>
+<ol>
+<li>schedule()由g0执行, 从队列中拿到可执行的g <strong>g0栈</strong></li>
+<li>execute() 给g做一些记录 <strong>g0栈</strong></li>
+<li>gogo平台相关，拿到协程栈（gobuf结构体)，插入goexit方法确保正常退出，跳转到g的gobuf的pc的那一行开始运行 <strong>g栈</strong></li>
+<li>g从goexit退出，goexit1切换到g0栈</li>
+</ol>
+<p>go中所有的协程都是在线程上运行的，只是被一个g0管理和调用</p>
+<br>
+
+<h1 id="Golang多线程循环-1-0"><a href="#Golang多线程循环-1-0" class="headerlink" title="Golang多线程循环(1.0)"></a>Golang多线程循环(1.0)</h1><p><img src="https://raw.githubusercontent.com/brucecai-2001/Image/master/IMG_ABE25E52574B-1.jpeg"></p>
+<p>全局协程队列需要锁<br></p>
+<br>
+
+<h1 id="GMP"><a href="#GMP" class="headerlink" title="GMP"></a>GMP</h1><p>大部分时间，线程不需要在全局队列中加锁获取G。从全局队列一次抓取多个G放在本地队列(P)中，不需要加锁获取 <br></p>
+<figure class="highlight golang"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">type</span> p <span class="keyword">struct</span> &#123;</span><br><span class="line">    m <span class="type">uintptr</span> <span class="comment">//原始指针，指向服务的M</span></span><br><span class="line">    runqhead, runqtail, runq <span class="comment">//队列，256长度</span></span><br><span class="line">    runnext </span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p><img src="https://raw.githubusercontent.com/brucecai-2001/Image/master/IMG_BC74ED179E83-1.jpeg"></p>
+<p><img src="https://raw.githubusercontent.com/brucecai-2001/Image/master/IMG_E85205405013-1.jpeg"></p>
+<p>如果全局没有G了，会去别的线程的本地队列里拿一些G，线程利用率上升<br><br>新建协程时，随机寻找一个P，将新建协程放入P的runnext，会造成协程饥饿<br><br>大协程执行到一半保存现场，pc，sc，直接跳回schedule，防止时间敏感协程饥饿<br><br>全局队列在本地循环时，有概率被加入本地循环 <br><br>协程涉及系统调用时会回到schedule <br><br>抢占式调度: 当一个协程g运行超过10ms，g.stackguard会被标记，g执行morestack时判断自己的stackguard有没有被标记，被标记时直接回到schedule</p>
+<p>基于系统调用和主动挂起，协程可能无法调度。<br><br>基于协作实现抢占式调度 <br><br>基于信号实现抢占式调度 <br></p>
+<br>
+
+<h1 id="控制协程数量"><a href="#控制协程数量" class="headerlink" title="控制协程数量"></a>控制协程数量</h1><ol>
+<li>channel 缓冲区</li>
+<li>协程池, 预创建多个协程。但是GMP就是一个池的模型，增加复杂度</li>
+</ol>
+<br>
+
+<h1 id="锁"><a href="#锁" class="headerlink" title="锁"></a>锁</h1><p>atomic是硬件层面加锁，只能用于简单变量操作。<br></p>
+<p>互斥锁：sync.Mutex <br><br><img src="https://raw.githubusercontent.com/brucecai-2001/Image/master/IMG_67325A19865F-1.jpeg"></p>
+<p>sema是一个平衡二叉树，做协程排队 <br><br>协程先自旋获取锁，失败后加入sema等待<br><br>当协程等待锁超过1ms，锁切换到饥饿模式。新来的协程直接休眠。如果协程被唤醒，直接获取锁 <br></p>
+<br>
+
+<h1 id="读写锁"><a href="#读写锁" class="headerlink" title="读写锁"></a>读写锁</h1><p>多个协程同时只读，让其他协程不修改即可。<br>多个读协程可共享读锁 <br></p>
+<p><strong>读锁共享，读写锁互斥</strong><br></p>
+<p>sync.RWMutex</p>
+<figure class="highlight golang"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">type</span> RWMutex <span class="keyword">struct</span> &#123;</span><br><span class="line">    w Mutex         <span class="comment">//  写锁</span></span><br><span class="line">    writerSem <span class="type">uint32</span>    <span class="comment">// 写协程队列    </span></span><br><span class="line">    readerSem <span class="type">uint32</span>        <span class="comment">// 读协程队列</span></span><br><span class="line">    readerCount <span class="type">uint32</span>      <span class="comment">// 正值：正在读的协程，复值：加了写锁</span></span><br><span class="line">    readerWait <span class="type">uint32</span>       <span class="comment">// 写锁应该等待的读协程的个数</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>加写锁时，先竞争w(互斥锁)，readerCount &#x3D; num - rwmutexMaxReaders (读协程被阻塞)<br></p>
+<br>
+
+<h1 id="WaitGroup"><a href="#WaitGroup" class="headerlink" title="WaitGroup"></a>WaitGroup</h1><p>协调多个协程之间的顺序 <br><br>wg.Add(x) <br><br>wg.Wait() <br><br>wg.Done() <br></p>
+<figure class="highlight golang"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">type</span> WaitGroup <span class="keyword">struct</span> &#123;</span><br><span class="line">    noCopy noCopy</span><br><span class="line">    state1 [<span class="number">3</span>]<span class="type">uint32</span> <span class="comment">//counter，waiter，sema</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>wg.Wait(): counter&gt;0，waiter + 1，加入sema <br><br>wg.DOne(): counter– <br><br>wg.Add(): counter++ <br></p>
+<br>
+
+<h1 id="管道"><a href="#管道" class="headerlink" title="管道"></a>管道</h1><p>协程之间通信，提高可读性，降低开发难度。<br></p>
+<figure class="highlight golang"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">type</span> hchan <span class="keyword">struct</span> &#123;</span><br><span class="line">    <span class="comment">// 环形缓存区，降低GC开销</span></span><br><span class="line">    buf unsafe.Pointer</span><br><span class="line">    elemsize <span class="type">uint64</span></span><br><span class="line">    elemtype *_type</span><br><span class="line"></span><br><span class="line">    sendx <span class="type">uint</span>  <span class="comment">//发送队列 (链表)</span></span><br><span class="line">    sendq waitq</span><br><span class="line">    recvx <span class="type">uint</span>  <span class="comment">//接收队列</span></span><br><span class="line">    recvq waitq</span><br><span class="line">    </span><br><span class="line">    lock mutex</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<br>
+
+<p>c&lt;-: 编译时转为runtime.chansend1() <br></p>
+<p>直接发送: 发送前接受队列有G在休眠，把数据直接拷贝给G的接收变量，唤醒G <br><br>放入缓存: 判断缓存区空间。<br><br>休眠等待: 没有G在休眠等待，缓存满了，自己进入发送队列 <br></p>
+<p>&lt;-c: runtime.chanrecv1()<br></p>
+<p>缓存没有数据，有等待的G，从该G接收 <br><br>缓存有数据，有等待的G，从缓存接收数据，唤醒等待的G <br><br>缓存没有数据，没有G在等待，阻塞 <br></p>
+<br>
+
+<h1 id="协程栈"><a href="#协程栈" class="headerlink" title="协程栈"></a>协程栈</h1><p>Go协程栈位于Go堆内存上，堆位于该进程的虚拟内存上 <br><br>协程栈记录了协程执行的现场，还记录了局部变量，传递参数和返回值 <br></p>
+<p>逃逸分析：不是所有的变量都可以放在协程栈上，栈帧回收后需要继续使用的变量，变量太大 <br><br>指针逃逸：函数返回指针，参数是空接口(使用了反射)，本地变量太大(64kb) <br><br>栈扩容：直接开辟一块新的空间 <br></p>
+<br>
+
+<h1 id="堆内存"><a href="#堆内存" class="headerlink" title="堆内存"></a>堆内存</h1><p>Go每次申请的虚拟内存单元(heapArena)为64MB，最多2^20个虚拟内存单元，所有的虚拟内存单元构成了堆内存 <br><br>内存单元的抽象: <br></p>
+<figure class="highlight golang"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">type</span> heapArena <span class="keyword">struct</span> &#123;</span><br><span class="line">    spans</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>heapArena组成了mheap <br></p>
+<figure class="highlight golang"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">type</span> mheap <span class="keyword">struct</span> &#123;</span><br><span class="line">    heaparenas</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>Go中有67种内存级别，每一级的格子大小不一样 <br></p>
+<p><img src="https://raw.githubusercontent.com/brucecai-2001/Image/master/IMG_F6E48DB6C424-1.jpeg"></p>
+<figure class="highlight golang"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">type</span> mspan <span class="keyword">struct</span> &#123;</span><br><span class="line">    next *mspan</span><br><span class="line">    prev *mspan</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<br>
+
+<h1 id="垃圾回收"><a href="#垃圾回收" class="headerlink" title="垃圾回收"></a>垃圾回收</h1><p>因为Go的堆内存的独特结构，选择最简单的标记-清除 <br><br>找到有引用的对象，剩下的就是没有引用的 <br> </p>
+<p>1.<br>GC root:  <br></p>
+<ol>
+<li>被栈上的指针引用</li>
+<li>被全局变量指针引用 </li>
+<li>被寄存器中的指针引用</li>
+</ol>
+<p>Root进行DFS(可达性分析): <br><br><img src="https://raw.githubusercontent.com/brucecai-2001/Image/master/IMG_4609FF752873-1.jpeg"></p>
+<p>三色标记法: <br></p>
+<ol>
+<li>起初所有的对象都是白色的</li>
+<li>从根出发，扫描可达对象，标记为灰色</li>
+<li>扫描灰色对象，将其引用的对象标记为灰色，自身标记为黑色</li>
+<li>删除剩下白色的对象，其他对象变成白色</li>
+</ol>
+<p>并发标记的问题: B删除了对C(白)的引用，但E同时引用了C，造成误删 <br><br>删除屏障: 指针被释放时，如果它是白色标记则标记为灰<br></p>
+<p>插入问题: E(黑)指向了C(白)，删除屏障失效 <br><br>插入屏障: 插入时，对新指向的对象标记为灰 <br></p>
+<p>**Golang使用了两种屏障，确保堆对象关系变动时，对象不会被错误删除 <br></p>
+<br>
+
+<h1 id="GC-触发"><a href="#GC-触发" class="headerlink" title="GC 触发"></a>GC 触发</h1><ol>
+<li>系统定时触发，两分钟</li>
+<li>用户显式触发，runtime.GC</li>
+<li>申请空间时触发</li>
+</ol>
+
+        </div>
+
+        
+            <section class="post-copyright">
+                
+                    <p class="copyright-item">
+                        <span>Author:</span>
+                        <span>Xinyu</span>
+                    </p>
+                
+                
+                    <p class="copyright-item">
+                        <span>Permalink:</span>
+                        <span><a href="http://example.com/2022/08/24/[Golang]%E9%AB%98%E5%B9%B6%E5%8F%91/">http://example.com/2022/08/24/[Golang]%E9%AB%98%E5%B9%B6%E5%8F%91/</a></span>
+                    </p>
+                
+                
+                    <p class="copyright-item">
+                        <span>License:</span>
+                        <span>Copyright (c) 2019 <a target="_blank" rel="noopener" href="http://creativecommons.org/licenses/by-nc/4.0/">CC-BY-NC-4.0</a> LICENSE</span>
+                    </p>
+                
+                
+                     <p class="copyright-item">
+                         <span>Slogan:</span>
+                         <span>Coffee or Tea</span>
+                     </p>
+                
+
+            </section>
+        
+        <section class="post-tags">
+            <div>
+                <span>Tag(s):</span>
+                <span class="tag">
+                    
+                </span>
+            </div>
+            <div>
+                <a href="javascript:window.history.back();">back</a>
+                <span>· </span>
+                <a href="/">home</a>
+            </div>
+        </section>
+        <section class="post-nav">
+            
+                <a class="prev" rel="prev" href="/2022/09/05/%5B%E6%93%8D%E4%BD%9C%E7%B3%BB%E7%BB%9F%5D%E8%84%9A%E6%9C%AC/">操作系统---脚本</a>
+            
+            
+            <a class="next" rel="next" href="/2022/08/20/%5B%E9%A1%B9%E7%9B%AE%5DWeb%E6%9C%8D%E5%8A%A1%E5%99%A8/">Web服务器</a>
+            
+        </section>
+
+
+    </article>
+</div>
+
+            </div>
+            <footer id="footer" class="footer">
+    <div class="copyright">
+        <span>© Xinyu | Powered by <a href="https://hexo.io" target="_blank">Hexo</a> & <a href="https://github.com/Siricee/hexo-theme-Chic" target="_blank">Chic</a></span>
+    </div>
+</footer>
+
+    </div>
+</body>
+
+</html>
