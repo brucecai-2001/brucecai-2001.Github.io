@@ -13,7 +13,7 @@
 
 
 
-<title>Redis---集群 | Hexo</title>
+<title>读书社区 | Hexo</title>
 
 
 
@@ -192,7 +192,7 @@
     
     <article class="post-wrap">
         <header class="post-header">
-            <h1 class="post-title">Redis---集群</h1>
+            <h1 class="post-title">读书社区</h1>
             
                 <div class="post-meta">
                     
@@ -201,14 +201,14 @@
 
                     
                         <span class="post-time">
-                        Date: <a href="#">July 28, 2022&nbsp;&nbsp;17:09:37</a>
+                        Date: <a href="#">September 30, 2022&nbsp;&nbsp;0:01:52</a>
                         </span>
                     
                     
                         <span class="post-category">
                     Category:
                             
-                                <a href="/categories/Redis/">Redis</a>
+                                <a href="/categories/%E9%A1%B9%E7%9B%AE/">项目</a>
                             
                         </span>
                     
@@ -217,13 +217,36 @@
         </header>
 
         <div class="post-content">
-            <h1 id="Cluster-集群模式"><a href="#Cluster-集群模式" class="headerlink" title="Cluster 集群模式"></a>Cluster 集群模式</h1><p>Redis 的哨兵模式基本已经可以实现高可用，读写分离 ，但是在这种模式下每台 Redis 服务器都存储相同的数据，很浪费内存，所以在 redis3.0上加入了 Cluster 集群模式，实现了 Redis 的分布式存储，也就是说每台 Redis 节点上存储不同的内容。<br></p>
-<p><img src="https://raw.githubusercontent.com/brucecai-2001/Image/master/20220728224211.png"></p>
-<p>每一个蓝色的圈都代表着一个 redis 的服务器节点。它们任何两个节点之间都是相互连通的。客户端可以与任何一个节点相连接，然后就可以访问集群中的任何一个节点。对其进行存取和其他操作。<br></p>
+            <h1 id="概述"><a href="#概述" class="headerlink" title="概述"></a>概述</h1><p>一个内容分享平台，前台支持用户阅读，搜索，评论。后台支持管理员发布，管理，编辑文章。使用快速开发，可以在短时间内对软件进行多次迭代和修改，而不必每次都从头开始。 这有助于确保最终结果更加注重质量，并与最终用户的需求同步。<br></p>
+<h2 id="需求分析"><a href="#需求分析" class="headerlink" title="需求分析"></a>需求分析</h2><p>从使用该产品的人的视角开始分析需求</p>
+<ol>
+<li>游客</li>
+<li>管理员</li>
+</ol>
 <br>
 
-<h1 id="集群的数据分片"><a href="#集群的数据分片" class="headerlink" title="集群的数据分片"></a>集群的数据分片</h1><p>Redis 集群没有使用一致性 hash，而是引入了哈希槽【hash slot】的概念。<br></p>
-<p>Redis 集群有16384 个哈希槽，每个 key 通过 CRC16 校验后对 16384 取模来决定放置哪个槽。集群的每个节点负责一部分hash槽 <br></p>
+<h1 id="架构"><a href="#架构" class="headerlink" title="架构"></a>架构</h1><blockquote>
+<p>架构应该面向需求达到一个维护，可扩展性，性能的平衡 <br></p>
+</blockquote>
+<p>假设业务场景：<br></p>
+<ol>
+<li>数据库访问量特别大，造成数据库读取瓶颈</li>
+<li>搜索引擎ES比较耗CPU资源</li>
+<li>用户分布广</li>
+</ol>
+<p>单体架构: 单服务器(应用，文件，数据库)<br></p>
+<p>分布式架构: 应用服务器+缓存服务器+文件服务器+数据库服务器(读写分离)+搜索引擎服务器+CDN服务器<br></p>
+<p>可优化: 负载均衡 <br></p>
+<h1 id="单体开发"><a href="#单体开发" class="headerlink" title="单体开发"></a>单体开发</h1><ol>
+<li>先搭建框架， 采用MVC架构，创建对应的目录</li>
+<li>定义好Restful API(路径，返回值)，注册对应路由。路由指向对应的controller。为每一个页面设计一个controller。但现在还没有开始实现，只是先声明好名称</li>
+<li>从model开始定义数据结构，使用了ORM(对象关系映射数据库，数据库会根据数据结构中元素对应的标签创建对应的表)创建表<br><img src="https://raw.githubusercontent.com/brucecai-2001/Image/master/IMG_853937C7EBDC-1.jpeg"></li>
+<li>实现对应数据结构的数据库的CRUD操作，基于这些CRUD实现controller。<br>具体的有分类，文章阅读，搜索，登录&#x2F;注册，评论</li>
+</ol>
+<h1 id="架构优化"><a href="#架构优化" class="headerlink" title="架构优化"></a>架构优化</h1><h2 id="数据库优化"><a href="#数据库优化" class="headerlink" title="数据库优化"></a>数据库优化</h2><p>使用Apache Bench工具测试服务器性能，ab -n1000 -c10 url 这个表示运行1000次请求，每次发送10个。返回成功处理的请求个数，平均花费的时间ms。<br></p>
+<p>为什么查询会慢，数据库设计不合理，数据库大，没有使用索引，并发量大<br></p>
+<h2 id="基础优化"><a href="#基础优化" class="headerlink" title="基础优化"></a>基础优化</h2><p>第一范式：属性具有原子性，也就是不可拆分。分类可以被展开为一级分类，二级分类。<br><br>第二范式：确保数据库表中的每一列都和主键相关，而不能只与主键的某一部分相关；图书信息和分类信息分开。<br><br>第三范式: 需要确保数据表中的每一列数据都和主键直接相关，而不能间接相关。</p>
+<p>结果：将一个大的表拆分成了两个分开有对应关系的表 <br></p>
 
         </div>
 
@@ -238,7 +261,7 @@
                 
                     <p class="copyright-item">
                         <span>Permalink:</span>
-                        <span><a href="http://example.com/2022/07/28/[Redis]%E9%9B%86%E7%BE%A4/">http://example.com/2022/07/28/[Redis]%E9%9B%86%E7%BE%A4/</a></span>
+                        <span><a href="http://example.com/2022/09/30/[%E9%A1%B9%E7%9B%AE]%E8%AF%BB%E4%B9%A6%E7%A4%BE%E5%8C%BA/">http://example.com/2022/09/30/[%E9%A1%B9%E7%9B%AE]%E8%AF%BB%E4%B9%A6%E7%A4%BE%E5%8C%BA/</a></span>
                     </p>
                 
                 
@@ -271,10 +294,10 @@
         </section>
         <section class="post-nav">
             
-                <a class="prev" rel="prev" href="/2022/07/28/%5B%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%BD%91%E7%BB%9C%5D%E5%9F%BA%E7%A1%80/">计算机网络---常见问题</a>
+                <a class="prev" rel="prev" href="/2022/10/13/%5BGolang%5D%E5%8D%8F%E7%A8%8B%E6%B1%A0/">Golang---协程</a>
             
             
-            <a class="next" rel="next" href="/2022/07/27/%5BRedis%5D%E4%B8%BB%E4%BB%8E/">Redis---主从</a>
+            <a class="next" rel="next" href="/2022/09/22/%5BRedis%5D%E5%8A%9F%E8%83%BD/">Redis---功能</a>
             
         </section>
 

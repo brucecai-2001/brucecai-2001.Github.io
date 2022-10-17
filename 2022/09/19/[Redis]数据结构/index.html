@@ -1,0 +1,408 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+<meta name="viewport"
+      content="width=device-width, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+<meta http-equiv="X-UA-Compatible" content="ie=edge">
+
+    <meta name="author" content="Xinyu">
+
+
+
+
+
+<title>Redis---数据结构 | Hexo</title>
+
+
+
+    <link rel="icon" href="/favicon.ico">
+
+
+
+
+    <!-- stylesheets list from _config.yml -->
+    
+    <link rel="stylesheet" href="/css/style.css">
+    
+
+
+
+    <!-- scripts list from _config.yml -->
+    
+    <script src="/js/script.js"></script>
+    
+    <script src="/js/tocbot.min.js"></script>
+    
+
+
+
+    
+    
+        
+    
+
+
+<meta name="generator" content="Hexo 6.2.0"></head>
+
+<body>
+    <script>
+        // this function is used to check current theme before page loaded.
+        (() => {
+            const currentTheme = window.localStorage && window.localStorage.getItem('theme') || '';
+            const isDark = currentTheme === 'dark';
+            const pagebody = document.getElementsByTagName('body')[0]
+            if (isDark) {
+                pagebody.classList.add('dark-theme');
+                // mobile
+                document.getElementById("mobile-toggle-theme").innerText = "· Dark"
+            } else {
+                pagebody.classList.remove('dark-theme');
+                // mobile
+                document.getElementById("mobile-toggle-theme").innerText = "· Light"
+            }
+        })();
+    </script>
+
+    <div class="wrapper">
+        <header>
+    <nav class="navbar">
+        <div class="container">
+            <div class="navbar-header header-logo"><a href="/">Xinyu&#39;s Blog</a></div>
+            <div class="menu navbar-right">
+                
+                    <a class="menu-item" href="/archives">Posts</a>
+                
+                    <a class="menu-item" href="/category">Categories</a>
+                
+                    <a class="menu-item" href="/tag">Tags</a>
+                
+                <input id="switch_default" type="checkbox" class="switch_default">
+                <label for="switch_default" class="toggleBtn"></label>
+            </div>
+        </div>
+    </nav>
+
+    
+    <nav class="navbar-mobile" id="nav-mobile">
+        <div class="container">
+            <div class="navbar-header">
+                <div>
+                    <a href="/">Xinyu&#39;s Blog</a><a id="mobile-toggle-theme">·&nbsp;Light</a>
+                </div>
+                <div class="menu-toggle" onclick="mobileBtn()">&#9776; Menu</div>
+            </div>
+            <div class="menu" id="mobile-menu">
+                
+                    <a class="menu-item" href="/archives">Posts</a>
+                
+                    <a class="menu-item" href="/category">Categories</a>
+                
+                    <a class="menu-item" href="/tag">Tags</a>
+                
+            </div>
+        </div>
+    </nav>
+
+</header>
+<script>
+    var mobileBtn = function f() {
+        var toggleMenu = document.getElementsByClassName("menu-toggle")[0];
+        var mobileMenu = document.getElementById("mobile-menu");
+        if(toggleMenu.classList.contains("active")){
+           toggleMenu.classList.remove("active")
+            mobileMenu.classList.remove("active")
+        }else{
+            toggleMenu.classList.add("active")
+            mobileMenu.classList.add("active")
+        }
+    }
+</script>
+            <div class="main">
+                <div class="container">
+    
+    
+        <div class="post-toc">
+    <div class="tocbot-list">
+    </div>
+    <div class="tocbot-list-menu">
+        <a class="tocbot-toc-expand" onclick="expand_toc()">Expand all</a>
+        <a onclick="go_top()">Back to top</a>
+        <a onclick="go_bottom()">Go to bottom</a>
+    </div>
+</div>
+
+<script>
+    var tocbot_timer;
+    var DEPTH_MAX = 6; // 为 6 时展开所有
+    var tocbot_default_config = {
+        tocSelector: '.tocbot-list',
+        contentSelector: '.post-content',
+        headingSelector: 'h1, h2, h3, h4, h5',
+        orderedList: false,
+        scrollSmooth: true,
+        onClick: extend_click,
+    };
+
+    function extend_click() {
+        clearTimeout(tocbot_timer);
+        tocbot_timer = setTimeout(function() {
+            tocbot.refresh(obj_merge(tocbot_default_config, {
+                hasInnerContainers: true
+            }));
+        }, 420); // 这个值是由 tocbot 源码里定义的 scrollSmoothDuration 得来的
+    }
+
+    document.ready(function() {
+        tocbot.init(obj_merge(tocbot_default_config, {
+            collapseDepth: 1
+        }));
+    });
+
+    function expand_toc() {
+        var b = document.querySelector('.tocbot-toc-expand');
+        var expanded = b.getAttribute('data-expanded');
+        expanded ? b.removeAttribute('data-expanded') : b.setAttribute('data-expanded', true);
+        tocbot.refresh(obj_merge(tocbot_default_config, {
+            collapseDepth: expanded ? 1 : DEPTH_MAX
+        }));
+        b.innerText = expanded ? 'Expand all' : 'Collapse all';
+    }
+
+    function go_top() {
+        window.scrollTo(0, 0);
+    }
+
+    function go_bottom() {
+        window.scrollTo(0, document.body.scrollHeight);
+    }
+
+    function obj_merge(target, source) {
+        for (var item in source) {
+            if (source.hasOwnProperty(item)) {
+                target[item] = source[item];
+            }
+        }
+        return target;
+    }
+</script>
+    
+
+    
+    <article class="post-wrap">
+        <header class="post-header">
+            <h1 class="post-title">Redis---数据结构</h1>
+            
+                <div class="post-meta">
+                    
+                        Author: <a itemprop="author" rel="author" href="/">Xinyu</a>
+                    
+
+                    
+                        <span class="post-time">
+                        Date: <a href="#">September 19, 2022&nbsp;&nbsp;14:31:38</a>
+                        </span>
+                    
+                    
+                        <span class="post-category">
+                    Category:
+                            
+                                <a href="/categories/Redis/">Redis</a>
+                            
+                        </span>
+                    
+                </div>
+            
+        </header>
+
+        <div class="post-content">
+            <h1 id="Redis底层存储"><a href="#Redis底层存储" class="headerlink" title="Redis底层存储"></a>Redis底层存储</h1><p>Redis 是使用了一个「哈希表」保存所有键值对，哈希表的最大好处就是让我们可以用 O(1) 的时间复杂度来快速查找到键值对。哈希表其实就是一个数组，数组中的元素叫做哈希桶。<br></p>
+<p><img src="https://raw.githubusercontent.com/brucecai-2001/Image/master/20220920150759.png"></p>
+<p>redisDb 结构，表示 Redis 数据库的结构，结构体里存放了指向了 dict 结构的指针；<br><br>dict 结构，结构体里存放了 2 个哈希表，正常情况下都是用「哈希表1」，「哈希表2」只有在 rehash 的时候才用，具体什么是 rehash，我在本文的哈希表数据结构会讲；<br><br>ditctht 结构，表示哈希表的结构，结构里存放了哈希表数组，数组中的每个元素都是指向一个哈希表节点结构（dictEntry）的指针；<br><br>dictEntry 结构，表示哈希表节点的结构，结构里存放了 **void * key 和 void * value 指针， key 指向的是 String 对象，而 value 则可以指向 String 对象，也可以指向集合类型的对象，比如 List 对象、Hash 对象、Set 对象和 Zset <br></p>
+<br>
+
+<p><img src="https://raw.githubusercontent.com/brucecai-2001/Image/master/20220920165532.png"></p>
+<h1 id="String"><a href="#String" class="headerlink" title="String"></a>String</h1><p>String 是最基本的 key-value 结构，key 是唯一标识，value 是具体的值，value其实不仅是字符串， 也可以是数字（整数或浮点数），value 最多可以容纳的数据长度是 512M。<br></p>
+<p><img src="https://raw.githubusercontent.com/brucecai-2001/Image/master/20220919143829.png"></p>
+<h2 id="内部实现"><a href="#内部实现" class="headerlink" title="内部实现"></a>内部实现</h2><p>String 类型的底层的数据结构实现主要是 int 和 SDS（简单动态字符串）。<br><br>SDS: SDS 不仅可以保存文本数据，还可以保存二进制数据。因为 SDS 使用 len 属性的值而不是空字符来判断字符串是否结束，并且 SDS 的所有 API 都会以处理二进制的方式来处理 SDS 存放在 buf[] 数组里的数据。所以 SDS 不光能存放文本数据，而且能保存图片、音频、视频、压缩文件这样的二进制数据。SDS 获取字符串长度的时间复杂度是 O(1)。Redis 的 SDS API 是安全的，拼接字符串不会造成缓冲区溢出。因为 SDS 在拼接字符串之前会检查 SDS 空间是否满足要求，如果空间不够会自动扩容，所以不会导致缓冲区溢出的问题。<br></p>
+<p><img src="https://raw.githubusercontent.com/brucecai-2001/Image/master/20220920151654.png"></p>
+<h2 id="应用场景"><a href="#应用场景" class="headerlink" title="应用场景"></a>应用场景</h2><ol>
+<li>缓存对象, 直接缓存整个对象的 JSON，命令例子： SET user:1 ‘{“name”:”xiaolin”, “age”:18}’。</li>
+<li>常规计数: 因为 Redis 处理命令是单线程，所以执行命令的过程是原子的。因此 String 数据类型适合计数场景，比如计算访问次数、点赞、转发、库存数量等等。</li>
+<li>分布式锁: SET 命令有个 NX 参数可以实现「key不存在才插入」，可以用它来实现分布式锁，一般而言，还会对分布式锁加上过期时间。解锁的过程就是将 lock_key 键删除，但不能乱删，要保证执行操作的客户端就是加锁的客户端。所以，解锁的时候，我们要先判断锁的 unique_value 是否为加锁客户端，是的话，才将 lock_key 键删除。</li>
+<li>共享 Session 信息: 例如用户一的 Session 信息被存储在服务器一，但第二次访问时用户一被分配到服务器二，这个时候服务器并没有用户一的 Session 信息，就会出现需要重复登录的问题，问题在于分布式系统每次会把请求随机分配到不同的服务器。需要借助 Redis 对这些 Session 信息进行统一的存储和管理，这样无论请求发送到那台服务器，服务器都会去同一个 Redis 获取相关的 Session 信息，这样就解决了分布式系统下 Session 存储的问题。<br></li>
+</ol>
+<br>
+
+<h1 id="List"><a href="#List" class="headerlink" title="List"></a>List</h1><p>List 列表是简单的字符串列表，按照插入顺序排序，可以从头部或尾部向 List 列表添加元素。<br></p>
+<h2 id="内部实现-1"><a href="#内部实现-1" class="headerlink" title="内部实现"></a>内部实现</h2><p>在 Redis 3.0 之前，List 对象的底层数据结构是双向链表或者压缩列表。3.2之后List 数据类型底层数据结构就只由 quicklist 实现了 <br></p>
+<p>双向链表： <br><br><img src="https://raw.githubusercontent.com/brucecai-2001/Image/master/20220920152358.png"></p>
+<p>压缩列表的最大特点，就是它被设计成一种内存紧凑型的数据结构，占用一块连续的内存空间，不仅可以利用 CPU 缓存，而且会针对不同长度的数据，进行相应编码，这种方法可以有效地节省内存开销。<br><br><img src="https://raw.githubusercontent.com/brucecai-2001/Image/master/20220920152533.png"></p>
+<p>quicklist 解决办法，通过控制每个链表节点中的压缩列表的大小或者元素个数，来规避连锁更新的问题。因为压缩列表元素越少或越小，连锁更新带来的影响就越小，从而提供了更好的访问性能。在向 quicklist 添加一个元素的时候，不会像普通的链表那样，直接新建一个链表节点。而是会检查插入位置的压缩列表是否能容纳该元素，如果能容纳就直接保存到 quicklistNode 结构里的压缩列表，如果不能容纳，才会新建一个新的 quicklistNode 结构。<br><br><img src="https://raw.githubusercontent.com/brucecai-2001/Image/master/20220920164905.png"></p>
+<h2 id="应用场景-1"><a href="#应用场景-1" class="headerlink" title="应用场景"></a>应用场景</h2><p>消息队列，list保证了消息保序、处理重复的消息(为每个消息生成一个全局唯一ID)和保证消息可靠性(备份)。<br><img src="https://raw.githubusercontent.com/brucecai-2001/Image/master/20220919145815.png"></p>
+<p>消息保序：使用 LPUSH + RPOP；<br><br>阻塞读取：使用 BRPOP；客户端在没有读到队列数据时，自动阻塞，直到有新的数据写入队列，再开始读取新数据<br><br>重复消息处理：生产者自行实现全局唯一 ID；<br><br>消息的可靠性：使用 BRPOPLPUSH<br></p>
+<br>
+<br>
+
+<h1 id="Hash"><a href="#Hash" class="headerlink" title="Hash"></a>Hash</h1><p>Hash 是一个键值对（key - value）集合，其中 value 的形式如： value&#x3D;[{field1，value1}，…{fieldN，valueN}]。Hash 特别适合用于存储对象。 <br><br><img src="https://raw.githubusercontent.com/brucecai-2001/Image/master/20220919150552.png"></p>
+<h2 id="内部实现-2"><a href="#内部实现-2" class="headerlink" title="内部实现"></a>内部实现</h2><p><img src="https://raw.githubusercontent.com/brucecai-2001/Image/master/20220920153613.png"></p>
+<p>Redis 采用了「链式哈希」来解决哈希冲突，在不扩容哈希表的前提下，将具有相同哈希值的数据串起来，形成链接起，以便这些数据在表中仍然可以被查询到。<br><br>随着数据逐步增多，触发了 rehash 操作，这个过程分为三步：给「哈希表 2」 分配空间，一般会比「哈希表 1」 大 2 倍；将「哈希表 1 」的数据迁移到「哈希表 2」 中；迁移完成后，「哈希表 1 」的空间会被释放，并把「哈希表 2」 设置为「哈希表 1」，然后在「哈希表 2」 新创建一个空白的哈希表，为下次 rehash 做准备。<strong>如果「哈希表 1 」的数据量非常大，那么在迁移至「哈希表 2 」的时候，因为会涉及大量的数据拷贝，此时可能会对 Redis 造成阻塞，无法服务其他请求。</strong><br></p>
+<p>渐进式 rehash 步骤如下：给「哈希表 2」 分配空间；在 rehash 进行期间，每次哈希表元素进行新增、删除、查找或者更新操作时，Redis 除了会执行对应的操作之外，还会顺序将「哈希表 1 」中索引位置上的所有 key-value 迁移到「哈希表 2」 上；随着处理客户端发起的哈希表操作请求数量越多，最终在某个时间点会把「哈希表 1 」的所有 key-value 迁移到「哈希表 2」，从而完成 rehash 操作。<br><br>listpack 数据结构</p>
+<h2 id="应用场景-2"><a href="#应用场景-2" class="headerlink" title="应用场景"></a>应用场景</h2><ol>
+<li>缓存对象: Hash 类型的 （key，field， value） 的结构与对象的（对象id， 属性， 值）的结构相似，也可以用来存储对象。</li>
+</ol>
+<br>
+<br>
+
+<h1 id="Set"><a href="#Set" class="headerlink" title="Set"></a>Set</h1><p>Set 类型是一个无序并唯一的键值集合，它的存储顺序不会按照插入的先后顺序进行存储。相对于List，List 可以存储重复元素，Set 只能存储非重复元素；List 是按照元素的先后顺序存储元素的，而 Set 则是无序方式存储元素的。<br></p>
+<p><img src="https://raw.githubusercontent.com/brucecai-2001/Image/master/20220919152627.png"></p>
+<h2 id="内部实现-3"><a href="#内部实现-3" class="headerlink" title="内部实现"></a>内部实现</h2><p>Set 类型的底层数据结构是由哈希表或整数集合实现的。如果集合中的元素都是整数且元素个数小于 512 （默认值，set-maxintset-entries配置）个，Redis 会使用整数集合作为 Set 类型的底层数据结构；如果集合中的元素不满足上面条件，则 Redis 使用哈希表作为 Set 类型的底层数据结构。<br></p>
+<figure class="highlight golang"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">typedef <span class="keyword">struct</span> intset &#123;</span><br><span class="line">    <span class="comment">//编码方式</span></span><br><span class="line">    uint32_t encoding;</span><br><span class="line">    <span class="comment">//集合包含的元素数量</span></span><br><span class="line">    uint32_t length;</span><br><span class="line">    <span class="comment">//保存元素的数组</span></span><br><span class="line">    int8_t contents[];</span><br><span class="line">&#125; intset;</span><br></pre></td></tr></table></figure>
+<p>保存元素的容器是一个 contents 数组，虽然 contents 被声明为 int8_t 类型的数组，但是实际上 contents 数组并不保存任何 int8_t 类型的元素，contents 数组的真正类型取决于 intset 结构体里的 encoding 属性的值。整数集合升级的好处是节省内存资源。<br></p>
+<h2 id="应用场景-3"><a href="#应用场景-3" class="headerlink" title="应用场景"></a>应用场景</h2><p>Set 类型比较适合用来数据去重和保障数据的唯一性，还可以用来统计多个集合的交集、错集和并集等，当我们存储的数据是无序并且需要去重的情况下，比较适合使用集合类型进行存储。但是Set 的差集、并集和交集的计算复杂度较高，在数据量较大的情况下，如果直接执行这些计算，会导致 Redis 实例阻塞。<br></p>
+<ol>
+<li>点赞: Set类型可以保证一个用户只能点一个赞，这里举例子一个场景，key 是文章id，value 是用户id。<blockquote>
+<p>SADD article:1 uid:1</p>
+</blockquote>
+</li>
+<li>共同关注: Set 类型支持交集运算，所以可以用来计算共同关注的好友、公众号等。key 可以是用户id，value 则是已关注的公众号的id。<blockquote>
+<p>SINTER uid:1 uid:2</p>
+</blockquote>
+</li>
+</ol>
+<br>
+
+<h2 id="Zset"><a href="#Zset" class="headerlink" title="Zset"></a>Zset</h2><p>Zset 类型（有序集合类型）相比于 Set 类型多了一个排序属性 score（分值），对于有序集合 ZSet 来说，每个存储元素相当于有两个值组成的，一个是有序结合的元素值，一个是排序值。<br><br><img src="https://raw.githubusercontent.com/brucecai-2001/Image/master/20220919153741.png"></p>
+<h2 id="内部实现-4"><a href="#内部实现-4" class="headerlink" title="内部实现"></a>内部实现</h2><p>跳表: <br><br><img src="https://raw.githubusercontent.com/brucecai-2001/Image/master/20220920163658.png"></p>
+<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">typedef</span> <span class="keyword">struct</span> <span class="title class_">zskiplistNode</span> &#123;</span><br><span class="line">    <span class="comment">//Zset 对象的元素值</span></span><br><span class="line">    sds ele;</span><br><span class="line">    <span class="comment">//元素权重值</span></span><br><span class="line">    <span class="type">double</span> score;</span><br><span class="line">    <span class="comment">//后向指针</span></span><br><span class="line">    <span class="keyword">struct</span> <span class="title class_">zskiplistNode</span> *backward;</span><br><span class="line">  </span><br><span class="line">    <span class="comment">//节点的level数组，保存每层上的前向指针和跨度</span></span><br><span class="line">    <span class="keyword">struct</span> <span class="title class_">zskiplistLevel</span> &#123;</span><br><span class="line">        <span class="keyword">struct</span> <span class="title class_">zskiplistNode</span> *forward;</span><br><span class="line">        <span class="type">unsigned</span> <span class="type">long</span> span;</span><br><span class="line">    &#125; level[];</span><br><span class="line">&#125; zskiplistNode;</span><br></pre></td></tr></table></figure>
+<p>Zset 对象要同时保存「元素」和「元素的权重」，对应到跳表节点结构里就是 sds 类型的 ele 变量和 double 类型的 score 变量。跳表是一个带有层级关系的链表，而且每一层级可以包含多个节点，每一个节点通过指针连接起来，实现这一特性就是靠跳表节点结构体中的zskiplistLevel 结构体类型的 level 数组。<br></p>
+<p>Listpack: <br><br><img src="https://raw.githubusercontent.com/brucecai-2001/Image/master/20220920165435.png"><br>listpack 没有压缩列表中记录前一个节点长度的字段了，listpack 只记录当前节点的长度，当我们向 listpack 加入一个新元素的时候，不会影响其他节点的长度字段的变化，从而避免了压缩列表的连锁更新问题。<br></p>
+<h2 id="应用场景-4"><a href="#应用场景-4" class="headerlink" title="应用场景"></a>应用场景</h2><ol>
+<li>有序集合比较典型的使用场景就是排行榜。例如学生成绩的排名榜、游戏积分排行榜、视频播放排名、电商系统中商品的销量排名等。<br><blockquote>
+<p>ZADD user:xiaolin:ranking 200 arcticle:1</p>
+</blockquote>
+</li>
+</ol>
+<br>
+
+<h1 id="BitMap"><a href="#BitMap" class="headerlink" title="BitMap"></a>BitMap</h1><p>Bitmap，即位图，是一串连续的二进制数组（0和1），可以通过偏移量（offset）定位元素。BitMap通过最小的单位bit来进行0|1的设置，表示某个元素的值或者状态，时间复杂度为O(1)。<br><br><img src="https://raw.githubusercontent.com/brucecai-2001/Image/master/20220919154046.png"></p>
+<h2 id="内部实现-5"><a href="#内部实现-5" class="headerlink" title="内部实现"></a>内部实现</h2><p>Bitmap 本身是用 String 类型作为底层数据结构实现的一种统计二值状态的数据类型。String 类型是会保存为二进制的字节数组，所以，Redis 就把字节数组的每个 bit 位利用起来，用来表示一个元素的二值状态，你可以把 Bitmap 看作是一个 bit 数组。</p>
+<h2 id="应用场景-5"><a href="#应用场景-5" class="headerlink" title="应用场景"></a>应用场景</h2><p>Bitmap 类型非常适合二值状态统计的场景，这里的二值状态就是指集合元素的取值就只有 0 和 1 两种，在记录海量数据时，Bitmap 能够有效地节省内存空间。</p>
+<ol>
+<li>签到统计: 签到统计时，每个用户一天的签到用 1 个 bit 位就能表示，一个月（假设是 31 天）的签到情况用 31 个 bit 位就可以，而一年的签到也只需要用 365 个 bit 位，根本不用太复杂的集合类型。<blockquote>
+<p>SETBIT uid:sign:100:202206 2 1</p>
+</blockquote>
+</li>
+</ol>
+<br>
+
+<h1 id="HyperLogLog"><a href="#HyperLogLog" class="headerlink" title="HyperLogLog"></a>HyperLogLog</h1><p>HyperLogLog 提供不精确的去重计数。每个 HyperLogLog 键只需要花费 12 KB 内存，就可以计算接近 2^64 个不同元素的基数<br></p>
+<h2 id="应用场景-6"><a href="#应用场景-6" class="headerlink" title="应用场景"></a>应用场景</h2><ol>
+<li>百万级网页 UV 计数<blockquote>
+<p>PFADD page1:uv user1 user2 user3 user4 user5<br>PFCOUNT page1:uv</p>
+</blockquote>
+</li>
+</ol>
+<br>
+
+<h1 id="GEO"><a href="#GEO" class="headerlink" title="GEO"></a>GEO</h1><p>主要用于存储地理位置信息，并对存储的信息进行操作。（Location-Based Service，LBS） 应用访问的数据是和人或物关联的一组经纬度信息，而且要能查询相邻的经纬度范围，GEO 就非常适合应用在 LBS 服务的场景中。<br></p>
+<h2 id="内部实现-6"><a href="#内部实现-6" class="headerlink" title="内部实现"></a>内部实现</h2><p>GEO 本身并没有设计新的底层数据结构，而是直接使用了 Sorted Set 集合类型。</p>
+<h2 id="应用场景-7"><a href="#应用场景-7" class="headerlink" title="应用场景"></a>应用场景</h2><ol>
+<li>打车: 我们可以用一个 GEO 集合保存所有车辆的经纬度，集合 key 是 cars:locations。<blockquote>
+<p>GEOADD cars:locations 116.034579 39.030452 33<br>当用户想要寻找自己附近的网约车时，LBS 应用就可以使用 GEORADIUS 命令。<br><br>GEORADIUS cars:locations 116.054579 39.030452 5 km ASC COUNT 10</p>
+</blockquote>
+</li>
+</ol>
+<br>
+
+<h1 id="Stream"><a href="#Stream" class="headerlink" title="Stream"></a>Stream</h1><p>Redis 专门为消息队列设计的数据类型。它支持消息的持久化、支持自动生成全局唯一 ID、支持 ack 确认消息的模式、支持消费组模式等，让消息队列更加的稳定和可靠。<br></p>
+<h2 id="应用场景-8"><a href="#应用场景-8" class="headerlink" title="应用场景"></a>应用场景</h2><blockquote>
+<p>XADD mymq * name xiaolin<br>插入成功后会返回全局唯一的 ID：”1654254953808-0”。消息的全局唯一 ID 由两部分组成：第一部分“1654254953808”是数据插入时，以毫秒为单位计算的当前服务器时间；第二部分表示插入消息在当前毫秒内的消息序号，这是从 0 开始编号的。例如，“1654254953808-0”就表示在“1654254953808”毫秒内的第 1 条消息。<br></p>
+</blockquote>
+<p>消费者通过 XREAD 命令从消息队列中读取消息时，可以指定一个消息 ID，并从这个消息 ID 的下一条消息开始进行读取（注意是输入消息 ID 的下一条信息开始读取，不是查询输入ID的消息）。<br></p>
+<blockquote>
+<p>XREAD STREAMS mymq 1654254953807-0</p>
+</blockquote>
+<p>Stream 可以以使用 XGROUP 创建消费组，创建消费组之后，Stream 可以使用 XREADGROUP 命令让消费组内的消费者读取消息。<br></p>
+<blockquote>
+<p>XGROUP CREATE mymq group1 0-0</p>
+</blockquote>
+<p>消费组 group1 内的消费者 consumer1 从 mymq 消息队列中读取所有消息的命令<br></p>
+<blockquote>
+<p>XREADGROUP GROUP group1 consumer1 STREAMS mymq</p>
+</blockquote>
+<p>消息队列中的消息一旦被消费组里的一个消费者读取了，就不能再被该消费组内的其他消费者读取了，即同一个消费组里的消费者不能消费同一条消息。但是，不同消费组的消费者可以消费同一条消息（但是有前提条件，创建消息组的时候，不同消费组指定了相同位置开始读取消息）。<br></p>
+<p>Streams 会自动使用内部队列（也称为 PENDING List）留存消费组里每个消费者读取的消息，直到消费者使用 XACK 命令通知 Streams“消息已经处理完成”。消费确认增加了消息的可靠性，一般在业务处理完成之后，需要执行 XACK 命令确认消息已经被消费完成。<br><br><img src="https://raw.githubusercontent.com/brucecai-2001/Image/master/20220919162628.png"></p>
+<p>Redis 消息中间件会不会丢消息？会，Redis 在以下 2 个场景下，都会导致数据丢失：AOF 持久化配置为每秒写盘，但这个写盘过程是异步的，Redis 宕机时会存在数据丢失的可能。主从复制也是异步的，主从切换时，也存在丢失数据的可能 (opens new window)。<br></p>
+<p>Redis 的数据都存储在内存中，这就意味着一旦发生消息积压，则会导致 Redis 的内存持续增长，如果超过机器内存上限，就会面临被 OOM 的风险。所以 Redis 的 Stream 提供了可以指定队列最大长度的功能，就是为了避免这种情况发生。当指定队列最大长度时，队列长度超过上限后，旧消息会被删除，只保留固定长度的新消息。这么来看，Stream 在消息积压时，如果指定了最大长度，还是有可能丢失消息的。<br></p>
+<p><em><strong>因此，把 Redis 当作队列来使用时，会面临的 2 个问题：Redis 本身可能会丢数据；面对消息挤压，内存资源会紧张；</strong></em></p>
+
+        </div>
+
+        
+            <section class="post-copyright">
+                
+                    <p class="copyright-item">
+                        <span>Author:</span>
+                        <span>Xinyu</span>
+                    </p>
+                
+                
+                    <p class="copyright-item">
+                        <span>Permalink:</span>
+                        <span><a href="http://example.com/2022/09/19/[Redis]%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84/">http://example.com/2022/09/19/[Redis]%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84/</a></span>
+                    </p>
+                
+                
+                    <p class="copyright-item">
+                        <span>License:</span>
+                        <span>Copyright (c) 2019 <a target="_blank" rel="noopener" href="http://creativecommons.org/licenses/by-nc/4.0/">CC-BY-NC-4.0</a> LICENSE</span>
+                    </p>
+                
+                
+                     <p class="copyright-item">
+                         <span>Slogan:</span>
+                         <span>Coffee or Tea</span>
+                     </p>
+                
+
+            </section>
+        
+        <section class="post-tags">
+            <div>
+                <span>Tag(s):</span>
+                <span class="tag">
+                    
+                </span>
+            </div>
+            <div>
+                <a href="javascript:window.history.back();">back</a>
+                <span>· </span>
+                <a href="/">home</a>
+            </div>
+        </section>
+        <section class="post-nav">
+            
+                <a class="prev" rel="prev" href="/2022/09/22/%5BRedis%5D%E5%8A%9F%E8%83%BD/">Redis---功能</a>
+            
+            
+            <a class="next" rel="next" href="/2022/09/14/%5B%E6%93%8D%E4%BD%9C%E7%B3%BB%E7%BB%9F%5D%E7%BD%91%E7%BB%9C/">操作系统---网络</a>
+            
+        </section>
+
+
+    </article>
+</div>
+
+            </div>
+            <footer id="footer" class="footer">
+    <div class="copyright">
+        <span>© Xinyu | Powered by <a href="https://hexo.io" target="_blank">Hexo</a> & <a href="https://github.com/Siricee/hexo-theme-Chic" target="_blank">Chic</a></span>
+    </div>
+</footer>
+
+    </div>
+</body>
+
+</html>

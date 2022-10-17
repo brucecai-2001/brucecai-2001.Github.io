@@ -229,6 +229,14 @@
 <p><strong>Redis 在使用 bgsave 快照过程中，如果主线程修改了内存数据，不管是否是共享的内存数据，RDB 快照都无法写入主线程刚修改的数据，因为此时主线程（父进程）的内存数据和子进程的内存数据已经分离了，子进程写入到 RDB 文件的内存数据只能是原本的内存数据。</strong><br></p>
 <p><strong>如果系统恰好在 RDB 快照文件创建完毕后崩溃了，那么 Redis 将会丢失主线程在快照期间修改的数据。</strong><br></p>
 <br>
+<br>
+<br>
+<br>
+
+
+
+
+
 
 <h1 id="AOF"><a href="#AOF" class="headerlink" title="AOF"></a>AOF</h1><p>Redis 每执行一条写操作命令，就把该命令以追加的方式写入到一个文件里，然后重启 Redis 的时候，先去读取这个文件里的命令，并且执行它。<br><br><img src="https://raw.githubusercontent.com/brucecai-2001/Image/master/20220725235050.png"></p>
 <h2 id="AOF格式"><a href="#AOF格式" class="headerlink" title="AOF格式"></a>AOF格式</h2><p><img src="https://raw.githubusercontent.com/brucecai-2001/Image/master/20220725235143.png"></p>
@@ -258,7 +266,7 @@
 <br>
 
 <h1 id="AOF-重写"><a href="#AOF-重写" class="headerlink" title="AOF 重写"></a>AOF 重写</h1><p>Redis 为了避免 AOF 文件越写越大，提供了 AOF 重写机制，当 AOF 文件的大小超过所设定的阈值后，Redis 就会启用 AOF 重写机制，来压缩 AOF 文件。 <br><br>AOF 重写机制是在重写时，读取当前数据库中的所有键值对，然后将每一个键值对用一条命令记录到「新的 AOF 文件」，等到全部记录完后，就将新的 AOF 文件替换掉现有的 AOF 文件。<br><br><img src="https://raw.githubusercontent.com/brucecai-2001/Image/master/20220726002155.png"></p>
-<p>在使用重写机制后，就会读取 name 最新的 value（键值对） ，然后用一条 「set name xiaolincoding」命令记录到新的 AOF 文件，之前的第一个命令就没有必要记录了，因为它属于「历史」命令，没有作用了。这样一来，一个键值对在重写日志中只用一条命令就行了。然后，在通过 AOF 日志恢复数据时，只用执行这条命令，就可以直接完成这个键值对的写入了。<br><br>** 重写机制的妙处在于，尽管某个键值对被多条写命令反复修改，最终也只需要根据这个「键值对」当前的最新状态，然后用一条命令去记录键值对，代替之前记录这个键值对的多条命令，这样就减少了 AOF 文件中的命令数量。**</p>
+<p>在使用重写机制后，就会读取 name 最新的 value（键值对） ，然后用一条 「set name xiaolincoding」命令记录到新的 AOF 文件，之前的第一个命令就没有必要记录了，因为它属于「历史」命令，没有作用了。这样一来，一个键值对在重写日志中只用一条命令就行了。然后，在通过 AOF 日志恢复数据时，只用执行这条命令，就可以直接完成这个键值对的写入了。<br><br><strong>重写机制的妙处在于，尽管某个键值对被多条写命令反复修改，最终也只需要根据这个「键值对」当前的最新状态，然后用一条命令去记录键值对，代替之前记录这个键值对的多条命令，这样就减少了 AOF 文件中的命令数量。</strong></p>
 <br>
 
 <h1 id="AOF-后台重写"><a href="#AOF-后台重写" class="headerlink" title="AOF 后台重写"></a>AOF 后台重写</h1><p>写入 AOF 日志的操作虽然是在主进程完成的，因为它写入的内容不多，所以一般不太影响命令的操作。但是重写这个过程其实是很耗时的，所以重写的操作不能放在主进程里。<br><br><strong>Redis 的重写 AOF 过程是由后台子进程 bgrewriteaof 来完成的</strong><br></p>
