@@ -1,0 +1,327 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+<meta name="viewport"
+      content="width=device-width, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+<meta http-equiv="X-UA-Compatible" content="ie=edge">
+
+    <meta name="author" content="Xinyu">
+
+
+
+
+
+<title>Golang---面试 | Hexo</title>
+
+
+
+    <link rel="icon" href="/favicon.ico">
+
+
+
+
+    <!-- stylesheets list from _config.yml -->
+    
+    <link rel="stylesheet" href="/css/style.css">
+    
+
+
+
+    <!-- scripts list from _config.yml -->
+    
+    <script src="/js/script.js"></script>
+    
+    <script src="/js/tocbot.min.js"></script>
+    
+
+
+
+    
+    
+        
+    
+
+
+<meta name="generator" content="Hexo 6.2.0"></head>
+
+<body>
+    <script>
+        // this function is used to check current theme before page loaded.
+        (() => {
+            const currentTheme = window.localStorage && window.localStorage.getItem('theme') || '';
+            const isDark = currentTheme === 'dark';
+            const pagebody = document.getElementsByTagName('body')[0]
+            if (isDark) {
+                pagebody.classList.add('dark-theme');
+                // mobile
+                document.getElementById("mobile-toggle-theme").innerText = "· Dark"
+            } else {
+                pagebody.classList.remove('dark-theme');
+                // mobile
+                document.getElementById("mobile-toggle-theme").innerText = "· Light"
+            }
+        })();
+    </script>
+
+    <div class="wrapper">
+        <header>
+    <nav class="navbar">
+        <div class="container">
+            <div class="navbar-header header-logo"><a href="/">Xinyu&#39;s Blog</a></div>
+            <div class="menu navbar-right">
+                
+                    <a class="menu-item" href="/archives">Posts</a>
+                
+                    <a class="menu-item" href="/category">Categories</a>
+                
+                    <a class="menu-item" href="/tag">Tags</a>
+                
+                <input id="switch_default" type="checkbox" class="switch_default">
+                <label for="switch_default" class="toggleBtn"></label>
+            </div>
+        </div>
+    </nav>
+
+    
+    <nav class="navbar-mobile" id="nav-mobile">
+        <div class="container">
+            <div class="navbar-header">
+                <div>
+                    <a href="/">Xinyu&#39;s Blog</a><a id="mobile-toggle-theme">·&nbsp;Light</a>
+                </div>
+                <div class="menu-toggle" onclick="mobileBtn()">&#9776; Menu</div>
+            </div>
+            <div class="menu" id="mobile-menu">
+                
+                    <a class="menu-item" href="/archives">Posts</a>
+                
+                    <a class="menu-item" href="/category">Categories</a>
+                
+                    <a class="menu-item" href="/tag">Tags</a>
+                
+            </div>
+        </div>
+    </nav>
+
+</header>
+<script>
+    var mobileBtn = function f() {
+        var toggleMenu = document.getElementsByClassName("menu-toggle")[0];
+        var mobileMenu = document.getElementById("mobile-menu");
+        if(toggleMenu.classList.contains("active")){
+           toggleMenu.classList.remove("active")
+            mobileMenu.classList.remove("active")
+        }else{
+            toggleMenu.classList.add("active")
+            mobileMenu.classList.add("active")
+        }
+    }
+</script>
+            <div class="main">
+                <div class="container">
+    
+    
+        <div class="post-toc">
+    <div class="tocbot-list">
+    </div>
+    <div class="tocbot-list-menu">
+        <a class="tocbot-toc-expand" onclick="expand_toc()">Expand all</a>
+        <a onclick="go_top()">Back to top</a>
+        <a onclick="go_bottom()">Go to bottom</a>
+    </div>
+</div>
+
+<script>
+    var tocbot_timer;
+    var DEPTH_MAX = 6; // 为 6 时展开所有
+    var tocbot_default_config = {
+        tocSelector: '.tocbot-list',
+        contentSelector: '.post-content',
+        headingSelector: 'h1, h2, h3, h4, h5',
+        orderedList: false,
+        scrollSmooth: true,
+        onClick: extend_click,
+    };
+
+    function extend_click() {
+        clearTimeout(tocbot_timer);
+        tocbot_timer = setTimeout(function() {
+            tocbot.refresh(obj_merge(tocbot_default_config, {
+                hasInnerContainers: true
+            }));
+        }, 420); // 这个值是由 tocbot 源码里定义的 scrollSmoothDuration 得来的
+    }
+
+    document.ready(function() {
+        tocbot.init(obj_merge(tocbot_default_config, {
+            collapseDepth: 1
+        }));
+    });
+
+    function expand_toc() {
+        var b = document.querySelector('.tocbot-toc-expand');
+        var expanded = b.getAttribute('data-expanded');
+        expanded ? b.removeAttribute('data-expanded') : b.setAttribute('data-expanded', true);
+        tocbot.refresh(obj_merge(tocbot_default_config, {
+            collapseDepth: expanded ? 1 : DEPTH_MAX
+        }));
+        b.innerText = expanded ? 'Expand all' : 'Collapse all';
+    }
+
+    function go_top() {
+        window.scrollTo(0, 0);
+    }
+
+    function go_bottom() {
+        window.scrollTo(0, document.body.scrollHeight);
+    }
+
+    function obj_merge(target, source) {
+        for (var item in source) {
+            if (source.hasOwnProperty(item)) {
+                target[item] = source[item];
+            }
+        }
+        return target;
+    }
+</script>
+    
+
+    
+    <article class="post-wrap">
+        <header class="post-header">
+            <h1 class="post-title">Golang---面试</h1>
+            
+                <div class="post-meta">
+                    
+                        Author: <a itemprop="author" rel="author" href="/">Xinyu</a>
+                    
+
+                    
+                        <span class="post-time">
+                        Date: <a href="#">October 17, 2022&nbsp;&nbsp;18:48:20</a>
+                        </span>
+                    
+                    
+                        <span class="post-category">
+                    Category:
+                            
+                                <a href="/categories/Go/">Go</a>
+                            
+                        </span>
+                    
+                </div>
+            
+        </header>
+
+        <div class="post-content">
+            <h1 id="Go-程序的启动流程"><a href="#Go-程序的启动流程" class="headerlink" title="Go 程序的启动流程"></a>Go 程序的启动流程</h1><ol>
+<li>查找入口，真正的程序入口在 runtime 包中，不同的计算机架构指向不同</li>
+<li>紧接着又跳转到 runtime·rt0_go，该方法将程序输入的 argc 和 argv 从内存移动到寄存器中。</li>
+<li>开启主线，程序参数准备就绪后，正式初始化的方法落在 runtime·rt0_go 方法中，主要是完成各类运行时的检查，系统参数设置和获取，并进行大量的 Go 基础组件初始化。初始化完毕后进行主协程（main goroutine）的运行，并放入等待队列（GMP 模型），最后调度器开始进行循环调度。<br><img src="https://raw.githubusercontent.com/brucecai-2001/Image/master/20221018120214.png"></li>
+</ol>
+<h1 id="m0，g0"><a href="#m0，g0" class="headerlink" title="m0，g0"></a>m0，g0</h1><p>m0 是 Go Runtime 所创建的第一个系统线程，一个 Go 进程只有一个 m0，也叫主线程 <br><br>g 一般分为三种，分别是：执行用户任务的叫做 g。执行 runtime.main 的 main goroutine。执行调度任务的叫 g0。g0 比较特殊，每一个 m 都只有一个 g0（仅此只有一个 g0），且每个 m 都只会绑定一个 g0。在 g0 上的栈分配的是系统栈，在 Linux 上栈大小默认固定 8MB，不能扩缩容。运行方面g0 和常规的 g 不一样，没有那么多种运行状态，也不会被调度程序抢占，调度本身就是在 g0 上运行的。<br></p>
+<h1 id="New-和-make的区别"><a href="#New-和-make的区别" class="headerlink" title="New 和 make的区别"></a>New 和 make的区别</h1><p>make 仅支持 slice、map、channel 三种数据类型的内存创建，其返回值是所创建类型的本身，而不是新的指针引用。<br><br>内置函数 new 可以对类型进行内存创建和初始化。其返回值是所创建类型的指针引用 <br></p>
+<p><strong>本质上在于 make 函数在初始化时，会初始化 slice、chan、map 类型的内部数据结构，new 函数并不会。</strong> <br></p>
+<br>
+
+<h1 id="goroutine是什么？"><a href="#goroutine是什么？" class="headerlink" title="goroutine是什么？"></a>goroutine是什么？</h1><p>Goroutine 是一个由 Go 运行时管理的轻量级线程，一般称其为 “协程”。操作系统本身是无法明确感知到 Goroutine 的存在的，Goroutine 的操作和切换归属于 “用户态” 中。以 “多路复用” 的形式运行在操作系统为 Go 程序分配的几个系统线程上。<br></p>
+<h1 id="为什么要有协程"><a href="#为什么要有协程" class="headerlink" title="为什么要有协程"></a>为什么要有协程</h1><p>节省 CPU：避免系统内核级的线程频繁切换，造成的 CPU 资源浪费。<br><br>节约内存：在 64 位的Linux中，一个线程需要分配 8MB 栈内存和 64MB 堆内存，系统内存的制约导致我们无法开启更多线程实现高并发。而在协程编程模式下，可以轻松有十几万协程，这是线程无法比拟的。<br></p>
+<h1 id="GMP-模型，为什么要有-P"><a href="#GMP-模型，为什么要有-P" class="headerlink" title="GMP 模型，为什么要有 P"></a>GMP 模型，为什么要有 P</h1><p>GM模型：<br></p>
+<ol>
+<li>存在单一的全局 mutex（Sched.Lock）和集中状态管理，导致锁竞争严重。</li>
+<li>工作者线程（M’s）之间会经常交接可运行的 goroutine。</li>
+<li>每个 M 都需要做内存缓存</li>
+<li>频繁的线程阻塞&#x2F;解阻塞</li>
+</ol>
+<p>引入了P后: <br></p>
+<ol>
+<li>每个 P 有自己的本地队列，大幅度的减轻了对全局队列的直接依赖，所带来的效果就是锁竞争的减少。而 GM 模型的性能开销大头就是锁竞争。</li>
+<li>如果 P 的本地队列为空，则会从全局队列或其他 P 的本地队列中窃取可运行的 G 来运行，减少空转，提高了资源利用率。</li>
+</ol>
+<h1 id="为什么M不做本地队列"><a href="#为什么M不做本地队列" class="headerlink" title="为什么M不做本地队列"></a>为什么M不做本地队列</h1><p>由于 M 的属性，也就是如果存在系统阻塞调用，阻塞了 M，又不够用的情况下，M 会不断增加。M 不断增加的话，如果本地队列挂载在 M 上，那就意味着本地队列也会随之增加。这显然是不合理的，因为本地队列的管理会变得复杂，且 Work Stealing 性能会大幅度下降。</p>
+<h1 id="Goroutine-数量控制在多少合适"><a href="#Goroutine-数量控制在多少合适" class="headerlink" title="Goroutine 数量控制在多少合适"></a>Goroutine 数量控制在多少合适</h1><p>M 的限制: 在 Go 语言中，M 的默认数量限制是 10000，如果超出则会报错 <br><br>G 的限制: 理论上会受内存的影响 <br><br>P 的限制: P 的数量受环境变量 GOMAXPROCS 的直接影响。P 的数量基本是受本机的核数影响。<br></p>
+<p>真实场景得看具体里面跑的是什么，跑的如果是 “资源怪兽”，只运行几个 Goroutine 都可以跑死。<br></p>
+<br>
+
+<h1 id="为什么-Goroutine-没有-ID"><a href="#为什么-Goroutine-没有-ID" class="headerlink" title="为什么 Goroutine 没有 ID"></a>为什么 Goroutine 没有 ID</h1><p>获取线程ID一般是为了做thread_local_storage。thread-local storage 的成本远远超过了它们的收益。它们只是不适合 Go 语言。协程状态会被别的协程改变。<br></p>
+<h1 id="单核-CPU，开两个-Goroutine，其中一个死循环，会怎么样？"><a href="#单核-CPU，开两个-Goroutine，其中一个死循环，会怎么样？" class="headerlink" title="单核 CPU，开两个 Goroutine，其中一个死循环，会怎么样？"></a>单核 CPU，开两个 Goroutine，其中一个死循环，会怎么样？</h1><p>在 Go1.14 实现了基于信号的抢占式调度。程序启动时首先注册绑定 SIGURG 信号及处理方法runtime.doSigPreempt，runtime.sysmon会间隔性检测超时的p，然后发送信号，m收到信号后休眠执行的goroutine并且进行重新调度。</p>
+<h1 id="defer"><a href="#defer" class="headerlink" title="defer"></a>defer</h1><p>defer 关键字的特性，是按先进后出的顺序来执行的 <br></p>
+<h1 id="interface"><a href="#interface" class="headerlink" title="interface"></a>interface</h1><p>interface 共有两类数据结构：runtime.eface 结构体：表示不包含任何方法的空接口，也称为 empty interface。runtime.iface 结构体：表示包含方法的接口。<br><br>interface 不是单纯的值，而是分为类型和值。必须得类型和值同时都为 nil 的情况下，interface 的 nil 判断才会为 true。<br></p>
+<h1 id="Go-结构体是否可以比较"><a href="#Go-结构体是否可以比较" class="headerlink" title="Go 结构体是否可以比较"></a>Go 结构体是否可以比较</h1><p>在 Go 语言中，Go 结构体有时候并不能直接比较，当其基本类型包含：slice、map、function 时，是不能比较的。若强行比较，就会直接报错。而指针引用，其虽然都是 new(string)，从表象来看是一个东西，但其具体返回的地址是不一样的。 reflect.DeepEqual 常用于判定两个值是否深度一致(类型，值是否一致)。当数组值（array）的对应元素深度相等时，数组值是深度相等的。当结构体（struct）值如果其对应的字段（包括导出和未导出的字段）都是深度相等的，则该值是深度相等的。<br></p>
+<h1 id="Go-结构体和结构体指针调用有什么区别"><a href="#Go-结构体和结构体指针调用有什么区别" class="headerlink" title="Go 结构体和结构体指针调用有什么区别"></a>Go 结构体和结构体指针调用有什么区别</h1><p>结构体方法是要将接收器定义成值，还是指针。这本质上与函数参数应该是值还是指针是同一个问题。<br><br>整体有以下几个考虑因素: <br></p>
+<ol>
+<li>在使用上的考虑：方法是否需要修改接收器？如果需要，接收器必须是一个指针。</li>
+<li>在效率上的考虑：如果接收器很大，比如：一个大的结构，使用指针接收器会好很多。</li>
+</ol>
+<h1 id="map的遍历是无序的"><a href="#map的遍历是无序的" class="headerlink" title="map的遍历是无序的"></a>map的遍历是无序的</h1><p>重点处理 Go map 循环迭代的是两个 runtime 方法，runtime.mapiterinit，runtime.mapiternext <br><br>mapiterinit 其主要用途是在 map 进行遍历迭代时进行初始化动作。 它生成了随机数。用于决定从哪里开始循环迭代。更具体的话就是根据随机数，选择一个桶位置作为起始点进行遍历迭代。<br><br>mapiternext 进行具体的循环遍历动作。该方法主要涉及如下：从已选定的桶中开始进行遍历，寻找桶中的下一个元素进行处理。如果桶已经遍历完，则对溢出桶 overflow buckets 进行遍历处理</p>
+<h1 id="为什么-Go-map-是非线性安全的"><a href="#为什么-Go-map-是非线性安全的" class="headerlink" title="为什么 Go map 是非线性安全的"></a>为什么 Go map 是非线性安全的</h1><p>性能场景考虑：若是只是为少数程序增加安全性，导致 map 所有的操作都要处理 mutex，将会降低大多数程序的性能。<br><br>map 的典型使用场景是不需要从多个 goroutine 中进行安全访问。<br></p>
+
+        </div>
+
+        
+            <section class="post-copyright">
+                
+                    <p class="copyright-item">
+                        <span>Author:</span>
+                        <span>Xinyu</span>
+                    </p>
+                
+                
+                    <p class="copyright-item">
+                        <span>Permalink:</span>
+                        <span><a href="http://example.com/2022/10/17/[Go]%E9%9D%A2%E8%AF%95/">http://example.com/2022/10/17/[Go]%E9%9D%A2%E8%AF%95/</a></span>
+                    </p>
+                
+                
+                    <p class="copyright-item">
+                        <span>License:</span>
+                        <span>Copyright (c) 2019 <a target="_blank" rel="noopener" href="http://creativecommons.org/licenses/by-nc/4.0/">CC-BY-NC-4.0</a> LICENSE</span>
+                    </p>
+                
+                
+                     <p class="copyright-item">
+                         <span>Slogan:</span>
+                         <span>Coffee or Tea</span>
+                     </p>
+                
+
+            </section>
+        
+        <section class="post-tags">
+            <div>
+                <span>Tag(s):</span>
+                <span class="tag">
+                    
+                </span>
+            </div>
+            <div>
+                <a href="javascript:window.history.back();">back</a>
+                <span>· </span>
+                <a href="/">home</a>
+            </div>
+        </section>
+        <section class="post-nav">
+            
+            
+            <a class="next" rel="next" href="/2022/10/13/%5BGolang%5D%E5%8D%8F%E7%A8%8B%E6%B1%A0/">Golang---协程</a>
+            
+        </section>
+
+
+    </article>
+</div>
+
+            </div>
+            <footer id="footer" class="footer">
+    <div class="copyright">
+        <span>© Xinyu | Powered by <a href="https://hexo.io" target="_blank">Hexo</a> & <a href="https://github.com/Siricee/hexo-theme-Chic" target="_blank">Chic</a></span>
+    </div>
+</footer>
+
+    </div>
+</body>
+
+</html>
